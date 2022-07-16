@@ -1,0 +1,120 @@
+header{
+    /* Enable flex mode. */
+    display: flex;
+    position: relative;
+    background-color:#99CCCC;
+    padding: 5px;
+    margin-bottom: 10px;
+    /* Spread out the elements inside the header. */
+    justify-content: space-between;
+    border-bottom: 1px solid $darky;
+  
+    /* Align items vertically in the center. */
+    align-items: center;
+    .header-left a {
+      color: #ffffff;
+      background-color: $darky;
+      text-decoration: none;
+      padding: 5px 0;
+      display: inline-block;
+      &:hover {
+        background-color: $medy;
+      }
+    }
+
+    .menu-links {
+      display: flex; 
+      margin: 0;
+      & li{
+        align-items: center;
+        
+        a {
+          // /* width: 100%; */
+          text-decoration: none; 
+          color: $darky;
+          /* text-align: center; */
+          font-size: 14px;
+          padding: 5px 5px;
+          display: inline-block;
+          border-radius: 2px;
+          /* transition: 0.3s; */
+          &.active {
+            color: white;
+          }
+          
+          &:hover {
+            color: white;
+          }
+        }
+      }
+    }
+  }
+
+  // .menu-links li article
+  
+  
+  
+  
+  
+  
+  
+  
+
+  // .menu-links li a
+  .btn-logout {
+    margin: 0;
+    padding: 5px 5px;
+    /* margin-right: 5px; */
+    background-color: transparent;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    outline: none;
+    color: #006666;
+    border: none;
+    cursor: pointer;
+  }
+  header .icon {
+    display: none;
+    transition: 0.3s;
+    width: 16px;
+    height: 16px;
+    color: #006666;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    opacity: 70%;
+  }
+/* } */
+@media (max-width: 680px){
+  header{
+      /* Reverse the axis of the header, making it vertical. */
+      flex-direction: column;
+
+      /* Align items to the begining (the left) of the header. */
+      align-items: flex-start;
+      .menu-links {
+        display: none;
+        width: 140px;
+        /* margin-top: 5px; */
+        li {
+          /* display: none; */
+          /* display: block; */
+          width: 100%;
+          /* margin-left: 0; */
+          a {
+            width: 100%;
+            // color: red;
+          }
+        }
+      }
+      .icon {
+        display: block;
+        transition: 0.3s;
+      }
+  }
+  
+  // .menu-links 
+  // .menu-links li 
+  // header 
+}

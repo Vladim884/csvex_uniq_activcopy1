@@ -1,0 +1,13 @@
+@import './common/reset';
+@import './common/variables';
+@import './components/header';
+@import './components/footer';
+@import './components/slider_switch';
+@import './components/button';
+@import './components/form-block';
+@import './components/form-file';
+@import './components/section-tv';
+// record body must be lower than header!
+@import 'body';
+
+

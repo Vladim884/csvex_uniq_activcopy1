@@ -1,0 +1,33 @@
+
+<div class="container">
+    <div class="form-block">
+        <h3>Реєстрація</h3>
+        <form action="/api/auth/registration" method="post" id="regform">
+                <input type="text" name="email" placeholder="Введите ваш email">
+                <input type="password" name="password" placeholder="Введите пароль">
+            
+            <div class="checking">
+                <input type="checkbox" name="flag" id="check">
+                <label for="check"> Я згоден з:</label>
+                <ul>
+                    <li><a href="#">Правилами використання</a></li>
+                    <li>сайту та</li>
+                    <li><a href="#">Договором оферти</a></li>
+                </ul>
+            </div>
+            <div>
+                <button 
+                type="submit" 
+                {{!-- disabled --}}
+                >
+                Зареєструватися</button>
+            </div>
+        </form>
+        <div class="quest">
+            <a href="/enter">Ви вже зареєстровані? Вхід</a>
+        </div>
+    </div>
+</div>
+ 
+
+<script src="/js/reg.js"></script>

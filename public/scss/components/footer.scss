@@ -1,0 +1,136 @@
+
+footer {
+  background-color: $darky;
+  margin-top: 10vh;
+  .item .vizibly#navcontact,
+  .item .vizibly#navmenu {
+    display: block;
+  }
+  .footer-title {
+    margin-bottom: 10px;
+    font-weight: 700;
+  }
+  .footer-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    // margin: 0 -20px;
+    margin: 0;
+  }
+  .footer-copy {
+    p {
+      margin-bottom: 30px;
+    }
+    .footer-logo {
+      // vertical-align: middle;
+      display: inline-block;
+      color: #ffffff;
+      background-color: $medy;
+      padding: 5px 0;
+      &:hover {
+        background-color: $darky;
+      }
+    }
+  }
+  
+}
+
+.item{
+  width: calc(33.33% - 100px);
+  margin: 20px 50px;
+  text-align: center;
+  color: white;
+  // padding: 20px;
+  box-sizing: border-box;
+  // background-color: lightgreen;
+  .footer-menu {
+    li {
+      margin-bottom: 10px;
+    }
+    li:last-child {
+      margin-bottom: 0;
+    }
+    a {
+      text-decoration: none;
+      text-align: start ;
+      // font-style: italic;
+      color: $lighty;
+      &:hover {
+        color: orangered
+      }
+
+    }
+    
+  }
+  
+}
+
+
+@media screen and (max-width: 995px){
+  .footer-title,
+    .footer-menu li, 
+    .footer-copy p {
+      font-size: 12px;
+    }
+}
+@media screen and (max-width: 750px){
+  .item {
+    width: calc(33.33% - 80px);
+    margin: 20px 40px;
+
+    // .footer-title,
+    // .footer-menu li {
+    //   font-size: 12px;
+    // }
+  }
+  .footer-copy {
+    p {
+      font-size: 10px;
+    }
+  }
+}
+@media screen and (max-width: 650px){
+  footer.item {
+    width: calc(33.33% - 60px);
+    margin: 20px 30px;
+  }
+  footer .footer-copy {
+    p {
+      font-size: 8px;
+    }
+  }
+}
+@media screen and (max-width: 515px){
+  footer {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    .footer-copy {
+      p {
+        font-size: 14px;
+        margin-bottom: 25px;
+      }
+      
+      .footer-logo {
+        font-size: 14px;
+      }
+    }
+    .item .footer-title,
+    .item .footer-menu li {
+      font-size: 14px;
+    }
+  }
+      .item{
+      width: calc(100% - 100px);
+      margin: 10px auto;
+      // padding: 20px;
+      box-sizing: border-box;
+      .footer-title {
+        cursor: pointer;
+        margin-bottom: 10px;
+      }
+      
+      .footer-menu {
+        display: none;
+      }
+  }
+  
+}

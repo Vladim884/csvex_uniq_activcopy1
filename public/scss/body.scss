@@ -1,0 +1,210 @@
+html {
+  height: 100%
+}
+
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  background-color: 	#CCFFFF;
+  }
+  ::selection {
+    color: white;
+    background: #006666;
+}
+
+
+
+  .red {
+    background-color: red;
+    color: red;
+}
+.black {
+  background-color: black;
+}
+.lighty-color {
+  color: $lighty;
+}
+
+  .hidden {
+    display: none;
+  }
+
+  header .menu-links.vizibly{
+    display: block;
+  }
+  
+  .wrapper {
+    // min-height: 100%;
+    display: flex;
+    min-height: 100%;
+    overflow: hidden;
+    flex-direction: column;
+  }
+  .wrap {
+    padding-bottom: 100px;
+  }
+  .wrapp {
+    min-height: calc(100vh - 176px - 36px)
+  }
+
+  
+  .container {
+    position: relative;
+    max-width: 1200px;
+    // height: 100vh;
+    // height: calc(100vh - 32px - 156px);
+    margin: 0 auto;
+    padding: 0 15px;
+  }
+  section{
+    
+    h1 {
+      margin: 30px 0 20px;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 500;
+      color: $darky;
+    }
+    p {
+      width: 500px;
+      font-size: 12px;
+      font-weight: 500;
+      color: $darky;
+      margin: 0 auto 20px;
+      text-align: center;
+    }
+    form {
+      width: 500px;
+      // text-align: center;
+      margin: 0 auto 20px;
+    }
+  }
+
+
+  .two-block,
+  .three-block {
+    margin: 0 0 30px 0;
+    background-color: light-green;
+  }
+  .two-block__row, 
+  .three-block__row {
+    display: flex;
+    margin: 0 -15px;
+    background-color: green;
+  }
+  .three-block__column {
+    flex: 0 1 33.33%;
+    padding: 0 15px;
+    background-color: yellow;
+  }
+  .two-block__column {
+    flex: 0 1 50%;
+    padding: 0 15px;
+    background-color: yellow;
+  }
+  .two-block__item, 
+  .three-block__item {
+    padding: 0 15px;
+    background-color: gray;
+  }
+
+#regform input[type="password,"],
+#regform input[type="email,"] {
+    /* box-sizing: border-box; */
+    width: 100%;
+}
+  
+  @media (max-width: 1200px) {
+    .container {
+      max-width: 970px;
+    }
+  }
+  @media (max-width: 992px) {
+    .footer-logo {
+      font-size: 12px;;
+    }
+    .container {
+      max-width: 750px;
+    }
+  }
+  
+  @media (max-width: 767px) {
+    .footer-logo {
+      font-size: 9px;;
+    }
+    .header-left a {
+      font-size: 10px;
+    }
+    .container {
+      max-width: none;
+    }
+  }
+  
+  .par3tdiv {
+    width: 33.3%
+  }
+  
+  .par2tdiv {
+    width: 50%
+  }
+
+  /* ============================ */
+li textarea {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.contain {
+  // padding: 20px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center; /* если нужно выравнивание по вертикали */
+}
+
+.row .border {
+  border-bottom: 2px solid gray;
+  margin-bottom: 10px;
+}
+
+div textarea {
+    width: 100%;
+    margin-top: 10px;
+    box-sizing: border-box;
+    background-color: 
+    #99CCCC;
+}
+
+.col .block {
+    padding: 0 5px 0 5px;
+}
+
+.find {
+  margin-top: 10px;
+}
+
+.phrase {
+  padding-bottom: 60px;
+}
+
+.itemname {
+  padding-left: 12px;
+}
+
+#count {
+  display: inline-block;
+  width: 155px;
+  height: 28px;
+  padding-left: 3px;
+  border: 1px solid gray;
+}
+
+.lifind {
+  overflow: hidden;
+}
+
+// .active {
+//   background-color: white;
+// }

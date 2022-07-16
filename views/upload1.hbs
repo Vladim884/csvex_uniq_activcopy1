@@ -1,0 +1,90 @@
+ <div class="contain">
+        {{!-- <iframe width="1904" height="773" src="https://www.youtube.com/embed/hwDD_AA-L9w" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen> --}}
+        {{!-- <iframe width="900" height="450"src="https://www.youtube.com/embed/hwDD_AA-L9w" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+        </iframe> --}}
+    {{!-- <div class="video"> --}}
+
+    {{!-- </div> --}}
+</div>
+<div class="wrap" id="wrap"> 
+    <form action="/api/auth/upload1" method="post" >
+            <div class="row align-items-end">
+                <div class="col border">
+                    <span class='itemname'><b>Название товара:</b></span>
+                    <ul>
+                        {{#each resname}}
+                            <li class="liname block"><textarea  name="req_name" class="name">{{this}}</textarea></li>
+                        {{/each}}
+                    </ul>
+                </div>
+                <div class="col border">
+                    <div><span class='itemname'><b>Название группы:</b></span></div>
+                    <ul>
+                        {{#each resgroup}}
+                            <li class="ligroup  block"><textarea name="req_group" class="group">{{this}}</textarea></li>
+                        {{/each}}
+                    </ul>
+                </div>
+                <div class="col border">
+                    <div><span><b>Поисковые запросы:</b></span></div>
+                    <ul>
+                        {{#each resfind}}
+                            <li class="lifind block">
+                                <textarea name="req_find" class="find">{{this}}</textarea>
+                            </li>
+                        {{/each}}
+                    </ul>
+                </div>
+            </div>
+            <div class="row align-items-end">
+                <div class="col border">
+                    <div><span><b>1 Group</b></span></div>
+                    <div>
+                        <textarea name="req_find2" id="group1" class="group"></textarea>
+                    </div>
+                    <div class="group">
+                        
+                        <button id="joinerWords" type="button">join</button>
+                        <label class="switch">
+                            <input type="checkbox" id="checkbox">
+                            <span class="slider round"></span>
+                        </label>
+                        <button id="mainPhrase" disabled>main phrase</button>
+                        <button id="reqChange"  type="button" disabled>change</button>
+                        <div id="count"></div>
+                        <button id="nextItem" type="button">next</button>
+                    </div>
+                </div>
+                <div class="col border phrase">
+                    <div><span><b>Ключевая фраза 1:</b></span></div>
+                    {{!-- <ul> --}}
+                        <div class="lifind block">
+                            <input name="req_find1" class="find" id="mainphrase" />
+                            <button id="swap" type="button"><></button>
+                        </div>
+                    {{!-- </ul> --}}
+                </div>
+            </div>
+        <button type="submit" id="data_save">Save</button>
+    </form>
+ 
+    <form action="/api/auth/upload2" method="post">
+        {{!-- <input type="submit" value="Download" /> --}}
+        <input type="submit" value="Download" id="down_load" disabled/>
+        {{!-- <input type="submit" value="Download2" onClick='location.href="http://localhost:5000/" /> --}}
+    </form> 
+</div>
+ 
+<div id="contmenu" class="hidden">
+    <div><a href="/api/auth/work">Продолжить работу</a></div>
+    <div><a href="/api/auth/logout">Выйти</a></div>
+</div>
+
+
+
+      <script src="/js/ind.js"></script>
+      {{!-- <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+      
+        </body>
+        </html> --}}

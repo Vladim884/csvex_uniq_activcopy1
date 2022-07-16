@@ -1,0 +1,29 @@
+{{!-- <div class="container"> --}}
+    <div class="form-block">
+        <h3>Вхід у систему</h3>
+        <form action="/api/auth/login" method="post" id="regform">
+                <input type="text" name="email" placeholder="Введіть ваш email">
+                <input type="password" name="password" placeholder="Введіть пароль">
+            
+            {{!-- <div class="checking">
+                <input type="checkbox" name="flag" id="check">
+                <label for="check"> Я согласен с <a href="#">правилами пользования</a> сайтом и <a href="#">договором оферты</a></label>
+            </div> --}}
+            <div>
+                <button 
+                type="submit" 
+                {{!-- disabled --}}
+                >Вхід</button>
+            </div>
+        </form>
+        <div class="quest">
+            <a href="/forgpass">Забули пароль?</a> 
+        </div>
+        <div class="quest">
+            <a href="/registration">Немає реєстрації?</a> 
+        </div>
+    </div>
+{{!-- </div> --}}
+
+        
+ <script src="/js/enter.js"></script>

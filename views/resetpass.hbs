@@ -1,0 +1,25 @@
+{{!-- <form action="/api/auth/ressetpass" method="post">
+    
+    <button type="submit" id="res">Chenge Password</button>
+</form>
+
+ --}}
+
+    <h1>Enter your new password</h1>
+    {{!-- <form action="/api/auth/login" method="post"> --}}
+<form action="/api/auth/resset-pass" method="post" class="row g-3">
+  {{!-- <div class="col-auto"> --}}
+    <input type="hidden" name="resetLink" value="Vasya" id="rese">
+    {{!-- <label for="staticEmail2" class="visually-hidden">Email</label> --}}
+    {{!-- <input type="hidden" name="email" class="form-control-plaintext" id="staticEmail2" value="" placeholder="Введите email"> --}}
+  {{!-- </div> --}}
+  <div class="col-auto">
+    <label for="inputPassword2" class="visually-hidden">Password</label>
+    <input type="password" name="newPass" class="form-control" id="inputPassword2" value="" placeholder="Введите новый пароль">
+  </div>
+  <div class="col-auto">
+    <button type="submit" class="btn btn-primary mb-3"id="res">Chenge Password</button>
+  </div>
+</form>
+
+<script src='/js/resetpass.js'></script>
