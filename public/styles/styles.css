@@ -656,6 +656,32 @@ button:focus {
   color: white;
 }
 
+.row-content {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -15px;
+}
+
+.item-content {
+  width: calc(33.33% - 30px);
+  margin: 15px;
+}
+
+.item-control {
+  width: calc(50% - 30px);
+  margin: 15px;
+}
+
+#count {
+  display: inline-block;
+  width: 45px;
+  height: 28px;
+  line-height: 28px;
+  text-align: center;
+  padding-left: 3px;
+  border: 1px solid gray;
+}
+
 html {
   height: 100%;
 }
@@ -844,14 +870,6 @@ div textarea {
 
 .itemname {
   padding-left: 12px;
-}
-
-#count {
-  display: inline-block;
-  width: 155px;
-  height: 28px;
-  padding-left: 3px;
-  border: 1px solid gray;
 }
 
 .lifind {

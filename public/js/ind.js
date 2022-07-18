@@ -168,7 +168,7 @@ function displCurrentData() {
 
 const characterCount = (strX) => {
     let countChar = strX.replace(/[\s,]/g, '').length
-    countBlock.innerHTML = `Символов: ${countChar}`
+    countBlock.innerHTML = `${countChar}`
     alert(countChar)
 }
 

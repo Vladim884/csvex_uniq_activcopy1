@@ -8,8 +8,10 @@
 </div>
 <div class="wrap" id="wrap"> 
     <form action="/api/auth/upload1" method="post" >
-            <div class="row align-items-end">
-                <div class="col border">
+            {{!-- <div class="row align-items-end"> --}}
+            <div class="row-content">
+                {{!-- <div class="col border"> --}}
+                <div class="item-content">
                     <span class='itemname'><b>Название товара:</b></span>
                     <ul>
                         {{#each resname}}
@@ -17,7 +19,8 @@
                         {{/each}}
                     </ul>
                 </div>
-                <div class="col border">
+                {{!-- <div class="col border"> --}}
+                <div class="item-content">
                     <div><span class='itemname'><b>Название группы:</b></span></div>
                     <ul>
                         {{#each resgroup}}
@@ -25,7 +28,8 @@
                         {{/each}}
                     </ul>
                 </div>
-                <div class="col border">
+                {{!-- <div class="col border"> --}}
+                <div class="item-content">
                     <div><span><b>Поисковые запросы:</b></span></div>
                     <ul>
                         {{#each resfind}}
@@ -36,8 +40,10 @@
                     </ul>
                 </div>
             </div>
-            <div class="row align-items-end">
-                <div class="col border">
+            {{!-- <div class="row align-items-end"> --}}
+            <div class="row-content">
+                {{!-- <div class="col border"> --}}
+                <div class="item-control">
                     <div><span><b>1 Group</b></span></div>
                     <div>
                         <textarea name="req_find2" id="group1" class="group"></textarea>
@@ -55,7 +61,8 @@
                         <button id="nextItem" type="button">next</button>
                     </div>
                 </div>
-                <div class="col border phrase">
+                {{!-- <div class="col border phrase"> --}}
+                <div class="item-control">
                     <div><span><b>Ключевая фраза 1:</b></span></div>
                     {{!-- <ul> --}}
                         <div class="lifind block">
@@ -69,9 +76,7 @@
     </form>
  
     <form action="/api/auth/upload2" method="post">
-        {{!-- <input type="submit" value="Download" /> --}}
         <input type="submit" value="Download" id="down_load" disabled/>
-        {{!-- <input type="submit" value="Download2" onClick='location.href="http://localhost:5000/" /> --}}
     </form> 
 </div>
  
