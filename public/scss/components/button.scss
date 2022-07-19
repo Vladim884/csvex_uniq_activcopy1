@@ -23,4 +23,20 @@ button {
         background-color: #fff;
         color: $darky;
     }
+    
+  }
+
+  button.btn-disabled {
+    border: 1px solid lightgray;
+    color: lightgray;
+    &:hover {
+        border: 2px solid lightgray;
+        padding: 7px 15px;
+        color: lightgray;
+        background-color: transparent;
+    }
+    &:focus {
+        border: 2px solid lightgray;
+        color: lightgray;
+    }
   }

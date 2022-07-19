@@ -46,7 +46,7 @@
                 <div class="item-control">
                     <div><span><b>1 Group</b></span></div>
                     <div>
-                        <textarea name="req_find2" id="group1" class="group"></textarea>
+                        <textarea name="req_find2" id="group1" class="root-text"></textarea>
                     </div>
                     <div class="group">
                         
@@ -57,8 +57,12 @@
                         </label>
                         <button id="mainPhrase" disabled>main phrase</button>
                         <button id="reqChange"  type="button" disabled>change</button>
-                        <div id="count"></div>
-                        <button id="nextItem" type="button">next</button>
+                        <div class="count-block">
+                            <span>Кількість</span>
+                            <span>знаків:</span>
+                            <div id="count"></div>
+                        </div> 
+                        {{!-- <button id="nextItem" type="button">next</button> --}}
                     </div>
                 </div>
                 {{!-- <div class="col border phrase"> --}}
@@ -68,11 +72,13 @@
                         <div class="lifind block">
                             <input name="req_find1" class="find" id="mainphrase" />
                             <button id="swap" type="button"><></button>
+                             <button id="nextItem" type="button">next</button>
+                             <button type="submit" id="data_save">Save</button>
                         </div>
                     {{!-- </ul> --}}
                 </div>
             </div>
-        <button type="submit" id="data_save">Save</button>
+        {{!-- <button type="submit" id="data_save">Save</button> --}}
     </form>
  
     <form action="/api/auth/upload2" method="post">

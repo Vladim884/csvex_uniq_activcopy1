@@ -351,6 +351,21 @@ button:focus {
   color: #006666;
 }
 
+button.btn-disabled {
+  border: 1px solid lightgray;
+  color: lightgray;
+}
+button.btn-disabled:hover {
+  border: 2px solid lightgray;
+  padding: 7px 15px;
+  color: lightgray;
+  background-color: transparent;
+}
+button.btn-disabled:focus {
+  border: 2px solid lightgray;
+  color: lightgray;
+}
+
 .form-block {
   width: 250px;
   margin: 0 auto;
@@ -662,21 +677,59 @@ button:focus {
   margin: 0 -15px;
 }
 
-.item-content {
+.item-content,
+.item-control {
   width: calc(33.33% - 30px);
+  padding: 5px;
   margin: 15px;
+  border: 3px solid #99CCCC;
+  border-radius: 5px;
 }
 
 .item-control {
   width: calc(50% - 30px);
   margin: 15px;
 }
+.item-control .lifind {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+.item-control .lifind .find {
+  height: 36px;
+  width: 50%;
+  background-color: #99CCCC;
+  color: #006666;
+  border: 1px solid #006666;
+}
+.item-control .lifind .find:focus {
+  border: 5px solid #006666;
+}
+.item-control .root-text {
+  margin-bottom: 5px;
+}
 
-#count {
+.group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.count-block {
+  display: flex;
+  flex-direction: column;
+  font-size: 10px;
+}
+.count-block #count {
   display: inline-block;
   width: 45px;
-  height: 28px;
-  line-height: 28px;
+  height: 15px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 15px;
   text-align: center;
   padding-left: 3px;
   border: 1px solid gray;
@@ -860,20 +913,12 @@ div textarea {
   padding: 0 5px 0 5px;
 }
 
-.find {
-  margin-top: 10px;
-}
-
 .phrase {
   padding-bottom: 60px;
 }
 
 .itemname {
   padding-left: 12px;
-}
-
-.lifind {
-  overflow: hidden;
 }
 
 /*# sourceMappingURL=styles.css.map */

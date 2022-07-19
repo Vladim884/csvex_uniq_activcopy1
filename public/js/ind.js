@@ -54,10 +54,12 @@ checkbox.onclick = () => {
     if (checkbox.checked) {
         but_joinerWords.disabled = true
         but_mainPhrase.disabled = false
+        addDisabledBtnClass()
     }
     else {
         but_joinerWords.disabled = false
         but_mainPhrase.disabled = true
+        addDisabledBtnClass()
     }
 }
 let index = 0;
@@ -243,7 +245,7 @@ but_mainPhrase.onclick = () => {
             ar.splice(i, 1)
         } 
     }
-    alert(ar)
+    // alert(ar)
     // for (let i = 0; i < ar.length; i++) {
     //     if (ar[i] === subs[1]){
     //         ar.splice(i, 1)
@@ -254,6 +256,7 @@ but_mainPhrase.onclick = () => {
     newFoundValue = ar.join(' ')
     
     but_firstReqChange.disabled = false
+    addDisabledBtnClass()
 }
 
 but_swapPlaces.onclick = () => {
@@ -269,6 +272,19 @@ function arrayRemove(arr, value) {
         return ele != value; 
     });
 }
+
+const addDisabledBtnClass = () => {
+    let btnsAr = document.getElementsByTagName('button')
+    for (let i = 0; i < btnsAr.length; i++) {
+        if (btnsAr[i].disabled) {
+            btnsAr[i].classList.add('btn-disabled')
+        } else {
+            btnsAr[i].classList.remove('btn-disabled')
+        }
+    }
+}
+
+addDisabledBtnClass()
 
 
 
