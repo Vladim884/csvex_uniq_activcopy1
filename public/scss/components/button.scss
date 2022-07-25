@@ -7,7 +7,7 @@ button {
     border: 1px solid $darky;
     background: $lighty;
     color: $darky;
-    padding: 8px 16px;
+    padding: 3% 4%;
     font-size: 16px;
     cursor: pointer;
     box-sizing: border-box;
@@ -15,11 +15,11 @@ button {
         border: 2px solid $lighty;
         background-color: $darky;
         color: $lighty;
-        padding: 7px 15px;
+        padding: 2.5% 4%;
     }
     &:focus {
         border: 2px solid $darky;
-        padding: 7px 15px;
+        padding: 2.5% 4%;
         background-color: #fff;
         color: $darky;
     }
@@ -31,7 +31,7 @@ button {
     color: lightgray;
     &:hover {
         border: 2px solid lightgray;
-        padding: 7px 15px;
+        padding: 2.5% 4%;
         color: lightgray;
         background-color: transparent;
     }

@@ -156,6 +156,9 @@ router.post('/upload01',
     console.log(`dirpath: ${dirpath}`)
 
     try {
+        // if (!fs.existsSync(dirpath)) {
+        //     res.render('./login.hbs')
+        // }
     fs.createReadStream(randFilePath)
     .pipe(csv())
     .on('data', (data) => {
@@ -223,6 +226,9 @@ router.post('/upload1',
             return json2csv.parseAsync(data, {fields: Object.keys(results[0])}) // right variant
         }).then(csv => {
             //==================
+            // if (!fs.existsSync(`${dirpath}\\newcsv.csv`)) {
+            //     res.render('./breakdown.hbs')
+            // }
             let myFirstPromise = new Promise((resolve, reject) => {
                 fs.writeFile(`${dirpath}\\newcsv.csv`, csv, function (err) {
                     if (err) {

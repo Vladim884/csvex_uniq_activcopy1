@@ -333,7 +333,7 @@ button {
   border: 1px solid #006666;
   background: #CCFFFF;
   color: #006666;
-  padding: 8px 16px;
+  padding: 3% 4%;
   font-size: 16px;
   cursor: pointer;
   box-sizing: border-box;
@@ -342,11 +342,11 @@ button:hover {
   border: 2px solid #CCFFFF;
   background-color: #006666;
   color: #CCFFFF;
-  padding: 7px 15px;
+  padding: 2.5% 4%;
 }
 button:focus {
   border: 2px solid #006666;
-  padding: 7px 15px;
+  padding: 2.5% 4%;
   background-color: #fff;
   color: #006666;
 }
@@ -357,7 +357,7 @@ button.btn-disabled {
 }
 button.btn-disabled:hover {
   border: 2px solid lightgray;
-  padding: 7px 15px;
+  padding: 2.5% 4%;
   color: lightgray;
   background-color: transparent;
 }
@@ -680,9 +680,10 @@ button.btn-disabled:focus {
 .item-content,
 .item-control {
   width: calc(33.33% - 30px);
-  padding: 5px;
+  padding: 2%;
   margin: 15px;
   border: 3px solid #99CCCC;
+  outline: 1px solid #006666;
   border-radius: 5px;
 }
 
@@ -699,7 +700,7 @@ button.btn-disabled:focus {
 }
 .item-control .lifind .find {
   height: 36px;
-  width: 50%;
+  width: 45%;
   background-color: #99CCCC;
   color: #006666;
   border: 1px solid #006666;
@@ -709,6 +710,11 @@ button.btn-disabled:focus {
 }
 .item-control .root-text {
   margin-bottom: 5px;
+}
+.item-control .descrirt-span {
+  font-size: 13px;
+  font-weight: 500;
+  margin-left: 5%;
 }
 
 .group {

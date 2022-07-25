@@ -30,16 +30,22 @@ for (let i = 0; i < li.length; i++) {
         console.log(li[i].children[0].href)
         li[i].children[0].classList.add('active');
     }
-    //deleting enter-header-link if the user is logged in
-    if(document.cookie.split('=')[0] === 'cookid'){
-        console.log(li[i].children[0].href)
-        // li[4].classList.add('hidden')
-        linkEnter.classList.add('hidden')
-        linkLogout.classList.remove('hidden')
+}
+//deleting enter-header-link if the user is logged in
+const deleteHeaderEnterHLink = () => {
+//    console.log(`coolid: ${document.cookie.split(';')}`)
+   console.log(`coolid: ${document.cookie.split(';')}`)
+    let cookArray = document.cookie.split(';')
+    for (let i = 0; i < cookArray.length; i++) {
+        if (cookArray[i].split('=')[0].trim() === 'cookid') {
+            linkEnter.classList.add('hidden')
+            linkLogout.classList.remove('hidden')
+        }
     }
-
 }
 
+deleteHeaderEnterHLink()
+//==================
 const enter_button = document.getElementById('enter')
 // const logout_button = document.getElementById('logout')
 const reg_button = document.getElementById('reg')
@@ -52,14 +58,5 @@ linkLogout.onclick = function (e) {
     e.preventDefault();
    }
 }
-// enter_button.classList.add("hidden")
-// reg_button.classList.add("hidden")
 
-
-
-//   console.log(`document.cookie: ${document.cookie}`)
-
-var xy = document.cookie;
-console.log(document.cookie.split(';'))
-console.log(typeof xy)
  

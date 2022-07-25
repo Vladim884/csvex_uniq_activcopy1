@@ -15,6 +15,7 @@ const but_data_save = document.getElementById('data_save')
 
 but_data_save.onclick = () => {
     but_download.disabled = false
+    addDisabledBtnClass()
 }
 
 but_download.onclick = function(){ // функция при клике на неё 
@@ -164,7 +165,7 @@ function displCurrentData() {
 
         // divText.innerHTML = findar[i].value
 
-        console.log('ok');
+        // console.log('ok');
     }
 }
 

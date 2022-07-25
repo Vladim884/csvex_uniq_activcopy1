@@ -1,10 +1,4 @@
  <div class="contain">
-        {{!-- <iframe width="1904" height="773" src="https://www.youtube.com/embed/hwDD_AA-L9w" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen> --}}
-        {{!-- <iframe width="900" height="450"src="https://www.youtube.com/embed/hwDD_AA-L9w" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-        </iframe> --}}
-    {{!-- <div class="video"> --}}
-
-    {{!-- </div> --}}
 </div>
 <div class="wrap" id="wrap"> 
     <form action="/api/auth/upload1" method="post" >
@@ -80,10 +74,16 @@
             </div>
         {{!-- <button type="submit" id="data_save">Save</button> --}}
     </form>
- 
-    <form action="/api/auth/upload2" method="post">
-        <input type="submit" value="Download" id="down_load" disabled/>
-    </form> 
+    <div class="row-content">
+        <div class="item-control">
+            <form action="/api/auth/upload2" method="post">
+                <div class="lifind">
+                    <span class="descrirt-span">Завантажити кінцевий файл xlsx до дівайсу</span>
+                    <button type="submit" id="down_load" disabled>Download</button>
+                </div>
+            </form>
+        </div> 
+    </div>
 </div>
  
 <div id="contmenu" class="hidden">
