@@ -339,14 +339,12 @@ button {
   box-sizing: border-box;
 }
 button:hover {
-  border: 2px solid #CCFFFF;
+  border: 1px solid #CCFFFF;
   background-color: #006666;
   color: #CCFFFF;
-  padding: 2.5% 4%;
 }
 button:focus {
-  border: 2px solid #006666;
-  padding: 2.5% 4%;
+  border: 1px solid #006666;
   background-color: #fff;
   color: #006666;
 }
@@ -356,13 +354,12 @@ button.btn-disabled {
   color: lightgray;
 }
 button.btn-disabled:hover {
-  border: 2px solid lightgray;
-  padding: 2.5% 4%;
+  border: 1px solid lightgray;
   color: lightgray;
   background-color: transparent;
 }
 button.btn-disabled:focus {
-  border: 2px solid lightgray;
+  border: 1px solid lightgray;
   color: lightgray;
 }
 
@@ -671,25 +668,41 @@ button.btn-disabled:focus {
   color: white;
 }
 
+.page-title {
+  margin: 2% 0;
+  text-align: center;
+  font-weight: 500;
+  color: #006666;
+}
+
 .row-content {
   display: flex;
   flex-wrap: wrap;
-  margin: 0 -15px;
+  margin: 0 -1%;
 }
 
 .item-content,
 .item-control {
-  width: calc(33.33% - 30px);
+  width: 31.33%;
   padding: 2%;
-  margin: 15px;
+  margin: 1%;
   border: 3px solid #99CCCC;
   outline: 1px solid #006666;
   border-radius: 5px;
 }
+.item-content .itemname,
+.item-control .itemname {
+  padding-left: 3%;
+}
+.item-content button,
+.item-control button {
+  font-size: 10px;
+  padding: 2% 3%;
+}
 
 .item-control {
-  width: calc(50% - 30px);
-  margin: 15px;
+  width: 48%;
+  margin: 1%;
 }
 .item-control .lifind {
   display: flex;
@@ -711,10 +724,17 @@ button.btn-disabled:focus {
 .item-control .root-text {
   margin-bottom: 5px;
 }
-.item-control .descrirt-span {
-  font-size: 13px;
+.item-control .descript-span {
+  font-size: 12px;
   font-weight: 500;
-  margin-left: 5%;
+  margin-left: 2%;
+}
+.item-control button {
+  font-size: 10px;
+  padding: 2% 3%;
+}
+.item-control button:hover {
+  padding: 2% 3%;
 }
 
 .group {
@@ -741,6 +761,33 @@ button.btn-disabled:focus {
   border: 1px solid gray;
 }
 
+@media (max-width: 490px) {
+  .row-content {
+    margin: 0 -5px;
+  }
+  .item-content,
+.item-control {
+    width: calc(100% - 10px);
+    padding: 1%;
+    margin: 5px;
+    border: 3px solid #99CCCC;
+    outline: 1px solid #006666;
+    border-radius: 3px;
+  }
+  .item-content .itemname,
+.item-control .itemname {
+    padding-left: 2%;
+  }
+  .item-content .descript-span,
+.item-control .descript-span {
+    font-size: 10px;
+  }
+}
+@media (max-width: 450px) {
+  .item-control .descript-span {
+    font-size: 10px;
+  }
+}
 html {
   height: 100%;
 }
@@ -921,10 +968,6 @@ div textarea {
 
 .phrase {
   padding-bottom: 60px;
-}
-
-.itemname {
-  padding-left: 12px;
 }
 
 /*# sourceMappingURL=styles.css.map */

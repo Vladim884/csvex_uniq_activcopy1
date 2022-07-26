@@ -35,7 +35,7 @@ const countBlock = document.getElementById('count')
 
 let linamear = document.getElementsByClassName('liname')
 let namear = document.getElementsByClassName('name')
-console.log(namear)
+// console.log(namear)
 
 let lifindar = document.getElementsByClassName('lifind')
 let findar = document.getElementsByClassName('find')

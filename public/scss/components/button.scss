@@ -12,14 +12,14 @@ button {
     cursor: pointer;
     box-sizing: border-box;
     &:hover {
-        border: 2px solid $lighty;
+        border: 1px solid $lighty;
         background-color: $darky;
         color: $lighty;
-        padding: 2.5% 4%;
+        // padding: 2.5% 4%;
     }
     &:focus {
-        border: 2px solid $darky;
-        padding: 2.5% 4%;
+        border: 1px solid $darky;
+        // padding: 2.5% 4%;
         background-color: #fff;
         color: $darky;
     }
@@ -30,13 +30,13 @@ button {
     border: 1px solid lightgray;
     color: lightgray;
     &:hover {
-        border: 2px solid lightgray;
-        padding: 2.5% 4%;
+        border: 1px solid lightgray;
+        // padding: 2.5% 4%;
         color: lightgray;
         background-color: transparent;
     }
     &:focus {
-        border: 2px solid lightgray;
+        border: 1px solid lightgray;
         color: lightgray;
     }
   }

@@ -1,24 +1,38 @@
+.page-title {
+    margin: 2% 0;
+    text-align: center;
+    font-weight: 500;
+    color: $darky;
+}
+
 .row-content {
     display: flex;
     flex-wrap: wrap;
-    margin: 0 -15px;
-
+    // margin: 0 -15px;
+    margin: 0 -1%;
 }
 .item-content,
 .item-control {
-    width: calc(33.33% - 30px);
+    width: calc(33.33% - 2%);
     padding: 2%;
-    margin: 15px;
+    // margin: 15px;
+    margin: 1%;
     border: 3px solid $medy;
     outline: 1px solid $darky;
     border-radius: 5px;
+    .itemname {
+        padding-left: 3%;
+    }
+    button {
+        font-size: 10px;
+        padding: 2% 3%;
+    }
 }
 
 .item-control {
-    width: calc(50% - 30px);
-    margin: 15px;
+    width: calc(50% - 2%);
+    margin: 1%;
     .lifind {
-        // overflow: hidden;
         display: flex;
         flex-wrap: wrap;
         align-items: center;
@@ -38,10 +52,17 @@
     .root-text {
         margin-bottom: 5px;
     }
-    .descrirt-span {
-        font-size: 13px;
+    .descript-span {
+        font-size: 12px;
         font-weight: 500;
-        margin-left: 5%;
+        margin-left: 2%;
+    }
+    button {
+        font-size: 10px;
+        padding: 2% 3%;
+        &:hover {
+            padding: 2% 3%;
+        }
     }
 }
 .group {
@@ -64,5 +85,34 @@
         text-align: center;
         padding-left: 3px;
         border: 1px solid gray;
+    }
+}
+
+@media (max-width: 490px){
+
+    .row-content {
+        margin: 0 -5px;
+    }
+    .item-content,
+    .item-control {
+        width: calc(100% - 10px);
+        padding: 1%;
+        margin: 5px;
+        border: 3px solid $medy;
+        outline: 1px solid $darky;
+        border-radius: 3px;
+        .itemname {
+            padding-left: 2%;
+        }
+        .descript-span {
+            font-size: 10px;
+        }
+    }
+}
+@media (max-width: 450px){
+    .item-control {
+        .descript-span {
+            font-size: 10px;
+        }
     }
 }

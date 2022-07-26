@@ -27,6 +27,11 @@ exports.cookieJwtAuth = (req, res, next) => {
        console.log(`err: ${err}`)
     //    res.clearCookie('token')
        alert('Время сессии истекло, пожалуйста, выполните вход')
+       res.clearCookie('cookid')
+       res.clearCookie('token')
+       res.clearCookie('dirpath')
+       res.clearCookie('randFilePath')
        res.redirect('http://localhost:5000/enter')
+            // .clearCookie('cookid')
    }
 }

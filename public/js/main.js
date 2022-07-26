@@ -27,14 +27,13 @@
 let li = document.querySelectorAll('.menu-links .nav-item')
 for (let i = 0; i < li.length; i++) {
     if(window.location.href === li[i].children[0].href){
-        console.log(li[i].children[0].href)
+        // console.log(`search-string: ${li[i].children[0].href}`)
         li[i].children[0].classList.add('active');
     }
 }
 //deleting enter-header-link if the user is logged in
 const deleteHeaderEnterHLink = () => {
-//    console.log(`coolid: ${document.cookie.split(';')}`)
-   console.log(`coolid: ${document.cookie.split(';')}`)
+//    console.log(`cookie array: ${document.cookie.split(';')}`)
     let cookArray = document.cookie.split(';')
     for (let i = 0; i < cookArray.length; i++) {
         if (cookArray[i].split('=')[0].trim() === 'cookid') {

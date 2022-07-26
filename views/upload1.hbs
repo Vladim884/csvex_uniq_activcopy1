@@ -1,6 +1,7 @@
- <div class="contain">
-</div>
+ {{!-- <div class="contain">
+</div> --}}
 <div class="wrap" id="wrap"> 
+    <h1 class="page-title">Генератор тегов</h1>
     <form action="/api/auth/upload1" method="post" >
             {{!-- <div class="row align-items-end"> --}}
             <div class="row-content">
@@ -24,7 +25,7 @@
                 </div>
                 {{!-- <div class="col border"> --}}
                 <div class="item-content">
-                    <div><span><b>Поисковые запросы:</b></span></div>
+                    <div><span class='itemname'><b>Поисковые запросы:</b></span></div>
                     <ul>
                         {{#each resfind}}
                             <li class="lifind block">
@@ -38,7 +39,7 @@
             <div class="row-content">
                 {{!-- <div class="col border"> --}}
                 <div class="item-control">
-                    <div><span><b>1 Group</b></span></div>
+                    <div><span class="itemname"><b>1 Group</b></span></div>
                     <div>
                         <textarea name="req_find2" id="group1" class="root-text"></textarea>
                     </div>
@@ -61,7 +62,7 @@
                 </div>
                 {{!-- <div class="col border phrase"> --}}
                 <div class="item-control">
-                    <div><span><b>Ключевая фраза 1:</b></span></div>
+                    <div><span class="itemname"><b>Ключевая фраза 1:</b></span></div>
                     {{!-- <ul> --}}
                         <div class="lifind block">
                             <input name="req_find1" class="find" id="mainphrase" />
@@ -78,7 +79,7 @@
         <div class="item-control">
             <form action="/api/auth/upload2" method="post">
                 <div class="lifind">
-                    <span class="descrirt-span">Завантажити кінцевий файл xlsx до дівайсу</span>
+                    <span class="descript-span">Завантажити файл xlsx</span>
                     <button type="submit" id="down_load" disabled>Download</button>
                 </div>
             </form>
