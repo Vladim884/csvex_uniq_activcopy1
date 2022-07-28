@@ -1,0 +1,27 @@
+.user-links {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    a {
+        display: block;
+        line-height: 30px;
+        width: 13%;
+        height: 30px;
+        margin-right: 2px;
+        text-decoration: none;
+        text-align: center;
+        color: $darky;
+        background-color: $medy;
+        border-radius: 3px;
+        border: 1px solid $darky;
+        &:hover {
+            color: white;
+        }
+    }
+}
+
+.user-links-uload1 {
+    margin-top: 20vh;
+}

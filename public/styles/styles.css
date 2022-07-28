@@ -645,29 +645,6 @@ button.btn-disabled:focus {
     left: 0;
   }
 }
-.user-links {
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.user-links a {
-  display: block;
-  line-height: 30px;
-  width: 13%;
-  height: 30px;
-  margin-right: 2px;
-  text-decoration: none;
-  text-align: center;
-  color: #006666;
-  background-color: #99CCCC;
-  border-radius: 3px;
-  border: 1px solid #006666;
-}
-.user-links a:hover {
-  color: white;
-}
-
 .page-title {
   margin: 2% 0;
   text-align: center;
@@ -788,6 +765,33 @@ button.btn-disabled:focus {
     font-size: 10px;
   }
 }
+.user-links {
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.user-links a {
+  display: block;
+  line-height: 30px;
+  width: 13%;
+  height: 30px;
+  margin-right: 2px;
+  text-decoration: none;
+  text-align: center;
+  color: #006666;
+  background-color: #99CCCC;
+  border-radius: 3px;
+  border: 1px solid #006666;
+}
+.user-links a:hover {
+  color: white;
+}
+
+.user-links-uload1 {
+  margin-top: 20vh;
+}
+
 html {
   height: 100%;
 }

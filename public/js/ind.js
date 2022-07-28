@@ -56,6 +56,7 @@ checkbox.onclick = () => {
         but_joinerWords.disabled = true
         but_mainPhrase.disabled = false
         addDisabledBtnClass()
+        groupFindReq1.focus()
     }
     else {
         but_joinerWords.disabled = false
