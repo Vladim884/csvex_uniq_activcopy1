@@ -792,6 +792,23 @@ button.btn-disabled:focus {
   margin-top: 20vh;
 }
 
+.about-main-section {
+  color: #006666;
+}
+.about-main-section h1, .about-main-section h2, .about-main-section h3, .about-main-section h4, .about-main-section h5, .about-main-section h6 {
+  font-size: 16px;
+  font-weight: 500;
+  text-align: center;
+  margin: 10px 0 10px;
+}
+.about-main-section h2 {
+  font-size: 12px;
+  font-weight: 800;
+}
+.about-main-section p {
+  margin-bottom: 8px;
+}
+
 html {
   height: 100%;
 }

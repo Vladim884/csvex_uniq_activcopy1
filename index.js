@@ -83,6 +83,9 @@ app.use("/forgpass", function(req, res){
 app.use("/resetpass", function(req, res){
     res.render('resetpass.hbs')
 })
+app.use("/about", function(req, res){
+    res.render('about.hbs')
+})
 
 app.use("/", function(req, res){
     res.render('index.hbs')
