@@ -27,7 +27,7 @@ const {cookieJwtAuth} = require('../middleware/cookieJwtAuth')
 const {filePathDeleter} = require('../myFunctions/filePathDeleter')
 const {deleteFolder} = require('../myFunctions/deleteFolder')
 const {moveFile} = require('../myFunctions/moveFile')
-const { signup, activateAccount, forgotPassword, resetPassword } = require("../controllers/authController");
+const { signup, activateAccount, forgotPassword, resetPassword, writePaying } = require("../controllers/authController");
 const {createDir} = require('../myFunctions/createFolder');
 
 // const fileService = require('../services/fileService')
@@ -372,6 +372,8 @@ router.get('/auth', cookieJwtAuth,
 // router.get('/registr', (req, res)=>{
 //     return res.render('./registration.hbs')
 // })
+
+router.post('/writepaying', writePaying)
 
 
 module.exports = router

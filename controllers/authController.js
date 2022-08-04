@@ -110,6 +110,49 @@ exports.activateAccount = async (req, res) => {
     }
 }}
 
+exports.writePaying = (req, res) => {
+    const {email, sumpaying} = req.body
+    User.findOne({email}, (err, user) => {
+        if(err || !user) {
+            return res.status(400).json({message: `Пользователя с email: ${email} не существует`})
+        }
+        console.log(sumpaying)
+    let obj1 = {
+        paying: sumpaying
+    }
+    user = _.extend(user, obj1)
+    user.save((err, result) => {
+        if(err){
+            return res.status(400).json({message: `Ошибка изменения оплати юзера ${email}`})
+        } else {
+            const mailOptions = {
+                from: config.get('EMAIL'), // sender address
+                to: 'ivladim95@gmail.com', // list of receivers
+                subject: 'Оплата на CSV-UNIQ.',
+                text: `
+                Ви оплатили та отримали сервіс CSV TO EXCEL на протязі ${sumpaying} днів!
+                ===============================================
+                Ваши 
+                логин: ${email} 
+                Якщо цей лист потрапив до вас випадково, 
+                видалить йрго та не звертайте уваги.
+                `
+              }
+              
+              transporter.sendMail(mailOptions, function (err, info) {
+                 if(err)
+                   console.log(err)
+                 else
+                   console.log(info);
+                   return res.render('./start.hbs')
+           })
+            return res.status(200).json({message: `Оплату юзера ${email} змінено`})
+        }
+    })
+    })
+    
+}
+
 exports.forgotPassword = (req, res) => {
     const {email} = req.body
     const user = User.findOne({email}, (err, user) => {
@@ -152,7 +195,7 @@ exports.resetPassword = (req, res) => {
                     return res.status(400).json({message: `Пользователя с таким токеном не существует`})
                 }
                 const hashPassword = await bcrypt.hash(newPass, 8)
-                const obj = {
+                let obj = {
                     password: hashPassword
                 }
                 user = _.extend(user, obj)
@@ -170,3 +213,4 @@ exports.resetPassword = (req, res) => {
         res.status(401).json({message: 'Ошибка аутентификации!!!'})
     }
 }
+

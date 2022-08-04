@@ -86,6 +86,12 @@ app.use("/resetpass", function(req, res){
 app.use("/about", function(req, res){
     res.render('about.hbs')
 })
+app.use("/paying", function(req, res){
+    res.render('paying.hbs')
+})
+app.use("/writepaying", function(req, res){
+    res.render('writePaying.hbs')
+})
 
 app.use("/", function(req, res){
     res.render('index.hbs')
