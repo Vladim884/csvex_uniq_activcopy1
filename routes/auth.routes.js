@@ -79,6 +79,9 @@ router.post('/login',
             res.cookie('token', token, {
                 httpOnly: true
             })
+            if(user.status === 'administrator'){
+                res.cookie('admin', 'admin')
+            }
             // return res.json({
             //     token,
                 // user: {
@@ -329,9 +332,12 @@ router.post('/upload2',
       .clearCookie("dirpath")  
       .clearCookie("token")
       .clearCookie("cookid")
-    return res.redirect('/enter')
-
+      .clearCookie("admin")
     //   .status(200)
+    // return res.redirect('/enter')
+    return res
+      .status(302)
+      .redirect('/enter')
     //   .json({ message: "Successfully logged out 😏 🍀" })
        
   });

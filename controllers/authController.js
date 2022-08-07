@@ -5,6 +5,8 @@ const jwt = require("jsonwebtoken")
 const config = require("config")
 const nodemailer = require("nodemailer")
 const {check, validationResult} = require("express-validator")
+const {formatDate} = require('../myFunctions/formatDate')
+const {formatNowDate} = require('../myFunctions/formatNowDate')
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -60,6 +62,9 @@ exports.signup = async (req, res) => {
     
 exports.activateAccount = async (req, res) => {
     const token = req.body.name
+    if (!token){
+        res.json({error: 'Что-то c token не так!'})
+    }
     if (token) {
         const {email, password} = jwt.verify(token, config.get('JWT_ACC_ACTIVATE'))
         console.log(email)
@@ -69,19 +74,6 @@ exports.activateAccount = async (req, res) => {
         const user = new User({email, password: hashPassword})
         await user.save()
 
-        // const transporter = nodemailer.createTransport({
-        //     service: 'gmail',
-        //     auth: {
-        //         type: 'OAuth2',
-        //         user: config.get('EMAIL'),
-        //         accessToken: config.get('ACCESSTOKEN'),
-        //         refreshToken: config.get('REFRESHTOKEN'),
-        //         clientId: config.get('CLIENTID'),
-        //         clientSecret: config.get('CLIENTSECRET'),
-        //         accessUrl: config.get('ACCESSURL')
-        //     }
-        //    });
-           
            const mailOptions = {
              from: config.get('EMAIL'), // sender address
              to: 'ivladim95@gmail.com', // list of receivers
@@ -111,14 +103,22 @@ exports.activateAccount = async (req, res) => {
 }}
 
 exports.writePaying = (req, res) => {
-    const {email, sumpaying} = req.body
+    const {email, sumpay} = req.body
+    const oneDayPay = 100 / 30
+    const daysPaying = Math.trunc(sumpay / oneDayPay)
+    const payingDay = new Date()
+    const payingDayforPeople = formatNowDate()
+    // console.log(`payingDayforPeople: ${payingDayforPeople}`)
+    const endDay = new Date(payingDay.getTime() + (daysPaying * 24 * 60 * 60 * 1000)); 
+    const endDayForPeople = formatDate(daysPaying)
+    // console.log(`endDay: ${endDay}`)
     User.findOne({email}, (err, user) => {
         if(err || !user) {
             return res.status(400).json({message: `Пользователя с email: ${email} не существует`})
         }
-        console.log(sumpaying)
+        
     let obj1 = {
-        paying: sumpaying
+        daysPaying: daysPaying
     }
     user = _.extend(user, obj1)
     user.save((err, result) => {
@@ -130,12 +130,14 @@ exports.writePaying = (req, res) => {
                 to: 'ivladim95@gmail.com', // list of receivers
                 subject: 'Оплата на CSV-UNIQ.',
                 text: `
-                Ви оплатили та отримали сервіс CSV TO EXCEL на протязі ${sumpaying} днів!
+                ${payingDayforPeople} Ви оплатили ${sumpay}грн. та отримали сервіс CSV TO EXCEL 
+                на протязі ${daysPaying} днів до ${endDayForPeople} включно.
+                
                 ===============================================
                 Ваши 
                 логин: ${email} 
                 Якщо цей лист потрапив до вас випадково, 
-                видалить йрго та не звертайте уваги.
+                видалить його та не звертайте уваги.
                 `
               }
               
@@ -143,8 +145,8 @@ exports.writePaying = (req, res) => {
                  if(err)
                    console.log(err)
                  else
-                   console.log(info);
-                   return res.render('./start.hbs')
+                   console.log(info)
+                //    return res.render('./start.hbs')
            })
             return res.status(200).json({message: `Оплату юзера ${email} змінено`})
         }

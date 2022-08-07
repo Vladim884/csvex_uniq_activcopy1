@@ -3,6 +3,7 @@
     const linkEnter = document.getElementById('enter')
     //form logout from account
     const linkLogout = document.getElementById('logout')
+    const linkWritePaying = document.getElementById('writepaying')
     const iconBtn = document.getElementById('icon')
     const navMenu = document.getElementById('nav-menu')
     iconBtn.onclick = () => {
@@ -32,9 +33,10 @@ for (let i = 0; i < li.length; i++) {
     }
 }
 //deleting enter-header-link if the user is logged in
-const deleteHeaderEnterHLink = () => {
+let cookArray = document.cookie.split(';')
+const deleteHeaderEnterLink = () => {
 //    console.log(`cookie array: ${document.cookie.split(';')}`)
-    let cookArray = document.cookie.split(';')
+    // let cookArray = document.cookie.split(';')
     for (let i = 0; i < cookArray.length; i++) {
         if (cookArray[i].split('=')[0].trim() === 'cookid') {
             linkEnter.classList.add('hidden')
@@ -43,8 +45,21 @@ const deleteHeaderEnterHLink = () => {
     }
 }
 
-deleteHeaderEnterHLink()
+deleteHeaderEnterLink()
 //==================
+//deleting enter-header-link if the user is logged in
+const viewAdminWritePayLink = () => {
+    //    console.log(`cookie array: ${document.cookie.split(';')}`)
+        // let cookArray = document.cookie.split(';')
+        for (let i = 0; i < cookArray.length; i++) {
+            if (cookArray[i].split('=')[0].trim() === 'admin') {
+                linkWritePaying.classList.remove('hidden')
+            }
+        }
+    }
+    
+    viewAdminWritePayLink()
+    //================================
 const enter_button = document.getElementById('enter')
 // const logout_button = document.getElementById('logout')
 const reg_button = document.getElementById('reg')

@@ -385,23 +385,25 @@ button.btn-disabled:focus {
 }
 .form-block input[type=text],
 .form-block input[type=email],
-.form-block input[type=password] {
+.form-block input[type=password],
+.form-block input[type=number] {
   width: 100%;
   margin-bottom: 5px;
   height: 30px;
   border-radius: 3px;
-  border: 1px solid #006666;
+  border: 2px solid transparent;
   background-color: #CCFFFF;
 }
 .form-block input[type=text]:hover,
 .form-block input[type=email]:hover,
-.form-block input[type=password]:hover {
+.form-block input[type=password]:hover,
+.form-block input[type=number]:hover {
   border: 2px solid #006666;
-  height: 30px;
 }
 .form-block input[type=text]:focus,
 .form-block input[type=email]:focus,
-.form-block input[type=password]:focus {
+.form-block input[type=password]:focus,
+.form-block input[type=number]:focus {
   border: 2px solid #006666;
 }
 .form-block .checking {
