@@ -106,10 +106,10 @@ exports.writePaying = (req, res) => {
     const {email, sumpay} = req.body
     const oneDayPay = 100 / 30
     const daysPaying = Math.trunc(sumpay / oneDayPay)
-    const payingDay = new Date()
+    const payingDate = new Date()
     const payingDayforPeople = formatNowDate()
     // console.log(`payingDayforPeople: ${payingDayforPeople}`)
-    const endDay = new Date(payingDay.getTime() + (daysPaying * 24 * 60 * 60 * 1000)); 
+    const endDay = new Date(payingDate.getTime() + (daysPaying * 24 * 60 * 60 * 1000)); 
     const endDayForPeople = formatDate(daysPaying)
     // console.log(`endDay: ${endDay}`)
     User.findOne({email}, (err, user) => {
@@ -118,7 +118,10 @@ exports.writePaying = (req, res) => {
         }
         
     let obj1 = {
-        daysPaying: daysPaying
+        payingDate,
+        sumpay,
+        daysPaying,
+        endDay
     }
     user = _.extend(user, obj1)
     user.save((err, result) => {

@@ -29,6 +29,7 @@ const {deleteFolder} = require('../myFunctions/deleteFolder')
 const {moveFile} = require('../myFunctions/moveFile')
 const { signup, activateAccount, forgotPassword, resetPassword, writePaying } = require("../controllers/authController");
 const {createDir} = require('../myFunctions/createFolder');
+const {clg} = require('../myFunctions/clg');
 
 // const fileService = require('../services/fileService')
 // const File = require('../models/File')
@@ -67,6 +68,9 @@ router.post('/login',
             if (!user) {
                 return res.status(404).json({message: "User not found"})
             }
+            clg('user', user)
+            const users = await User.find()
+            clg('users', users)
             const isPassValid = bcrypt.compareSync(password, user.password)
             if (!isPassValid) {
                 return res.status(400).json({message: "Invalid password"})
@@ -82,6 +86,8 @@ router.post('/login',
             if(user.status === 'administrator'){
                 res.cookie('admin', 'admin')
             }
+            const restDay = Math.round((user.endDay - new Date()) / (60 * 60 * 24 * 1000))
+            console.log(`restDay: ${restDay}`)
             // return res.json({
             //     token,
                 // user: {
@@ -378,6 +384,13 @@ router.get('/auth', cookieJwtAuth,
 // router.get('/registr', (req, res)=>{
 //     return res.render('./registration.hbs')
 // })
+
+// app.get("/users", async function(req, res){
+//     const users = await User.find()
+//     console.log(`users-users: ${users}`)
+//     res.end('users');
+    
+// });
 
 router.post('/writepaying', writePaying)
 

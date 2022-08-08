@@ -10,8 +10,9 @@ const User = new Schema({
         lowercase: true
     },
     password: {type: String, required: true},
-    date: {type: Date, default: Date.now()},
+    payingDate: {type: Date, default: new Date('01/01/2001')},
     endDay: {type: Date, default: new Date('01/01/2001')},
+    sumpay: {type: Number, default: 0},
     daysPaying: {type: Number, default: 0},
     resetLink: {data: String, default: ''},
     status: {type: String, default: 'user'},

@@ -1,4 +1,6 @@
-/node_modules
+.idea
+node_modules
+# /node_modules
 /config
 thinks.txt
 public/js/file.js
