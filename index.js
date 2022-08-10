@@ -1,7 +1,6 @@
 const express = require("express")
 const mongoose = require("mongoose")
 const bodyParser = require("body-parser")
-// const {cookieJwtAuth} = require('./middleware/cookieJwtAuth')
 const multer  = require("multer")
 
 const hbs = require("hbs")
@@ -16,7 +15,7 @@ const app = express()
 const PORT = config.get('serverPort')
 const coocieParser = require('cookie-parser')
 const corsMiddleware = require('./middleware/cors.middleware')
-
+const fetch = require('node-fetch')
 // let dirpath = '/'
 // app.use(multer({dest : 'files/' + `${fileEndDir}`}).single("filedata"))
 app.engine("hbs", expressHbs.engine(
@@ -98,7 +97,6 @@ app.use("/", function(req, res){
 })
 
 const start = async () => {
-    // console.log(__dirname)
     try {
         await mongoose.connect(config.get("dbUrl"), {
             useNewUrlParser:true,

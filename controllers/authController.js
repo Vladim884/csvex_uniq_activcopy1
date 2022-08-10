@@ -3,23 +3,18 @@ const bcrypt = require("bcryptjs")
 const _ = require("lodash")
 const jwt = require("jsonwebtoken")
 const config = require("config")
-const nodemailer = require("nodemailer")
 const {check, validationResult} = require("express-validator")
-const {formatDate} = require('../myFunctions/formatDate')
-const {formatNowDate} = require('../myFunctions/formatNowDate')
+const alert = require('alert')
 
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        type: 'OAuth2',
-        user: config.get('EMAIL'),
-        accessToken: config.get('ACCESSTOKEN'),
-        refreshToken: config.get('REFRESHTOKEN'),
-        clientId: config.get('CLIENTID'),
-        clientSecret: config.get('CLIENTSECRET'),
-        accessUrl: config.get('ACCESSURL')
-    }
-})
+const {
+    formatDate, 
+    formatNowDate, 
+    clg,
+    transporter,
+    emailOptionsSend } = require('../myFunctions/myFunctions')
+// const {formatNowDate} = require('../myFunctions/formatNowDate')
+// const {transporter} = require('../myFunctions/transporter')
+// const {emailOptionsSend} = require('../myFunctions/emailOptionsSend')
 
 exports.signup = async (req, res) => {
     try {
@@ -40,21 +35,16 @@ exports.signup = async (req, res) => {
             return res.status(400).json({message: `Для регистрации неоходимо согласие с правилами и договором`})
         }
         const token = jwt.sign({email, password}, config.get('JWT_ACC_ACTIVATE'), {expiresIn: 60 * 60})
-        const mailOptions = {
-            from: config.get('EMAIL'), // sender address
-             to: 'ivladim95@gmail.com', // list of receivers
-            subject: 'ACTIVATE YOUR ACCOUNT',
-            html: `
-                <h4>Кликните на ссылку для активации Вашего аккаунта</h4>
-                <p>${config.get('CLIENT_URL')}/api/auth/activate?token=${token}</p>
-                `
-        }
-        transporter.sendMail(mailOptions, function (err, info) {
-            if(err) console.log(err)
-            console.log(info);
+        emailOptionsSend(
+            'ivladim95@gmail.com',
+            'ACTIVATE YOUR ACCOUNT',
+            '',
+            `
+            <h4>Кликните на ссылку для активации Вашего аккаунта</h4>
+            <p>${config.get('CLIENT_URL')}/api/auth/activate?token=${token}</p>
+            `
+            )
             return res.json({message: `Вам отправлено письмо активации на ${email}, активируйте свой аккаунт.`})
-        })
-
     } catch(err) {
         console.log(err)
     }
@@ -73,12 +63,10 @@ exports.activateAccount = async (req, res) => {
         const hashPassword = await bcrypt.hash(password, 8)
         const user = new User({email, password: hashPassword})
         await user.save()
-
-           const mailOptions = {
-             from: config.get('EMAIL'), // sender address
-             to: 'ivladim95@gmail.com', // list of receivers
-             subject: 'Регистрация на CSV-UNIQ.',
-             text: `
+        emailOptionsSend(
+            'ivladim95@gmail.com', 
+            'Регистрация на CSV TO EXCEL.', 
+            `
              Спасибо, что Вы зарегистрировались на CSV-UNIQ!
              ===============================================
              Ваши 
@@ -87,15 +75,8 @@ exports.activateAccount = async (req, res) => {
              Сохраните эти данные в надёжном месте 
              и удалите это сообщение.
              `
-           }
-           
-           transporter.sendMail(mailOptions, function (err, info) {
-              if(err)
-                console.log(err)
-              else
-                console.log(info);
-                return res.render('./start.hbs')
-        })
+        )
+        return res.render('./start.hbs')
     } catch(err) {
         console.log(err)
         res.json({error: 'Что-то пошло не так!'})
@@ -128,29 +109,20 @@ exports.writePaying = (req, res) => {
         if(err){
             return res.status(400).json({message: `Ошибка изменения оплати юзера ${email}`})
         } else {
-            const mailOptions = {
-                from: config.get('EMAIL'), // sender address
-                to: 'ivladim95@gmail.com', // list of receivers
-                subject: 'Оплата на CSV-UNIQ.',
-                text: `
-                ${payingDayforPeople} Ви оплатили ${sumpay}грн. та отримали сервіс CSV TO EXCEL 
-                на протязі ${daysPaying} днів до ${endDayForPeople} включно.
-                
-                ===============================================
-                Ваши 
-                логин: ${email} 
-                Якщо цей лист потрапив до вас випадково, 
-                видалить його та не звертайте уваги.
+            emailOptionsSend(
+                'ivladim95@gmail.com',
+                'Оплата на CSV TO EXCEL.',
                 `
-              }
-              
-              transporter.sendMail(mailOptions, function (err, info) {
-                 if(err)
-                   console.log(err)
-                 else
-                   console.log(info)
-                //    return res.render('./start.hbs')
-           })
+                 ${payingDayforPeople} Ви оплатили ${sumpay}грн. та отримали сервіс CSV TO EXCEL 
+                 на протязі ${daysPaying} днів до ${endDayForPeople} включно.
+                
+                 ===============================================
+                 Ваши 
+                 логин: ${email} 
+                 Якщо цей лист потрапив до вас випадково, 
+                 видалить його та не звертайте уваги.
+                `
+            )
             return res.status(200).json({message: `Оплату юзера ${email} змінено`})
         }
     })
@@ -217,5 +189,36 @@ exports.resetPassword = (req, res) => {
     } else {
         res.status(401).json({message: 'Ошибка аутентификации!!!'})
     }
+}
+
+exports.sendEndPay = async (req, res) => {
+    const users = await User.find()
+    for (let i = 0; i < users.length; i++) {
+        const restDay = Math.round((users[i].endDay - new Date()) / (60 * 60 * 24 * 1000))
+        clg('restDay', `${restDay}`)
+        if (restDay < 9 && restDay > 0){
+                let nowday = formatNowDate()
+                let endDay = formatDate(restDay)
+                clg('endDay', `${endDay}`)
+                emailOptionsSend(
+                    'ivladim95@gmail.com',
+                    'Оплата на CSV TO EXCEL.',
+                    `
+                     Доброго дня!
+                    Сьогодні ${nowday} у Вас залишилось ${restDay} днів до ${endDay} включно.
+                    Потурбуйтеся про своєчасну оплату сервісу!
+                     ===============================================
+                     Ваши 
+                     логин: ${users[i].email} 
+                     Якщо цей лист потрапив до вас випадково, 
+                     видалить його та не звертайте уваги.
+                    `
+                )
+                setTimeout(() => {}, 3000);
+        }
+        
+    }
+    alert('Завершено')
+    res.status(401).json({message: 'ok!!!'})
 }
 

@@ -27,9 +27,15 @@ const {cookieJwtAuth} = require('../middleware/cookieJwtAuth')
 const {filePathDeleter} = require('../myFunctions/filePathDeleter')
 const {deleteFolder} = require('../myFunctions/deleteFolder')
 const {moveFile} = require('../myFunctions/moveFile')
-const { signup, activateAccount, forgotPassword, resetPassword, writePaying } = require("../controllers/authController");
+const { 
+        signup, 
+        activateAccount, 
+        forgotPassword, 
+        resetPassword, 
+        writePaying,
+        sendEndPay } = require("../controllers/authController");
 const {createDir} = require('../myFunctions/createFolder');
-const {clg} = require('../myFunctions/clg');
+const {clg, noteServiceEnd} = require('../myFunctions/myFunctions');
 
 // const fileService = require('../services/fileService')
 // const File = require('../models/File')
@@ -88,6 +94,9 @@ router.post('/login',
             }
             const restDay = Math.round((user.endDay - new Date()) / (60 * 60 * 24 * 1000))
             console.log(`restDay: ${restDay}`)
+            noteServiceEnd(restDay)
+            
+            
             // return res.json({
             //     token,
                 // user: {
@@ -385,14 +394,21 @@ router.get('/auth', cookieJwtAuth,
 //     return res.render('./registration.hbs')
 // })
 
-// app.get("/users", async function(req, res){
-//     const users = await User.find()
-//     console.log(`users-users: ${users}`)
-//     res.end('users');
-    
-// });
+app.get("/users", async function(req, res){
+    const user = await User.findOne({email: 'vov2@gmail.com'})
+    console.log(`users-users: ${users}`)
+    res.end({user: {
+        id: user.id,
+        email: user.email,
+        diskSpace: user.diskSpace,
+        usedSpace: user.usedSpace,
+        avatar: user.avatar
+    }});
+    // res.json({
+            
+});
 
-router.post('/writepaying', writePaying)
-
+router.post('/writepaying', cookieJwtAuth, writePaying)
+router.post('/sendendpay', cookieJwtAuth, sendEndPay)
 
 module.exports = router
