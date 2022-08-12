@@ -3,6 +3,7 @@
     const linkEnter = document.getElementById('enter')
     //form logout from account
     const linkLogout = document.getElementById('logout')
+    const linkCabinet = document.getElementById('cabinet')
     const linkWritePaying = document.getElementById('writepaying')
     const iconBtn = document.getElementById('icon')
     const navMenu = document.getElementById('nav-menu')
@@ -41,6 +42,7 @@ const deleteHeaderEnterLink = () => {
         if (cookArray[i].split('=')[0].trim() === 'cookid') {
             linkEnter.classList.add('hidden')
             linkLogout.classList.remove('hidden')
+            linkCabinet.classList.remove('hidden')
         }
     }
 }

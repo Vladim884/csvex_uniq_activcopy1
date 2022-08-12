@@ -229,10 +229,10 @@ exports.getTokenUserData = async (req, res, next) => {
         return res.status(403).json({"message": "Ви не авторизувались"})
     }
     try {
-        const userdata = jwt.verify(token, config.get('secretKey'))
+        const datauser = jwt.verify(token, config.get('secretKey'))
     //    req.user = user
-       console.log(`user-jwt: ${userdata.email}`)
-       const email = userdata.email
+       console.log(`user-jwt: ${datauser.email}`)
+       const email = datauser.email
         const user = await User.findOne({email})
         if (!user) {
             return res.status(404).json({message: "User not found"})

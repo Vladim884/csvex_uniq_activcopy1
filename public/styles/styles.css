@@ -366,7 +366,7 @@ button.btn-disabled:focus {
 .form-block {
   width: 250px;
   margin: 0 auto;
-  margin-top: 5vh;
+  margin-top: 10vh;
   margin-bottom: 50px;
   padding: 15px;
   color: #006666;
@@ -817,6 +817,39 @@ button.btn-disabled:focus {
 .about-main-section .bolder-p {
   font-weight: 500;
   margin: 12px 0;
+}
+
+.cabinet-title {
+  margin: 20px 0;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.cabinet-block .data-block {
+  display: flex;
+  background-color: #006666;
+  width: calc(50vw - 10px);
+  margin: 0 auto;
+  padding: 10px;
+}
+.cabinet-block .data-block .data-fields {
+  width: 30vw;
+  background-color: #CCFFFF;
+  padding: 5px;
+  padding-right: 1px;
+  text-align: right;
+}
+.cabinet-block .data-block .data-fields .field {
+  margin-bottom: 10px;
+}
+.cabinet-block .data-block .users-data {
+  width: calc(30vw - 10px);
+  padding: 5px;
+  padding-left: 3px;
+  background-color: #CCFFFF;
+}
+.cabinet-block .data-block .users-data .field {
+  margin-bottom: 10px;
 }
 
 html {

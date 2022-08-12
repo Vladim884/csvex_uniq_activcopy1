@@ -90,7 +90,7 @@ router.post('/login',
             res.cookie('token', token, {
                 httpOnly: true
             })
-            if(user.status === 'administrator'){
+            if(user.status === 'admin'){
                 res.cookie('admin', 'admin')
             }
             const restDay = Math.round((user.endDay - new Date()) / (60 * 60 * 24 * 1000))
