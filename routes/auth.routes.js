@@ -33,7 +33,8 @@ const {
         forgotPassword, 
         resetPassword, 
         writePaying,
-        sendEndPay } = require("../controllers/authController");
+        sendEndPay,
+        getTokenUserData } = require("../controllers/authController");
 const {createDir} = require('../myFunctions/createFolder');
 const {clg, noteServiceEnd} = require('../myFunctions/myFunctions');
 
@@ -394,21 +395,29 @@ router.get('/auth', cookieJwtAuth,
 //     return res.render('./registration.hbs')
 // })
 
-app.get("/users", async function(req, res){
+router.get("/user", async function(req, res){
     const user = await User.findOne({email: 'vov2@gmail.com'})
-    console.log(`users-users: ${users}`)
-    res.end({user: {
-        id: user.id,
-        email: user.email,
-        diskSpace: user.diskSpace,
-        usedSpace: user.usedSpace,
-        avatar: user.avatar
-    }});
-    // res.json({
+    console.log(`users-users: ${user}`)
+    // res.end({user: `${user}`})
+    // res.end({user: {
+    //     id: user.id,
+    //     email: user.email,
+    //     diskSpace: user.diskSpace,
+    //     usedSpace: user.usedSpace,
+    //     avatar: user.avatar
+    // }});
+    res.json({user: {
+            id: user.id,
+            email: user.email,
+            diskSpace: user.diskSpace,
+            usedSpace: user.usedSpace,
+            avatar: user.avatar
+        }})
             
 });
 
 router.post('/writepaying', cookieJwtAuth, writePaying)
 router.post('/sendendpay', cookieJwtAuth, sendEndPay)
+router.get('/usercabinet', cookieJwtAuth, getTokenUserData)
 
 module.exports = router

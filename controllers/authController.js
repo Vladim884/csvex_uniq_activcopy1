@@ -26,7 +26,7 @@ exports.signup = async (req, res) => {
             return res.render('./message.hbs')
         }
         console.log(req.body)
-        const {email, password} = req.body
+        const {nicname, email, password} = req.body
         const candidate = await User.findOne({email})
         if(candidate) {
             return res.status(400).json({message: `Пользователь с email: ${email} уже существует`})
@@ -34,13 +34,13 @@ exports.signup = async (req, res) => {
         if (!req.body.flag) {
             return res.status(400).json({message: `Для регистрации неоходимо согласие с правилами и договором`})
         }
-        const token = jwt.sign({email, password}, config.get('JWT_ACC_ACTIVATE'), {expiresIn: 60 * 60})
+        const token = jwt.sign({nicname, email, password}, config.get('JWT_ACC_ACTIVATE'), {expiresIn: 60 * 60})
         emailOptionsSend(
             'ivladim95@gmail.com',
             'ACTIVATE YOUR ACCOUNT',
             '',
             `
-            <h4>Кликните на ссылку для активации Вашего аккаунта</h4>
+            <h4>Доброго дня, ${nicname}! Кликните на ссылку для активации Вашего аккаунта</h4>
             <p>${config.get('CLIENT_URL')}/api/auth/activate?token=${token}</p>
             `
             )
@@ -56,12 +56,12 @@ exports.activateAccount = async (req, res) => {
         res.json({error: 'Что-то c token не так!'})
     }
     if (token) {
-        const {email, password} = jwt.verify(token, config.get('JWT_ACC_ACTIVATE'))
+        const {nicname, email, password} = jwt.verify(token, config.get('JWT_ACC_ACTIVATE'))
         console.log(email)
         console.log(password)
     try {
         const hashPassword = await bcrypt.hash(password, 8)
-        const user = new User({email, password: hashPassword})
+        const user = new User({nicname, email, password: hashPassword})
         await user.save()
         emailOptionsSend(
             'ivladim95@gmail.com', 
@@ -219,6 +219,32 @@ exports.sendEndPay = async (req, res) => {
         
     }
     alert('Завершено')
-    res.status(401).json({message: 'ok!!!'})
+    res.json({message: 'Листи о скором завершенні дії сервісу відправлено'})
+}
+
+
+exports.getTokenUserData = async (req, res, next) => {
+    const token = req.cookies.token
+    if(!token){
+        return res.status(403).json({"message": "Ви не авторизувались"})
+    }
+    try {
+        const userdata = jwt.verify(token, config.get('secretKey'))
+    //    req.user = user
+       console.log(`user-jwt: ${userdata.email}`)
+       const email = userdata.email
+        const user = await User.findOne({email})
+        if (!user) {
+            return res.status(404).json({message: "User not found"})
+        }
+        console.log(Object.values(user))
+    //    console.log(`user-jwt: ${user.email}`)
+    return res.json({ user })
+    // return res.render('./cabinet.hbs')
+    } catch (err) {
+        console.log(`err: ${err}`)
+        res.status(401).json({message: 'Помилка встаговлення юзера'})
+
+    }
 }
 

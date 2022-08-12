@@ -1,0 +1,13 @@
+cabinet
+
+<script>
+    getUser();
+    async function getUser() {
+        const response = await fetch("http://localhost:5000/api/auth/usercabinet", { 
+                method: "GET", 
+                headers: { "Content-Type": "application/json" },
+        });
+        const user = await response.json()
+        console.log(user);
+    }
+</script>

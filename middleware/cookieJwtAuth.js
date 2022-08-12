@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken")
 const config = require('config')
+const User = require("../models/User")
 let alert = require('alert')
 
 exports.cookieJwtAuth = (req, res, next) => {
@@ -22,6 +23,7 @@ exports.cookieJwtAuth = (req, res, next) => {
        //the important part
        const user = jwt.verify(token, config.get('secretKey'))
        req.user = user
+       console.log(`user-jwt: ${user.email}`)
        next()
    } catch (err) {
        console.log(`err: ${err}`)
@@ -35,3 +37,5 @@ exports.cookieJwtAuth = (req, res, next) => {
             // .clearCookie('cookid')
    }
 }
+
+

@@ -9,6 +9,13 @@ const User = new Schema({
         unique: true,
         lowercase: true
     },
+    nicname: {
+        type: String, 
+        trim: true, 
+        required: true, 
+        unique: false,
+        lowercase: true
+    },
     password: {type: String, required: true},
     payingDate: {type: Date, default: new Date('01/01/2001')},
     endDay: {type: Date, default: new Date('01/01/2001')},
