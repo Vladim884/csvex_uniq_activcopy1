@@ -251,3 +251,17 @@ exports.getTokenUserData = async (req, res, next) => {
     }
 }
 
+exports.getAccessToStart = async (req, res) => {
+    const user = await User.findOne({_id: req.user.id})
+    if(+user.daysLeft < 1){
+        res.render('./cabinet', {
+            user : req.user // get the user out of session and pass to template
+        })
+    } else {
+        res.render('./start', {
+            user : req.user // get the user out of session and pass to template
+        })
+    }
+    // next()
+  }
+

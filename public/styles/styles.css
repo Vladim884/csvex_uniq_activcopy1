@@ -827,10 +827,12 @@ button.btn-disabled:focus {
 
 .cabinet-block .data-block {
   display: flex;
-  background-color: #006666;
   width: calc(50vw - 10px);
   margin: 0 auto;
-  padding: 10px;
+  padding: 20px;
+  border: 8px solid #99CCCC;
+  border-radius: 8px;
+  outline: 2px solid #006666;
 }
 .cabinet-block .data-block .data-fields {
   width: 30vw;

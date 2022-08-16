@@ -36,7 +36,8 @@ const {
         forgotPassword, 
         resetPassword,
         sendEndPay,
-        getTokenUserData } = require("../controllers/authController");
+        getTokenUserData, 
+        getAccessToStart} = require("../controllers/authController");
 const {createDir} = require('../myFunctions/createFolder');
 const {clg, noteServiceEnd} = require('../myFunctions/myFunctions');
 
@@ -131,7 +132,7 @@ router.post('/login',
             // } else {
             //     return res.render('./message.hbs')
             // }
-            return res.render('./start.hbs')   
+            return res.render('./cabinet.hbs')   
             
         } catch (e){
             console.log(e)
@@ -142,7 +143,7 @@ router.post('/login',
 
 router.post('/upload', 
 cookieJwtAuth, 
-async (req, res, next) => {
+async (req, res) => {
     let filedata = req.file
     let cookid = req.cookies.cookid
     let dirpath = `${config.get("filePath")}\\${cookid}` // path for dir 'files/thisId' in project-folder
@@ -372,34 +373,30 @@ router.post('/upload2',
        
   });
 
+  router.get('/start', cookieJwtAuth, getAccessToStart)
 
-
-    
-
-
-
-router.get('/auth', cookieJwtAuth,
-    async (req, res) => {
-        try {
-            const user = await User.findOne({_id: req.user.id})
-            const token = jwt.sign({id: user.id}, config.get("secretKey"), {expiresIn: "1h"})
-            return res.json({
-                token,
-                user: {
-                    id: user.id,
-                    email: user.email,
-                    diskSpace: user.diskSpace,
-                    usedSpace: user.usedSpace,
-                    avatar: user.avatar
-                }
-            })
-        } catch (e) {
-            console.log(e)
-            console.log("Server error")
-            // res.send({message: "Server error"})
-        }
-    }
-)
+// router.get('/auth', cookieJwtAuth,
+//     async (req, res) => {
+//         try {
+//             const user = await User.findOne({_id: req.user.id})
+//             const token = jwt.sign({id: user.id}, config.get("secretKey"), {expiresIn: "1h"})
+//             return res.json({
+//                 token,
+//                 user: {
+//                     id: user.id,
+//                     email: user.email,
+//                     diskSpace: user.diskSpace,
+//                     usedSpace: user.usedSpace,
+//                     avatar: user.avatar
+//                 }
+//             })
+//         } catch (e) {
+//             console.log(e)
+//             console.log("Server error")
+//             // res.send({message: "Server error"})
+//         }
+//     }
+// )
 
 // router.get('/enter', (req, res)=>{
 //     return res.render('./login.hbs')
@@ -433,6 +430,6 @@ router.get("/user", async function(req, res){
 router.post('/writepaying', cookieJwtAuth, writePaying)
 router.post('/sendendpay', cookieJwtAuth, sendEndPay)
 router.get('/usercabinet', cookieJwtAuth, getTokenUserData)
-router.get('/usercabinet', cookieJwtAuth, getTokenUserData)
+// router.get('/usercabinet', cookieJwtAuth, getTokenUserData)
 
 module.exports = router
