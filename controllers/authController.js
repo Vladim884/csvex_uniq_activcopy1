@@ -97,14 +97,17 @@ exports.writePaying = (req, res) => {
         if(err || !user) {
             return res.status(400).json({message: `Пользователя с email: ${email} не существует`})
         }
-        
-    let obj1 = {
-        payingDate,
-        sumpay,
-        daysPaying,
-        endDay
-    }
-    user = _.extend(user, obj1)
+    user.payments.push({date: new Date, sum: sumpay})
+        //console.log(`resPayArr: ${resPayArr}`)
+    // let obj1 = {
+    //     payingDate,
+    //     sumpay,
+    //     daysPaying,
+    //     endDay,
+    //     payments
+    // }
+    // console.log(obj1)
+    // user = _.extend(user, obj1)
     user.save((err, result) => {
         if(err){
             return res.status(400).json({message: `Ошибка изменения оплати юзера ${email}`})

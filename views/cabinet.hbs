@@ -2,55 +2,95 @@
     <h1 class="cabinet-title">Кабінет</h1>
     <div class="data-block">
         <ul class="data-fields">
-            <li class="field">Користувач:</li>
+            <li class="field">Добого дня,</li>
             <li class="field">Email:</li>
             <li class="field">userID:</li>
             <li class="field">Дата реєстрації:</li>
             <li class="field">Статус:</li>
             <li class="field">Генератор тегів:</li>
-            <li class="field">Залишок днів активації:</li>
             <li class="field">Баланс коштів:</li>
             <li class="field">Остання оплата:</li>
             <li class="field">Історія оплат</li>
-            <li class="field">оперейти до оплати</li>
+            <li class="field">ОПЛАТА ПОСЛУГИ</li>
         </ul>
         <ul class="users-data">
             <li class="field field-user">1</li>
             <li class="field field-email">1</li>
             <li class="field field-userid">1</li>
-            <li class="field">1</li>
-            <li class="field">1</li>
-            <li class="field">1</li>
-            <li class="field">1</li>
+            <li class="field field-registrDate">1</li>
+            <li class="field field-status">1</li>
+            <li class="field field-active-generator">1</li>
+            <li class="field field-balance">1</li>
+            <li class="field field-lastPaying">1</li>
             <li class="field">1</li>
         </ul>
     </div>
 </div>
 
 <script>
+    const formatNowDate = () => {
+    // payingDay = new Date()
+    const date = new Date(new Date().getTime())
+    // const date = new Date().getTime()
+    console.log(`date: ${date}`)
+      let dd = date.getDate();
+      if (dd < 10) dd = '0' + dd;
     
+      let mm = date.getMonth() + 1;
+      if (mm < 10) mm = '0' + mm;
+    
+      let yy = date.getFullYear() % 100;
+      if (yy < 10) yy = '0' + yy;
+    
+      return dd + '.' + mm + '.' + yy;
+    }
     getUser();
     async function getUser() {
         const fieldUser = document.querySelector('.field-user')
         const fieldEmail = document.querySelector('.field-email')
         const fieldUserId = document.querySelector('.field-userid')
+        const registrDate = document.querySelector('.field-registrDate')
+        const lastPayingDate = document.querySelector('.field-lastPaying')
+        const fieldStatusData = document.querySelector('.field-status')
+        const fieldActiveGenerator = document.querySelector('.field-active-generator')
+        const fieldBalance = document.querySelector('.field-balance')
+
+
         const response = await fetch("http://localhost:5000/api/auth/usercabinet", { 
                 method: "GET", 
                 headers: { "Content-Type": "application/json" },
         });
         const data = await response.json()
         const user = data.user
+        const getUserData = async (userData) => {
+            if(userData === 'admin'){
+                return 'Адміністратор'
+            } else {
+                return 'Користувач'
+            }
+        }
+        console.log(user)
         
-        //console.log(typeof(user));
-        const datauser = data.user.status
-        fieldUser.textContent = user.status
+        //const datauser = data.user.status
+        fieldUser.textContent = `${user.nicname}!`
         fieldEmail.textContent = user.email
         fieldUserId.textContent = user._id
-        return data
+        fieldStatusData.textContent = user.status
+        fieldBalance.textContent = (100/30 * user.daysLeft).toFixed(2) + '(грн)'
+        fieldActiveGenerator.textContent = `Активовано на ${user.daysLeft} днів`
+        //const registrDate = document.querySelector('.field-registrDate')
+        registrDate.textContent = formatNowDate(user.registrDate)
+        let lastPayments = user.payments[user.payments.length - 1];
+        if(!lastPayments) {lastPayingDate.textContent = 'Оплат ще не було'}
+        else {
+            lastPayingDate.textContent = ` №${lastPayments.number} /
+                                        ${formatNowDate(lastPayments.date)} / 
+                                        ${lastPayments.sum}.00(грн)`
+                                        }
+        //return data
         
     }
 
     
-    //console.log(getUser().user)
-    //fieldUser.innerHTML = getUser().status
+
 </script>

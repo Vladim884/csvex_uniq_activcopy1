@@ -6,7 +6,7 @@ const alert = require('alert')
 
 exports.formatDate = (sum) => {
     // payingDay = new Date()
-    const date = new Date(new Date().getTime() + (sum * 24 * 60 * 60 * 1000));
+    const date = new Date(new Date().getTime() + (sum * 24 * 60 * 60 * 1000) + 3*60*60*1000)
     // console.log(`date: ${date}`)
       let dd = date.getDate()
       if (dd < 10) dd = '0' + dd
@@ -21,7 +21,7 @@ exports.formatDate = (sum) => {
 }
 
 exports.formatNowDate = () => {
-    const date = new Date(new Date().getTime())
+    const date = new Date(new Date().getTime() + 3*60*60*1000)
     // console.log(`date: ${date}`)
     let dd = date.getDate()
     if (dd < 10) dd = '0' + dd

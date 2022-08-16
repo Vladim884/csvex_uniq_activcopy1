@@ -1,5 +1,7 @@
 const Router = require("express")
 const express = require("express")
+const _ = require("lodash")
+
 // const multer  = require("multer")
 const app = express()
 // const formidable = require('formidable')
@@ -27,12 +29,12 @@ const {cookieJwtAuth} = require('../middleware/cookieJwtAuth')
 const {filePathDeleter} = require('../myFunctions/filePathDeleter')
 const {deleteFolder} = require('../myFunctions/deleteFolder')
 const {moveFile} = require('../myFunctions/moveFile')
+const {writePaying} = require('../controllers/paymentController')
 const { 
         signup, 
         activateAccount, 
         forgotPassword, 
-        resetPassword, 
-        writePaying,
+        resetPassword,
         sendEndPay,
         getTokenUserData } = require("../controllers/authController");
 const {createDir} = require('../myFunctions/createFolder');
@@ -71,7 +73,7 @@ router.post('/login',
         res.clearCookie('cookid')
         try {
             const {email, password} = req.body
-            const user = await User.findOne({email})
+            let user = await User.findOne({email})
             if (!user) {
                 return res.status(404).json({message: "User not found"})
             }
@@ -93,10 +95,22 @@ router.post('/login',
             if(user.status === 'admin'){
                 res.cookie('admin', 'admin')
             }
-            const restDay = Math.round((user.endDay - new Date()) / (60 * 60 * 24 * 1000))
-            console.log(`restDay: ${restDay}`)
-            noteServiceEnd(restDay)
             
+            const days = Math.round((user.endDay - new Date()) / (60 * 60 * 24 * 1000))
+            let daysLeft = 0
+            if (days > 0) daysLeft = days
+            console.log(`daysLeft: ${daysLeft}`)
+            noteServiceEnd(daysLeft)
+            let obj = {
+                daysLeft
+            }
+            user = _.extend(user, obj)
+            user.save((err, result) => {
+                if(err){
+                    return res.status(400).json({message: `Ошибка изменения оплати юзера ${email}`})
+                } else {
+                    console.log('Помилка, залишок днів при логіні не записано')
+                }})
             
             // return res.json({
             //     token,
@@ -418,6 +432,7 @@ router.get("/user", async function(req, res){
 
 router.post('/writepaying', cookieJwtAuth, writePaying)
 router.post('/sendendpay', cookieJwtAuth, sendEndPay)
+router.get('/usercabinet', cookieJwtAuth, getTokenUserData)
 router.get('/usercabinet', cookieJwtAuth, getTokenUserData)
 
 module.exports = router
