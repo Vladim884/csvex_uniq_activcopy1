@@ -95,6 +95,9 @@ app.use("/paying", function(req, res){
 app.use("/writepaying", function(req, res){
     res.render('writePaying.hbs')
 })
+app.use("/payhistory", function(req, res){
+    res.render('payhistory.hbs')
+})
 
 app.use("/", function(req, res){
     res.render('index.hbs')

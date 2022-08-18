@@ -837,21 +837,60 @@ button.btn-disabled:focus {
 .cabinet-block .data-block .data-fields {
   width: 30vw;
   background-color: #CCFFFF;
-  padding: 5px;
-  padding-right: 1px;
   text-align: right;
 }
 .cabinet-block .data-block .data-fields .field {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-right: 5px;
+  font-weight: 500;
+}
+.cabinet-block .data-block .data-fields li:first-child {
   margin-bottom: 10px;
+  font-weight: 500;
+}
+.cabinet-block .data-block .data-fields li:nth-child(even) {
+  background-color: #99CCCC;
+  color: rgb(31, 30, 30);
 }
 .cabinet-block .data-block .users-data {
   width: calc(30vw - 10px);
-  padding: 5px;
-  padding-left: 3px;
+  padding-left: 0;
   background-color: #CCFFFF;
 }
 .cabinet-block .data-block .users-data .field {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+.cabinet-block .data-block .users-data .field a {
+  text-decoration: none;
+  cursor: pointer;
+}
+.cabinet-block .data-block .users-data li:first-child {
   margin-bottom: 10px;
+  font-weight: 500;
+}
+.cabinet-block .data-block .users-data li:nth-child(even) {
+  background-color: #99CCCC;
+  color: rgb(31, 30, 30);
+}
+
+.history-page-title {
+  margin: 2% 0;
+  text-align: center;
+  font-weight: 500;
+  color: #006666;
+}
+
+.payment-list li {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  color: #006666;
+  background-color: #fff;
+}
+.payment-list li:nth-child(even) {
+  background-color: #99CCCC;
+  color: rgb(31, 30, 30);
 }
 
 html {

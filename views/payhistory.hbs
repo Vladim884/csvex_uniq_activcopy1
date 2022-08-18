@@ -1,0 +1,72 @@
+<h1 class="history-page-title">Історія платежів </h1>
+<ul class="payment-list">
+    {{!-- <h3>Заголовок статьи</h3>
+    <p>Первый абзац</p>
+    <p>Второй абзац</p> --}}
+</ul>
+
+
+
+<script>
+   
+const formatDate = (sum) => {
+    // payingDay = new Date()
+    const date = new Date(new Date(sum).getTime())
+    console.log(`sum: ${sum}`)
+      let dd = date.getDate()
+      if (dd < 10) dd = '0' + dd
+    
+      let mm = date.getMonth() + 1
+      if (mm < 10) mm = '0' + mm
+    
+      let yy = date.getFullYear() % 100
+      if (yy < 10) yy = '0' + yy
+    
+      return dd + '.' + mm + '.' + yy
+}
+    const pageTitle = document.querySelector("h1.history-page-title")
+    const paymentList = document.querySelector("ul.payment-list")
+    const user = getUser()
+    async function getUser() {
+        const response = await fetch("http://localhost:5000/api/auth/payhistory", { 
+            method: "GET", 
+            headers: { "Content-Type": "application/json" }
+        })
+        const data = await response.json()
+        const user = data.user
+        console.log(user)
+        if(!user) {
+            pageTitle.textContent = `Ви не авторизовані! Виповніть вхід`
+        } else {
+            pageTitle.textContent = `Історія платежів ${user.nicname}`
+       // }
+
+        //console.log(`${user.nicname} ${user.payments[1].number}`)
+        //{{!-- console.log(user) --}}
+        for (i=user.payments.length-1;i>=0;i--) {
+            console.log(user.payments[i].number)
+            d = new Date(user.payments[i].date)
+            console.log(d)
+            //document.write('<div>user.payments[i].number</div>')
+            // создаем элемент
+            var elem = document.createElement("li");
+            // создаем для него текст
+            var elemText = document.createTextNode(`
+                плата за послугу "Генератор тегів"
+                №${user.payments[i].number}
+                дата: ${formatDate(d)}
+                сума: ${user.payments[i].sum}.00(грн)`)
+            // добавляем текст в элемент в качестве дочернего элемента
+            elem.appendChild(elemText);
+            // добавляем элемент в блок div
+            paymentList.appendChild(elem)
+            
+        }
+        }
+    }
+
+    
+
+    
+
+</script>

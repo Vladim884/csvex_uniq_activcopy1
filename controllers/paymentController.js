@@ -1,39 +1,48 @@
 const User = require("../models/User")
 const _ = require("lodash")
-
-// const config = require("config")
-// const {formatNowDate} = require('../myFunctions/formatNowDate')
 const {
     formatDate, 
     formatNowDate, 
     clg,
-    emailOptionsSend } = require('../myFunctions/myFunctions')
+    emailOptionsSend,
+    getNumberOfDays } = require('../myFunctions/myFunctions')
 
 
-exports.writePaying = (req, res) => {
-    const {email, sumpay} = req.body
+exports.writePaying = async (req, res) => {
+    let {email, sumpay} = req.body
+    //==============
+    let user = await User.findOne({email})
+        if (!user) {
+            return res.status(404).json({message: "User not found"})
+        }
+        clg('user', user)
+    console.log(`func-writePaying-user: ${user.nicname}`)
+    //==================
+    let newsumpay = +sumpay + +user.sumpay
+    // clg(`sumpay: ${sumpay}`)
+    
+    clg(`user.endDay: ${user.endDay}`)
+    
+    let lastDaysLeft = getNumberOfDays(new Date(), new Date(user.endDay))//??? "+ 1" -because the function getNumberOfDays(start, end) does not include the last date
     const oneDayPay = 100 / 30
     const daysPaying = Math.trunc(sumpay / oneDayPay)
+    lastDaysLeft += daysPaying
+
     const payingDate = new Date().getTime() + 3*60*60*1000
     const payingDayforPeople = formatNowDate()
-    // console.log(`payingDayforPeople: ${payingDayforPeople}`)
-    const endDay = new Date(payingDate.getTime() + (daysPaying * 24 * 60 * 60 * 1000)); 
-    const endDayForPeople = formatDate(daysPaying)
-    // console.log(`endDay: ${endDay}`)
-    User.findOne({email}, (err, user) => {
-        if(err || !user) {
-            return res.status(400).json({message: `Пользователя с email: ${email} не существует`})
-        }
+    
+    const endDay = new Date(new Date(user.endDay).getTime() + (daysPaying * 24 * 60 * 60 * 1000)); 
+         const endDayForPeople = formatDate(daysPaying)
     const number = ++user.paymentNumber
     user.payments.push({number, date: new Date, sum: sumpay})
-        //console.log(`resPayArr: ${resPayArr}`)
+        
     let obj1 = {
         payingDate,
-        sumpay,
+        sumpay: newsumpay,
         daysPaying,
-        endDay
+        endDay,
+        daysLeft: lastDaysLeft
     }
-    console.log(obj1)
     user = _.extend(user, obj1)
     user.save((err, result) => {
         if(err){
@@ -56,6 +65,4 @@ exports.writePaying = (req, res) => {
             return res.status(200).json({message: `Оплату юзера ${email} змінено`})
         }
     })
-    })
-    
 }

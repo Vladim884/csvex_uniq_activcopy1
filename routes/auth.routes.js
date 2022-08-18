@@ -97,11 +97,11 @@ router.post('/login',
                 res.cookie('admin', 'admin')
             }
             
-            const days = Math.round((user.endDay - new Date()) / (60 * 60 * 24 * 1000))
-            let daysLeft = 0
-            if (days > 0) daysLeft = days
-            console.log(`daysLeft: ${daysLeft}`)
-            noteServiceEnd(daysLeft)
+            // const days = Math.round((user.endDay - new Date()) / (60 * 60 * 24 * 1000))
+            let daysLeft = user.daysLeft
+            // if (days > 0) daysLeft = days
+            // console.log(`daysLeft: ${daysLeft}`)
+            // noteServiceEnd(daysLeft)
             let obj = {
                 daysLeft
             }
@@ -374,11 +374,14 @@ router.post('/upload2',
   });
 
   router.get('/start', cookieJwtAuth, getAccessToStart)
+  router.get('/start', cookieJwtAuth, getAccessToStart)
 
 // router.get('/auth', cookieJwtAuth,
 //     async (req, res) => {
 //         try {
 //             const user = await User.findOne({_id: req.user.id})
+//             const user = await User.findOne({_id: req.user.id})
+//             const token = jwt.sign({id: user.id}, config.get("secretKey"), {expiresIn: "1h"})
 //             const token = jwt.sign({id: user.id}, config.get("secretKey"), {expiresIn: "1h"})
 //             return res.json({
 //                 token,
@@ -408,6 +411,7 @@ router.post('/upload2',
 
 router.get("/user", async function(req, res){
     const user = await User.findOne({email: 'vov2@gmail.com'})
+    // const user = await User.findOne({email: 'vov2@gmail.com'})
     console.log(`users-users: ${user}`)
     // res.end({user: `${user}`})
     // res.end({user: {
@@ -428,8 +432,10 @@ router.get("/user", async function(req, res){
 });
 
 router.post('/writepaying', cookieJwtAuth, writePaying)
+router.post('/writepaying', cookieJwtAuth, writePaying)
 router.post('/sendendpay', cookieJwtAuth, sendEndPay)
 router.get('/usercabinet', cookieJwtAuth, getTokenUserData)
+router.get('/payhistory', cookieJwtAuth, getTokenUserData)
 // router.get('/usercabinet', cookieJwtAuth, getTokenUserData)
 
 module.exports = router

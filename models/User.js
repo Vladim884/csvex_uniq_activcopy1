@@ -19,11 +19,11 @@ const User = new Schema({
     password: {type: String, required: true},
     registrDate: {
         type: Date, 
-        default: new Date(new Date().getTime() + 3*60*60*1000)
+        default: new Date(new Date())
     },
     paymentNumber: {type: Number, default: 0},
-    payingDate: {type: Date, default: new Date('01/01/2001').getTime() + 3*60*60*1000},
-    endDay: {type: Date, default: new Date('01/01/2001').getTime() + 3*60*60*1000},
+    payingDate: {type: Date, default: new Date()},
+    endDay: {type: Date, default: new Date()},
     sumpay: {type: Number, default: 0},
     daysLeft: {type: Number, default: 0},
     resetLink: {data: String, default: ''},

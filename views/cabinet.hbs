@@ -2,16 +2,16 @@
     <h1 class="cabinet-title">Кабінет</h1>
     <div class="data-block">
         <ul class="data-fields">
-            <li class="field">Добого дня,</li>
-            <li class="field">Email:</li>
+            <li class="field"><span>Вітаємо,</span></li>
+            <li class="field"><span>Email:</span></li>
             <li class="field">userID:</li>
             <li class="field">Дата реєстрації:</li>
-            <li class="field">Статус:</li>
-            <li class="field">Генератор тегів:</li>
-            <li class="field">Баланс коштів:</li>
-            <li class="field">Остання оплата:</li>
-            <li class="field">Історія оплат</li>
-            <li class="field">ОПЛАТА ПОСЛУГИ</li>
+            <li class="field">Статус: </li>
+            <li class="field">Генератор тегів: </li>
+            <li class="field">Баланс коштів: </li>
+            <li class="field">Остання оплата: </li>
+            <li class="field">Історія оплат </li>
+            <li class="field">ОПЛАТА ПОСЛУГИ </li>
         </ul>
         <ul class="users-data">
             <li class="field field-user">1</li>
@@ -22,7 +22,7 @@
             <li class="field field-active-generator">1</li>
             <li class="field field-balance">1</li>
             <li class="field field-lastPaying">1</li>
-            <li class="field">1</li>
+            <li class="field field-history"><a href="/payhistory" class="linkhistory">1</a><i class="fa-regular fa-hand"></i></li>
         </ul>
     </div>
 </div>
@@ -54,6 +54,7 @@
         const fieldStatusData = document.querySelector('.field-status')
         const fieldActiveGenerator = document.querySelector('.field-active-generator')
         const fieldBalance = document.querySelector('.field-balance')
+        const linkHistory = document.querySelector('.linkhistory')
 
 
         const response = await fetch("http://localhost:5000/api/auth/usercabinet", { 
@@ -83,10 +84,12 @@
         let lastPayments = user.payments[user.payments.length - 1];
         if(!lastPayments) {lastPayingDate.textContent = 'Оплат ще не було'}
         else {
-            lastPayingDate.textContent = ` №${lastPayments.number} /
-                                        ${formatNowDate(lastPayments.date)} / 
-                                        ${lastPayments.sum}.00(грн)`
-                                        }
+            lastPayingDate.textContent = ` 
+                №${lastPayments.number} /
+                ${formatNowDate(lastPayments.date)} / 
+                ${lastPayments.sum}.00(грн)`
+            }
+        linkHistory.textContent = `Переглянути`
         //return data
         
     }
