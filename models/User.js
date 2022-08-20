@@ -32,7 +32,8 @@ const User = new Schema({
     usedSpace: {type: Number, default: 0},
     avatar: {type: String},
     files: [{type: ObjectId, ref:'File'}],
-    payments: [{type: Object, ref:'Payment'}]
+    payments: [{type: Object, ref:'Payment'}],
+    balance: {type: Number, default: 0}
 })
 
 module.exports = model('User', User)

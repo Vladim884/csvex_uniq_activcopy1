@@ -23,6 +23,7 @@
             <li class="field field-balance">1</li>
             <li class="field field-lastPaying">1</li>
             <li class="field field-history"><a href="/payhistory" class="linkhistory">1</a><i class="fa-regular fa-hand"></i></li>
+            <li class="field field-pay"><a href="/payhistory" class="linkpay">1</a><i class="fa-regular fa-hand"></i></li>
         </ul>
     </div>
 </div>
@@ -55,6 +56,7 @@
         const fieldActiveGenerator = document.querySelector('.field-active-generator')
         const fieldBalance = document.querySelector('.field-balance')
         const linkHistory = document.querySelector('.linkhistory')
+        const linkPay = document.querySelector('.linkpay')
 
 
         const response = await fetch("http://localhost:5000/api/auth/usercabinet", { 
@@ -77,7 +79,8 @@
         fieldEmail.textContent = user.email
         fieldUserId.textContent = user._id
         fieldStatusData.textContent = user.status
-        fieldBalance.textContent = (100/30 * user.daysLeft).toFixed(2) + '(грн)'
+        //fieldBalance.textContent = (100/30 * user.daysLeft).toFixed(2) + '(грн)'
+        fieldBalance.textContent = user.balance.toFixed(2) + '(грн)'
         fieldActiveGenerator.textContent = `Активовано на ${user.daysLeft} днів`
         //const registrDate = document.querySelector('.field-registrDate')
         registrDate.textContent = formatNowDate(user.registrDate)
@@ -90,6 +93,7 @@
                 ${lastPayments.sum}.00(грн)`
             }
         linkHistory.textContent = `Переглянути`
+        linkPay.textContent = `Сплатити`
         //return data
         
     }

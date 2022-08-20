@@ -8,7 +8,7 @@ module.exports = (req, res, next) => {
 
     try {
         const data = req.headers
-        console.log(data)
+        console.log(`auth-middleware-data${data}`)
         const token = req.headers.authorization.split(' ')[1]
         console.log(`token in auth.middleware: ${token}`)
         if (!token) {

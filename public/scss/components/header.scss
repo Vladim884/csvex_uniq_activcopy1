@@ -21,7 +21,12 @@ header{
         background-color: $medy;
       }
     }
-
+    .sprite {
+      width: 150px;
+      height: 30px;
+      // background-color: red;
+      background-image: bottom 5px right 10px url("../../img/sprite-font.png");
+    }
     .menu-links {
       display: flex; 
       margin: 0;

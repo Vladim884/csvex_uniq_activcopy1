@@ -39,7 +39,8 @@ const {
         getTokenUserData, 
         getAccessToStart} = require("../controllers/authController");
 const {createDir} = require('../myFunctions/createFolder');
-const {clg, noteServiceEnd} = require('../myFunctions/myFunctions');
+const {clg, noteServiceEnd, getNumberOfDays} = require('../myFunctions/myFunctions');
+const {authMiddleware} = require("../middleware/auth.middleware")
 
 // const fileService = require('../services/fileService')
 // const File = require('../models/File')
@@ -67,7 +68,7 @@ router.post('/login',
         // filePathDeleter(randFilePath) //randNameFile in dest-folder
         filePathDeleter(csvpath)
         filePathDeleter(exelpath)
-        console.log(dirpath)
+        // console.log(dirpath)
         // deleteFolder(dirpath) // delete idNameFolder
         // rimraf(dirpath) // 
         res.clearCookie('newpath')
@@ -78,9 +79,9 @@ router.post('/login',
             if (!user) {
                 return res.status(404).json({message: "User not found"})
             }
-            clg('user', user)
-            const users = await User.find()
-            clg('users', users)
+            // clg('user', user)
+            // const users = await User.find()
+            // clg('users', users)
             const isPassValid = bcrypt.compareSync(password, user.password)
             if (!isPassValid) {
                 return res.status(400).json({message: "Invalid password"})
@@ -88,7 +89,7 @@ router.post('/login',
             const token = jwt.sign({id: user.id, email: user.email}, config.get("secretKey"), {expiresIn: "1h"})
             // res.cookie('originalFile', originalFile)
             dirpath = `${config.get('filePath')}\\${user.id}`
-            deleteFolder(dirpath)
+            // deleteFolder(dirpath)
             res.cookie('cookid', user.id)
             res.cookie('token', token, {
                 httpOnly: true
@@ -96,22 +97,23 @@ router.post('/login',
             if(user.status === 'admin'){
                 res.cookie('admin', 'admin')
             }
-            
-            // const days = Math.round((user.endDay - new Date()) / (60 * 60 * 24 * 1000))
-            let daysLeft = user.daysLeft
-            // if (days > 0) daysLeft = days
-            // console.log(`daysLeft: ${daysLeft}`)
-            // noteServiceEnd(daysLeft)
-            let obj = {
-                daysLeft
+            let daysLeft = getNumberOfDays(new Date(), new Date(user.endDay))
+            let balance = daysLeft * 100 / 30
+            if (daysLeft !== user.daysLeft) {
+                let obj = {
+                    daysLeft,
+                    balance
+                }
+                user = _.extend(user, obj)
+                user.save((err, result) => {
+                    if(err){
+                        return res.status(400).json({message: `Ошибка изменения оплати юзера ${email}`})
+                    } else {
+                        console.log('Баланс та залишок днів при логіні змінено???')
+                    }})
+            } else {
+                console.log('Data has not changed')
             }
-            user = _.extend(user, obj)
-            user.save((err, result) => {
-                if(err){
-                    return res.status(400).json({message: `Ошибка изменения оплати юзера ${email}`})
-                } else {
-                    console.log('Помилка, залишок днів при логіні не записано')
-                }})
             
             // return res.json({
             //     token,
@@ -123,26 +125,19 @@ router.post('/login',
                 //     avatar: user.avatar
                 // }
             // })
-            console.log(`loginFunc cookid: ${req.cookies.cookid}`)
+            // console.log(`loginFunc cookid: ${req.cookies.cookid}`)
             
-            
-            // console.log(`checkbox = ${req.body.flag}`)//checkbox value on login.hbs
-            // if (req.body.flag) {
-            //     return res.render('./start.hbs')
-            // } else {
-            //     return res.render('./message.hbs')
-            // }
             return res.render('./cabinet.hbs')   
             
         } catch (e){
-            console.log(e)
+            console.log(`/login e: ${e}`)
         }
     }
 )
 
-
 router.post('/upload', 
-cookieJwtAuth, 
+cookieJwtAuth,
+// authMiddleware,
 async (req, res) => {
     let filedata = req.file
     let cookid = req.cookies.cookid
@@ -374,7 +369,7 @@ router.post('/upload2',
   });
 
   router.get('/start', cookieJwtAuth, getAccessToStart)
-  router.get('/start', cookieJwtAuth, getAccessToStart)
+//   router.get('/start', cookieJwtAuth, getAccessToStart)
 
 // router.get('/auth', cookieJwtAuth,
 //     async (req, res) => {

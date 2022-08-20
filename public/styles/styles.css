@@ -78,6 +78,11 @@ header .header-left a {
 header .header-left a:hover {
   background-color: #99CCCC;
 }
+header .sprite {
+  width: 150px;
+  height: 30px;
+  background-image: bottom 5px right 10px url("../../img/sprite-font.png");
+}
 header .menu-links {
   display: flex;
   margin: 0;
