@@ -40,7 +40,7 @@ const {
         getAccessToStart} = require("../controllers/authController");
 const {createDir} = require('../myFunctions/createFolder');
 const {clg, noteServiceEnd, getNumberOfDays} = require('../myFunctions/myFunctions');
-const {authMiddleware} = require("../middleware/auth.middleware")
+const authMiddleware = require("../middleware/auth.middleware")
 
 // const fileService = require('../services/fileService')
 // const File = require('../models/File')
@@ -127,7 +127,9 @@ router.post('/login',
             // })
             // console.log(`loginFunc cookid: ${req.cookies.cookid}`)
             
-            return res.render('./cabinet.hbs')   
+            return res.render('./cabinet.hbs') 
+            //  return res.json({'message': 'login ok'}) 
+
             
         } catch (e){
             console.log(`/login e: ${e}`)
@@ -139,12 +141,22 @@ router.post('/upload',
 cookieJwtAuth,
 // authMiddleware,
 async (req, res) => {
+    const token = req.cookies.token
+    if(!token){
+        // return res.redirect('http://localhost:5000/enter')
+        return res.status(403).json({"message": "Ви не авторизувались"})
+    }
+    const user = jwt.verify(token, config.get('secretKey'))
+    //    req.user = user
+       console.log(`useremail: ${user.email}`)
+       let dirpath = `${config.get("filePath")}\\${user.id}`
+
     let filedata = req.file
-    let cookid = req.cookies.cookid
-    let dirpath = `${config.get("filePath")}\\${cookid}` // path for dir 'files/thisId' in project-folder
-    
+            //let cookid = req.cookies.cookid
+            //olddirpath = `${config.get("filePath")}\\${cookid}` // path for dir 'files/thisId' in project-folder
+    console.log(`dirpath: ${dirpath}`)
     deleteFolder(dirpath)
-    console.log(req.file)
+    // console.log(req.file)
     let originalFile = filedata.originalname
 
     
@@ -426,7 +438,7 @@ router.get("/user", async function(req, res){
             
 });
 
-router.post('/writepaying', cookieJwtAuth, writePaying)
+// router.post('/writepaying', cookieJwtAuth, writePaying)
 router.post('/writepaying', cookieJwtAuth, writePaying)
 router.post('/sendendpay', cookieJwtAuth, sendEndPay)
 router.get('/usercabinet', cookieJwtAuth, getTokenUserData)

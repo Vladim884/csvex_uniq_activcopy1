@@ -10,54 +10,68 @@ const {
 
 exports.writePaying = async (req, res) => {
     let {email, sumpay} = req.body
-    //==============
     let user = await User.findOne({email})
         if (!user) {
             return res.status(404).json({message: "User not found"})
         }
-        clg('user', user)
-    console.log(`func-writePaying-user: ${user.nicname}`)
     //==================
-    let newsumpay = +sumpay + +user.sumpay
-    // clg(`sumpay: ${sumpay}`)
-    
-    clg(`user.endDay: ${user.endDay}`)
-    
-    let lastDaysLeft = getNumberOfDays(new Date(), new Date(user.endDay))//??? "+ 1" -because the function getNumberOfDays(start, end) does not include the last date
-    const oneDayPay = 100 / 30
-    const daysPaying = Math.trunc(sumpay / oneDayPay)
-    lastDaysLeft += daysPaying
-
-    const payingDate = new Date().getTime() + 3*60*60*1000
-    const payingDayforPeople = formatNowDate()
-    
-    const endDay = new Date(new Date(user.endDay).getTime() + (daysPaying * 24 * 60 * 60 * 1000)); 
-         const endDayForPeople = formatDate(daysPaying)
-    const number = ++user.paymentNumber
+    let number = ++user.paymentNumber
+    user.paymentNumber = number
     user.payments.push({number, date: new Date, sum: sumpay})
+    //==================
+    let lastPayment = user.payments[user.payments.length - 1]
+    //=================================
+    let daysPaying = lastPayment.sum / (100/30)
+    console.log(daysPaying)
+    //=====================
+    // console.log(lastPayment.date)
+    // console.log(user.endDay)
+    let datesDifferent = getNumberOfDays(lastPayment.date, user.endDay)
+    console.log(`datesDifferent: ${datesDifferent}`)
+    // let lastPaymentDate = lastPayment.date
+    let sumdays = datesDifferent + daysPaying
+    let D = new Date(lastPayment.date)
+    
+    //paymentDateEnd:
+    //datsLeftActiveServise
+    if(datesDifferent > 0) {
+        user.endDay = D.setDate(D.getDate() + sumdays)
+        user.daysLeft = datesDifferent + daysPaying
+        clg(`3 lastPayment.date: ${lastPayment.date}`)
+    } else {
+        user.endDay = D.setDate(D.getDate() + daysPaying)
+        user.daysLeft = daysPaying
+    }
+    // console.log(`user.endDay: ${user.endDay}`)
+    // console.log(`user.daysLeft: ${user.daysLeft}`)
+
+    //========================
+
+    user.sumpay = +user.sumpay + +lastPayment.sum
+    // console.log(`user.sumpay: ${user.sumpay}`)
+    //===========================
+    user.balance = user.daysLeft * 100 / 30
+    // console.log(`user.balance: ${user.balance}`)
         
     let obj1 = {
-        payingDate,
-        sumpay: newsumpay,
+        payingDate: lastPayment.date,
         daysPaying,
-        endDay,
-        daysLeft: lastDaysLeft
     }
     user = _.extend(user, obj1)
     user.save((err, result) => {
         if(err){
             return res.status(400).json({message: `Ошибка изменения оплати юзера ${email}`})
         } else {
+            clg(`7 lastPayment.date: ${lastPayment.date}`)
+            let payingDateForPeople = formatNowDate(lastPayment.date)
             emailOptionsSend(
                 'ivladim95@gmail.com',
                 'Оплата на CSV TO EXCEL.',
-                `
-                 ${payingDayforPeople} Ви оплатили ${sumpay}грн. та отримали сервіс CSV TO EXCEL 
-                 на протязі ${daysPaying} днів до ${endDayForPeople} включно.
-                
+                `${user.nicname}, Вас вітає команда CSV TO EXCEL!
+                Дякуємо, що Ви обрали наш сервіс!
+                 ${payingDateForPeople} Ви оплатили ${sumpay}грн. та отримали активацію сервісу CSV TO EXCEL 
+                 на ${daysPaying} днів.
                  ===============================================
-                 Ваши 
-                 логин: ${email} 
                  Якщо цей лист потрапив до вас випадково, 
                  видалить його та не звертайте уваги.
                 `

@@ -5,7 +5,7 @@ let alert = require('alert')
 
 exports.cookieJwtAuth = (req, res, next) => {
     const token = req.cookies.token
-    console.log(`cookieJwtAuth-cookie-token ${req.cookies.token}`)
+    // console.log(`cookieJwtAuth-cookie-token ${req.cookies.token}`)
    if(!token){
     res
           .clearCookie("exelpath")  
@@ -23,7 +23,7 @@ exports.cookieJwtAuth = (req, res, next) => {
        //the important part
        const user = jwt.verify(token, config.get('secretKey'))
        req.user = user
-       console.log(`user-jwt: ${user.email}`)
+    //    console.log(`user-jwt: ${user.email}`)
        next()
    } catch (err) {
        console.log(`err: ${err}`)
