@@ -29,9 +29,9 @@
 </div>
 
 <script>
-    const formatNowDate = () => {
+    const formatNowDate = (d) => {
     // payingDay = new Date()
-    const date = new Date(new Date().getTime())
+    const date = new Date(new Date(d).getTime())
     // const date = new Date().getTime()
     console.log(`date: ${date}`)
       let dd = date.getDate();

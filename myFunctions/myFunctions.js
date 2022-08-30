@@ -1,4 +1,6 @@
 const nodemailer = require("nodemailer")
+const jwt = require("jsonwebtoken")
+const User = require("../models/User")
 const config = require("config")
 const alert = require('alert')
 
@@ -21,9 +23,10 @@ exports.formatDate = (sum) => {
 }
 
 exports.formatNowDate = () => {
-    const date = new Date(new Date().getTime())
-    // console.log(`date: ${date}`)
+    const date = new Date().getTime()
+    console.log(`date: ${date}`)
     let dd = date.getDate()
+    console.log(`dd: ${dd}`)
     if (dd < 10) dd = '0' + dd
 
     let mm = date.getMonth() + 1
@@ -92,9 +95,17 @@ exports.getNumberOfDays = (start, end) => {
     const diffInDays = Math.round(diffInTime / oneDay); 
     
     return diffInDays; 
-    } 
+} 
     
-    // console.log(getNumberOfDays("2/1/2021", "3/1/2021"))
+// console.log(getNumberOfDays("2/1/2021", "3/1/2021"))
 
-
+exports.getUserfromToken = (token) => {
+    const datatoken = jwt.verify(token, config.get('secretKey'))
+    let email = datatoken.email
+    let user = User.findOne({email})
+    if (!user) {
+        return res.status(404).json({message: "User not found"})
+    }
+    return user
+}
 

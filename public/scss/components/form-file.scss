@@ -16,8 +16,8 @@
     height: 40px;
     // margin: 0 auto;
     background: $medy;
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
     border: 1px solid $darky;
     color: $darky;
     text-align: center;
@@ -78,8 +78,8 @@
         font-weight: 600;
         font-size: 14px;
         margin-left: -5px;
-        border-top-right-radius: 10px;
-        border-bottom-right-radius: 10px;
+        border-top-right-radius: 5px;
+        border-bottom-right-radius: 5px;
         &:hover {
             background-color: $darky;
             color: $lighty;

@@ -3,10 +3,10 @@ const express = require("express")
 const _ = require("lodash")
 
 // const multer  = require("multer")
-const app = express()
+// const app = express()
 // const formidable = require('formidable')
 const json2csv = require("json2csv")
-const extfs = require('extfs')
+// const extfs = require('extfs')
 const convertCsvToXlsx = require('@aternus/csv-to-xlsx')
 const rimraf = require('rimraf')
 const csv = require('csv-parser')
@@ -29,6 +29,7 @@ const {cookieJwtAuth} = require('../middleware/cookieJwtAuth')
 const {filePathDeleter} = require('../myFunctions/filePathDeleter')
 const {deleteFolder} = require('../myFunctions/deleteFolder')
 const {moveFile} = require('../myFunctions/moveFile')
+const {getUserfromToken} = require('../myFunctions/myFunctions')
 const {writePaying} = require('../controllers/paymentController')
 const { 
         signup, 
@@ -98,8 +99,10 @@ router.post('/login',
                 res.cookie('admin', 'admin')
             }
             let daysLeft = getNumberOfDays(new Date(), new Date(user.endDay))
+            if(daysLeft < 0) daysLeft = 0
             let balance = daysLeft * 100 / 30
-            if (daysLeft !== user.daysLeft) {
+            if(balance < 0) balance = 0
+            if (daysLeft !== user.daysLeft || balance !== user.balance) {
                 let obj = {
                     daysLeft,
                     balance
@@ -146,17 +149,13 @@ async (req, res) => {
         // return res.redirect('http://localhost:5000/enter')
         return res.status(403).json({"message": "Ви не авторизувались"})
     }
-    const user = jwt.verify(token, config.get('secretKey'))
-    //    req.user = user
-       console.log(`useremail: ${user.email}`)
-       let dirpath = `${config.get("filePath")}\\${user.id}`
+    let user = await getUserfromToken(token)
+    
+    let dirpath = `${config.get("filePath")}\\${user.id}`
 
     let filedata = req.file
-            //let cookid = req.cookies.cookid
-            //olddirpath = `${config.get("filePath")}\\${cookid}` // path for dir 'files/thisId' in project-folder
     console.log(`dirpath: ${dirpath}`)
     deleteFolder(dirpath)
-    // console.log(req.file)
     let originalFile = filedata.originalname
 
     
@@ -171,14 +170,47 @@ async (req, res) => {
     await createDir(dirpath)
     
     await moveFile(randFilePath, `${dirpath}\\${filedata.filename}`)
-    randFilePath = `${dirpath}\\${filedata.filename}`  
+    randFilePath = `${dirpath}\\${filedata.filename}` 
+    let csvpath = `${dirpath}\\newcsv.csv`
+    let exelpath = `${dirpath}\\newxl.xlsx` 
      // path for dir 'files/thisId' in project-folder
     console.log(randFilePath)
     res.cookie('randFilePath', randFilePath)
     res.cookie('dirpath', dirpath)
-
-    res.render("upload01.hbs")
     
+    // user.temp[user.temp.length-1].dirpath = dirpath
+    // user.temp[0].randFilePath = randFilePath
+    
+    
+    console.log(`${user.payments[0].sum}`)
+    console.log(`${user.temp.length}`)
+    if (user.temp.length < 1 || !user.temp.length){
+        user.temp.push({dirpath, randFilePath, csvpath, exelpath})
+        await user.save((err, result) => {
+            if(err){
+                return res.status(400).json({message: `Помилка запису в temp-data: ${randFilePath} ${dirpath}`})
+            } else {
+                console.log('upload temp-data змінено')
+            }}
+        ) 
+    } else {
+        // let users = 
+        await user.updateOne(
+                {temp: {dirpath, randFilePath, csvpath, exelpath} }
+              ),
+            function (err, docs) {
+            if (err){
+                console.log(err)
+            }
+            else{
+                console.log("Updated Docs : ", docs);
+            }
+        }
+    }
+    
+    
+    
+    res.render("upload01.hbs")
     } catch (error) {
         console.log(error)
     }
@@ -186,47 +218,53 @@ async (req, res) => {
 
 router.post('/upload01',
     cookieJwtAuth, 
-    (req, res) => {
-    results = []
-    let resfind = []
-    let resname = []
-    let resgroup = []
-    let randFilePath = req.cookies.randFilePath
-    let dirpath = req.cookies.dirpath
-    console.log(`randFilePath: ${randFilePath}`)
-    console.log(`dirpath: ${dirpath}`)
-
-    try {
-        // if (!fs.existsSync(dirpath)) {
-        //     res.render('./login.hbs')
+    async (req, res) => {
+        // const token = req.cookies.token
+        // if(!token){
+            // return res.redirect('http://localhost:5000/enter')
+            // return res.status(403).json({"message": "Ви не авторизувались"})
         // }
-    fs.createReadStream(randFilePath)
-    .pipe(csv())
-    .on('data', (data) => {
-        results.push(data)
-    })
-    .on('end', () => {
-        for (let i = 0; i < results.length; i++) {
-            let data_f = results[i]['Поисковые_запросы'];
-            let data_n = `${results[i]['Название_позиции']} ${results[i]['Поисковые_запросы']} ${results[i]['Название_группы']}`;
-            let data_g = results[i]['Название_группы'];
+        // let user = await getUserfromToken(token)
+        results = []
+        let resfind = []
+        let resname = []
+        let resgroup = []
+        // let randFilePath = req.cookies.randFilePath
+        // let dirpath = req.cookies.dirpath
+        // console.log(`randFilePath: ${user.temp[0].randFilePath}`)
+        // console.log(`dirpath: ${user.temp[0].dirpath}`)
 
-            resfind.push(data_f)
-            resname.push(data_n)
-            resgroup.push(data_g)
-        }
-        let req_name = resname
-        let req_group = resgroup;
-        let req_find = resfind;
-        res.render("upload1.hbs", {
-            req_name: req_name,
-            req_group: req_group,
-            req_find: req_find,
-            resfind: resfind,
-            resname: resname,
-            resgroup: resgroup
+        try {
+            // if (!fs.existsSync(dirpath)) {
+            //     res.render('./login.hbs')
+            // }
+        fs.createReadStream(randFilePath)
+        .pipe(csv())
+        .on('data', (data) => {
+            results.push(data)
         })
-    }) 
+        .on('end', () => {
+            for (let i = 0; i < results.length; i++) {
+                let data_f = results[i]['Поисковые_запросы'];
+                let data_n = `${results[i]['Название_позиции']} ${results[i]['Поисковые_запросы']} ${results[i]['Название_группы']}`;
+                let data_g = results[i]['Название_группы'];
+
+                resfind.push(data_f)
+                resname.push(data_n)
+                resgroup.push(data_g)
+            }
+            let req_name = resname
+            let req_group = resgroup;
+            let req_find = resfind;
+            res.render("upload1.hbs", {
+                req_name: req_name,
+                req_group: req_group,
+                req_find: req_find,
+                resfind: resfind,
+                resname: resname,
+                resgroup: resgroup
+            })
+        }) 
     } catch (e) {
         console.log(e)
     }

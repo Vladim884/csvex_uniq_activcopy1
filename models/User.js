@@ -32,7 +32,7 @@ const User = new Schema({
     usedSpace: {type: Number, default: 0},
     avatar: {type: String},
     files: [{type: ObjectId, ref:'File'}],
-    temp: [{type: Object, ref: 'tempData'}],
+    temp: [{type: Object, ref: 'TempData'}],
     payments: [{type: Object, ref:'Payment'}],
     balance: {type: Number, default: 0}
 })

@@ -22,12 +22,12 @@ exports.writePaying = async (req, res) => {
     let lastPayment = user.payments[user.payments.length - 1]
     //=================================
     let daysPaying = lastPayment.sum / (100/30)
-    console.log(daysPaying)
+    // console.log(daysPaying)
     //=====================
     // console.log(lastPayment.date)
     // console.log(user.endDay)
     let datesDifferent = getNumberOfDays(lastPayment.date, user.endDay)
-    console.log(`datesDifferent: ${datesDifferent}`)
+    // console.log(`datesDifferent: ${datesDifferent}`)
     // let lastPaymentDate = lastPayment.date
     let sumdays = datesDifferent + daysPaying
     let D = new Date(lastPayment.date)
@@ -62,20 +62,20 @@ exports.writePaying = async (req, res) => {
         if(err){
             return res.status(400).json({message: `Ошибка изменения оплати юзера ${email}`})
         } else {
-            clg(`7 lastPayment.date: ${lastPayment.date}`)
-            let payingDateForPeople = formatNowDate(lastPayment.date)
-            emailOptionsSend(
-                'ivladim95@gmail.com',
-                'Оплата на CSV TO EXCEL.',
-                `${user.nicname}, Вас вітає команда CSV TO EXCEL!
-                Дякуємо, що Ви обрали наш сервіс!
-                 ${payingDateForPeople} Ви оплатили ${sumpay}грн. та отримали активацію сервісу CSV TO EXCEL 
-                 на ${daysPaying} днів.
-                 ===============================================
-                 Якщо цей лист потрапив до вас випадково, 
-                 видалить його та не звертайте уваги.
-                `
-            )
+            console.log(`7 lastPayment.date: ${lastPayment.date}`)
+            // let payingDateForPeople = formatNowDate(lastPayment.date)
+            // emailOptionsSend(
+            //     'ivladim95@gmail.com',
+            //     'Оплата на CSV TO EXCEL.',
+            //     `${user.nicname}, Вас вітає команда CSV TO EXCEL!
+            //     Дякуємо, що Ви обрали наш сервіс!
+            //      ${payingDateForPeople} Ви оплатили ${sumpay}грн. та отримали активацію сервісу CSV TO EXCEL 
+            //      на ${daysPaying} днів.
+            //      ===============================================
+            //      Якщо цей лист потрапив до вас випадково, 
+            //      видалить його та не звертайте уваги.
+            //     `
+            // )
             return res.status(200).json({message: `Оплату юзера ${email} змінено`})
         }
     })
