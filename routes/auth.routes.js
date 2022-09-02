@@ -1,10 +1,6 @@
 const Router = require("express")
 const express = require("express")
 const _ = require("lodash")
-
-// const multer  = require("multer")
-// const app = express()
-// const formidable = require('formidable')
 const json2csv = require("json2csv")
 // const extfs = require('extfs')
 const convertCsvToXlsx = require('@aternus/csv-to-xlsx')
@@ -14,12 +10,9 @@ const alert = require('alert')
 const User = require("../models/User")
 const bcrypt = require("bcryptjs")
 const config = require("config")
-// const fse = require('fs-extra')
 const fs = require('fs')
-// const uuidv1 = require('uuidv1')
 const path = require('path')
-// const shell = require('shelljs');
-// var mv = require('mv')
+
 
 const jwt = require("jsonwebtoken")
 const {check, validationResult} = require("express-validator")
@@ -41,10 +34,8 @@ const {
         getAccessToStart} = require("../controllers/authController");
 const {createDir} = require('../myFunctions/createFolder');
 const {clg, noteServiceEnd, getNumberOfDays} = require('../myFunctions/myFunctions');
-const authMiddleware = require("../middleware/auth.middleware")
+// const authMiddleware = require("../middleware/auth.middleware")
 
-// const fileService = require('../services/fileService')
-// const File = require('../models/File')
 let results = []
 
 
@@ -63,40 +54,46 @@ router.post('/resset-pass', resetPassword)
 router.post('/login',
     async (req, res) => {
         // let randFilePath = req.cookies.randFilePath // 
-        let csvpath = req.cookies.csvpath
-        let exelpath = req.cookies.exelpath
-        let dirpath = req.cookies.dirpath //idNameFolder
+         //idNameFolder
         // filePathDeleter(randFilePath) //randNameFile in dest-folder
-        filePathDeleter(csvpath)
-        filePathDeleter(exelpath)
+        
         // console.log(dirpath)
         // deleteFolder(dirpath) // delete idNameFolder
         // rimraf(dirpath) // 
-        res.clearCookie('newpath')
-        res.clearCookie('cookid')
+        // res.clearCookie('newpath')
+        // res.clearCookie('cookid')
         try {
             const {email, password} = req.body
             let user = await User.findOne({email})
             if (!user) {
                 return res.status(404).json({message: "User not found"})
             }
-            // clg('user', user)
-            // const users = await User.find()
-            // clg('users', users)
             const isPassValid = bcrypt.compareSync(password, user.password)
             if (!isPassValid) {
                 return res.status(400).json({message: "Invalid password"})
             }
             const token = jwt.sign({id: user.id, email: user.email}, config.get("secretKey"), {expiresIn: "1h"})
-            // res.cookie('originalFile', originalFile)
-            dirpath = `${config.get('filePath')}\\${user.id}`
-            // deleteFolder(dirpath)
-            res.cookie('cookid', user.id)
+            const refreshToken = jwt.sign({id: user.id, email: user.email}, config.get("JWT_REF_ACTIVATE"), {expiresIn: "30d"})
+            let dirpath = `${config.get('filePath')}\\${user.id}`
+            if(user.temp[0]){
+                let randFilePath = user.temp[0].randFilePath
+                let csvpath = user.temp[0].csvpath
+                let exelpath = user.temp[0].exelpath
+                filePathDeleter(csvpath)
+                filePathDeleter(exelpath)
+                filePathDeleter(randFilePath)
+            }
             res.cookie('token', token, {
+                httpOnly: true
+            })
+            res.cookie('refreshToken', refreshToken, {
                 httpOnly: true
             })
             if(user.status === 'admin'){
                 res.cookie('admin', 'admin')
+            }
+            if(user.status === 'user'){
+                res.cookie('user', 'user')
             }
             let daysLeft = getNumberOfDays(new Date(), new Date(user.endDay))
             if(daysLeft < 0) daysLeft = 0
@@ -145,6 +142,8 @@ cookieJwtAuth,
 // authMiddleware,
 async (req, res) => {
     const token = req.cookies.token
+    const refreshToken = req.cookies.refreshToken
+    console.log(`refreshToken: ${refreshToken}`)
     if(!token){
         // return res.redirect('http://localhost:5000/enter')
         return res.status(403).json({"message": "Ви не авторизувались"})
@@ -154,19 +153,14 @@ async (req, res) => {
     let dirpath = `${config.get("filePath")}\\${user.id}`
 
     let filedata = req.file
-    console.log(`dirpath: ${dirpath}`)
+    // console.log(`dirpath: ${dirpath}`)
     deleteFolder(dirpath)
     let originalFile = filedata.originalname
-
-    
     let randFilePath = `${config.get("filePath")}\\${filedata.filename}` //path for  file .csv in 'dest/req.cookies.cookid/' in project-folder
 
-
     try {
-    // let originalFile = `${req.cookies.originalFile}`
     let fileExt = path.extname(originalFile)
     if(fileExt !== '.csv') return res.send('Некоректне розширення файлу! Поверниться на крок назад, та оберить файл с розширенням ".csv" на прикінці.')
-    
     await createDir(dirpath)
     
     await moveFile(randFilePath, `${dirpath}\\${filedata.filename}`)
@@ -175,15 +169,15 @@ async (req, res) => {
     let exelpath = `${dirpath}\\newxl.xlsx` 
      // path for dir 'files/thisId' in project-folder
     console.log(randFilePath)
-    res.cookie('randFilePath', randFilePath)
-    res.cookie('dirpath', dirpath)
+    // res.cookie('randFilePath', randFilePath)
+    // res.cookie('dirpath', dirpath)
     
     // user.temp[user.temp.length-1].dirpath = dirpath
     // user.temp[0].randFilePath = randFilePath
     
     
-    console.log(`${user.payments[0].sum}`)
-    console.log(`${user.temp.length}`)
+    console.log(`user.payments[0].sum: ${user.payments[0].sum}`)
+    console.log(`user.temp.length: ${user.temp.length}`)
     if (user.temp.length < 1 || !user.temp.length){
         user.temp.push({dirpath, randFilePath, csvpath, exelpath})
         await user.save((err, result) => {
@@ -194,7 +188,6 @@ async (req, res) => {
             }}
         ) 
     } else {
-        // let users = 
         await user.updateOne(
                 {temp: {dirpath, randFilePath, csvpath, exelpath} }
               ),
@@ -273,10 +266,17 @@ router.post('/upload01',
 
 router.post('/upload1', 
     cookieJwtAuth, 
-    (req, res) => {
-        console.log(req.cookies.cookid)
-        let dirpath = (req.cookies.dirpath)
-        console.log(`${dirpath}\\newcsv.csv`)
+    async (req, res) => {
+        const token = req.cookies.token
+        if(!token){
+            // return res.redirect('http://localhost:5000/enter')
+            return res.status(403).json({"message": "Ви не авторизувались"})
+        }
+        let user = await getUserfromToken(token)
+        let dirpath = `${config.get("filePath")}\\${user.id}`
+        // console.log(req.cookies.cookid)
+        // let dirpath = (req.cookies.dirpath)
+        // console.log(`${dirpath}\\newcsv.csv`)
         if(fs.existsSync(`${dirpath}\\newcsv.csv`)) {
             fs.unlinkSync(`${dirpath}\\newcsv.csv`)
             console.log('csv deleted')
@@ -288,11 +288,11 @@ router.post('/upload1',
         console.log('upload-func')
         /// console.log(results)
         if(!req.body) return response.sendStatus(400);
-        console.log(req.body.req_find);
+        // console.log(req.body.req_find);
         //change data file
         for (let i = 0; i < results.length; i++) {
             console.log("req.body.req_find:")
-            console.log(req.body.req_find[i]);
+            // console.log(req.body.req_find[i]);
             results[i]['Поисковые_запросы'] = req.body.req_find[i];
             results[i]['Название_позиции'] = req.body.req_name[i];
             results[i]['Название_группы'] = req.body.req_group[i]
@@ -344,16 +344,32 @@ router.post('/upload1',
 
 router.post('/upload2',
     cookieJwtAuth, 
-    (req, res) => {
-        let dirpath = (req.cookies.dirpath)
-        let randFilePath = (req.cookies.randFilePath)
-        let csvpath = `${dirpath}newcsv.csv`
-        let exelpath = `${dirpath}newxl.xlsx`
+    async (req, res) => {
 
-        res.cookie('csvpath', csvpath)
-        res.cookie('exelpath', exelpath)
+        const token = req.cookies.token
+        if(!token){
+            // return res.redirect('http://localhost:5000/enter')
+            return res.status(403).json({"message": "Ви не авторизувались"})
+        }
+        let user = await getUserfromToken(token)
+        let dirpath = `${config.get("filePath")}\\${user.id}`
         
-        res.download(`${dirpath}\\newxl.xlsx`, async function () {
+
+        // let dirpath = (req.cookies.dirpath)
+        // let randFilePath = (req.cookies.randFilePath)
+        // let csvpath = `${dirpath}newcsv.csv`
+        // let exelpath = `${dirpath}newxl.xlsx`
+        let randFilePath = user.temp[0].randFilePath
+        let csvpath = user.temp[0].csvpath
+        let exelpath = user.temp[0].exelpath
+
+
+        // res.cookie('csvpath', csvpath)
+        // res.cookie('exelpath', exelpath)
+        
+        // res.download(`${dirpath}\\newxl.xlsx`,
+        res.download(exelpath,
+         async function () {
             // filePathDeleter(csvpath)
             // filePathDeleter(exelpath)
             // filePathDeleter(randFilePath)
@@ -377,12 +393,7 @@ router.post('/upload2',
         try {
             let dirpath = (req.cookies.dirpath)
             deleteFolder(dirpath)
-            res
-                .clearCookie("exelpath")  
-                .clearCookie("randFilePath")  
-                .clearCookie("csvpath")  
-                .clearCookie("dirpath")  
-                // .clearCookie("token")
+            res.clearCookie("token")
                 // .clearCookie("token")
             return res.render('./start.hbs')
         } catch (e) {
@@ -402,13 +413,15 @@ router.post('/upload2',
     deleteFolder(dirpath)
     
     res
-      .clearCookie("exelpath")  
-      .clearCookie("randFilePath")  
-      .clearCookie("csvpath")  
-      .clearCookie("dirpath")  
+    //   .clearCookie("exelpath")  
+    //   .clearCookie("randFilePath")  
+    //   .clearCookie("csvpath")  
+    //   .clearCookie("dirpath")  
       .clearCookie("token")
-      .clearCookie("cookid")
+      .clearCookie("user")
       .clearCookie("admin")
+    //   .clearCookie("cookid")
+    //   .clearCookie("admin")
     //   .status(200)
     // return res.redirect('/enter')
     return res

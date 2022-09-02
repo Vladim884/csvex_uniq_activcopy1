@@ -35,6 +35,7 @@ exports.signup = async (req, res) => {
             return res.status(400).json({message: `Для регистрации неоходимо согласие с правилами и договором`})
         }
         const token = jwt.sign({nicname, email, password}, config.get('JWT_ACC_ACTIVATE'), {expiresIn: 60 * 60})
+        const refreshToken = jwt.sign({nicname, email, password}, config.get('JWT_REF_ACTIVATE'), {expiresIn: "30d"})
         emailOptionsSend(
             'ivladim95@gmail.com',
             'ACTIVATE YOUR ACCOUNT',
@@ -246,7 +247,7 @@ exports.getTokenUserData = async (req, res, next) => {
     // return res.render('./cabinet.hbs')
     } catch (err) {
         console.log(`err: ${err}`)
-        res.status(401).json({message: 'Помилка встаговлення юзера'})
+        res.status(401).json({message: 'Помилка встановлення юзера'})
 
     }
 }
