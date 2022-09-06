@@ -11,7 +11,9 @@ const {
     formatNowDate, 
     clg,
     transporter,
-    emailOptionsSend } = require('../myFunctions/myFunctions')
+    emailOptionsSend, 
+    getUserfromToken,
+    deleteFolder} = require('../myFunctions/myFunctions')
 // const {formatNowDate} = require('../myFunctions/formatNowDate')
 // const {transporter} = require('../myFunctions/transporter')
 // const {emailOptionsSend} = require('../myFunctions/emailOptionsSend')
@@ -265,4 +267,32 @@ exports.getAccessToStart = async (req, res) => {
     }
     // next()
   }
+
+exports.continueWork = async (req, res, next) => {
+    try {
+        return res.render('./start.hbs')
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+exports.logout = async (req, res) => {
+    const token = req.cookies.token
+        if(!token){
+            // return res.redirect('http://localhost:5000/enter')
+            return res.status(403).json({"message": "Ви не авторизувались"})
+        }
+    let user = await getUserfromToken(token)
+    let dirpath = `${config.get("filePath")}\\${user.id}`
+    deleteFolder(dirpath)
+    
+    res 
+    .clearCookie("token")
+    .clearCookie("user")
+    .clearCookie("admin")
+    return res
+    .status(302)
+    .redirect('/enter')
+    //   .json({ message: "Successfully logged out 😏 🍀" })
+}
 

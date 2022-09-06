@@ -20,8 +20,8 @@ const router = new Router()
 // const authMiddleware = require('../middleware/auth.middleware')
 const {cookieJwtAuth} = require('../middleware/cookieJwtAuth')
 const {filePathDeleter} = require('../myFunctions/filePathDeleter')
-const {deleteFolder} = require('../myFunctions/deleteFolder')
-const {moveFile} = require('../myFunctions/moveFile')
+// const {deleteFolder} = require('../myFunctions/myFunctions')
+// const {moveFile} = require('../myFunctions/moveFile')
 const {getUserfromToken} = require('../myFunctions/myFunctions')
 const {writePaying} = require('../controllers/paymentController')
 const { 
@@ -31,9 +31,12 @@ const {
         resetPassword,
         sendEndPay,
         getTokenUserData, 
-        getAccessToStart} = require("../controllers/authController");
-const {createDir} = require('../myFunctions/createFolder');
-const {clg, noteServiceEnd, getNumberOfDays} = require('../myFunctions/myFunctions');
+        getAccessToStart,
+        continueWork,
+        logout} = require("../controllers/authController");
+// const {createDir} = require('../myFunctions/myFunctions');
+const {clg, noteServiceEnd, getNumberOfDays, deleteFolder} = require('../myFunctions/myFunctions');
+const { upload } = require("../controllers/uploadController")
 // const authMiddleware = require("../middleware/auth.middleware")
 
 let results = []
@@ -53,15 +56,6 @@ router.post('/resset-pass', resetPassword)
 
 router.post('/login',
     async (req, res) => {
-        // let randFilePath = req.cookies.randFilePath // 
-         //idNameFolder
-        // filePathDeleter(randFilePath) //randNameFile in dest-folder
-        
-        // console.log(dirpath)
-        // deleteFolder(dirpath) // delete idNameFolder
-        // rimraf(dirpath) // 
-        // res.clearCookie('newpath')
-        // res.clearCookie('cookid')
         try {
             const {email, password} = req.body
             let user = await User.findOne({email})
@@ -137,80 +131,10 @@ router.post('/login',
     }
 )
 
-router.post('/upload', 
-cookieJwtAuth,
-// authMiddleware,
-async (req, res) => {
-    const token = req.cookies.token
-    const refreshToken = req.cookies.refreshToken
-    console.log(`refreshToken: ${refreshToken}`)
-    if(!token){
-        // return res.redirect('http://localhost:5000/enter')
-        return res.status(403).json({"message": "Ви не авторизувались"})
-    }
-    let user = await getUserfromToken(token)
-    
-    let dirpath = `${config.get("filePath")}\\${user.id}`
-
-    let filedata = req.file
-    // console.log(`dirpath: ${dirpath}`)
-    deleteFolder(dirpath)
-    let originalFile = filedata.originalname
-    let randFilePath = `${config.get("filePath")}\\${filedata.filename}` //path for  file .csv in 'dest/req.cookies.cookid/' in project-folder
-
-    try {
-    let fileExt = path.extname(originalFile)
-    if(fileExt !== '.csv') return res.send('Некоректне розширення файлу! Поверниться на крок назад, та оберить файл с розширенням ".csv" на прикінці.')
-    await createDir(dirpath)
-    
-    await moveFile(randFilePath, `${dirpath}\\${filedata.filename}`)
-    randFilePath = `${dirpath}\\${filedata.filename}` 
-    let csvpath = `${dirpath}\\newcsv.csv`
-    let exelpath = `${dirpath}\\newxl.xlsx` 
-     // path for dir 'files/thisId' in project-folder
-    console.log(randFilePath)
-    // res.cookie('randFilePath', randFilePath)
-    // res.cookie('dirpath', dirpath)
-    
-    // user.temp[user.temp.length-1].dirpath = dirpath
-    // user.temp[0].randFilePath = randFilePath
-    
-    
-    console.log(`user.payments[0].sum: ${user.payments[0].sum}`)
-    console.log(`user.temp.length: ${user.temp.length}`)
-    if (user.temp.length < 1 || !user.temp.length){
-        user.temp.push({dirpath, randFilePath, csvpath, exelpath})
-        await user.save((err, result) => {
-            if(err){
-                return res.status(400).json({message: `Помилка запису в temp-data: ${randFilePath} ${dirpath}`})
-            } else {
-                console.log('upload temp-data змінено')
-            }}
-        ) 
-    } else {
-        await user.updateOne(
-                {temp: {dirpath, randFilePath, csvpath, exelpath} }
-              ),
-            function (err, docs) {
-            if (err){
-                console.log(err)
-            }
-            else{
-                console.log("Updated Docs : ", docs);
-            }
-        }
-    }
-    
-    
-    
-    res.render("upload01.hbs")
-    } catch (error) {
-        console.log(error)
-    }
-})
+router.post('/upload', [cookieJwtAuth], upload)
 
 router.post('/upload01',
-    cookieJwtAuth, 
+    [cookieJwtAuth], 
     async (req, res) => {
         // const token = req.cookies.token
         // if(!token){
@@ -218,18 +142,35 @@ router.post('/upload01',
             // return res.status(403).json({"message": "Ви не авторизувались"})
         // }
         // let user = await getUserfromToken(token)
-        results = []
-        let resfind = []
-        let resname = []
-        let resgroup = []
+        if(!randFilePath){
+            console.log('!!!!!')
+        }
+        fs.readFile(randFilePath, (err, result) => {
+            if (err) {
+              console.error(`err: ${err}`);
+              return;
+            }
+            // Log the file contents if no error
+            console.log(result);
+          });
+        try {
+            results = []
+            let resfind = []
+            let resname = []
+            let resgroup = []
         // let randFilePath = req.cookies.randFilePath
         // let dirpath = req.cookies.dirpath
         // console.log(`randFilePath: ${user.temp[0].randFilePath}`)
-        // console.log(`dirpath: ${user.temp[0].dirpath}`)
+        // console.log(randFilePath)
 
-        try {
-            // if (!fs.existsSync(dirpath)) {
+        
+            // if (!fs.existsSync(randFilePath)) {
             //     res.render('./login.hbs')
+            // }
+            
+            // if(randFilePath === undefined){
+            //     console.log('miss')
+            // //     return res.json({'mrssage': 'randFilePath is not defined'})
             // }
         fs.createReadStream(randFilePath)
         .pipe(csv())
@@ -259,6 +200,7 @@ router.post('/upload01',
             })
         }) 
     } catch (e) {
+        console.log('miss in api/auth/upload01')
         console.log(e)
     }
 })
@@ -385,91 +327,16 @@ router.post('/upload2',
             //     })
     
     // return res.send('<a href="/">hello</a>')
-  })
+})
 
-  router.get('/work', 
-    cookieJwtAuth, 
-    (req, res, next) => {
-        try {
-            let dirpath = (req.cookies.dirpath)
-            deleteFolder(dirpath)
-            res.clearCookie("token")
-                // .clearCookie("token")
-            return res.render('./start.hbs')
-        } catch (e) {
-            console.log(e)
-        }
-        
-    })
+router.get('/continueWork', cookieJwtAuth, continueWork)
 
-  router.get("/logout", (req, res) => {
-    // alert('Вы вышли из системы') 
-    let dirpath = (req.cookies.dirpath)
-    // if(!dirpath) return res.redirect('/')
-    
-    // extfs.isEmpty(dirpath, function (empty) {
-    //     console.log(empty)
-    // });
-    deleteFolder(dirpath)
-    
-    res
-    //   .clearCookie("exelpath")  
-    //   .clearCookie("randFilePath")  
-    //   .clearCookie("csvpath")  
-    //   .clearCookie("dirpath")  
-      .clearCookie("token")
-      .clearCookie("user")
-      .clearCookie("admin")
-    //   .clearCookie("cookid")
-    //   .clearCookie("admin")
-    //   .status(200)
-    // return res.redirect('/enter')
-    return res
-      .status(302)
-      .redirect('/enter')
-    //   .json({ message: "Successfully logged out 😏 🍀" })
-       
-  });
+router.get("/logout", cookieJwtAuth, logout)
 
-  router.get('/start', cookieJwtAuth, getAccessToStart)
-//   router.get('/start', cookieJwtAuth, getAccessToStart)
-
-// router.get('/auth', cookieJwtAuth,
-//     async (req, res) => {
-//         try {
-//             const user = await User.findOne({_id: req.user.id})
-//             const user = await User.findOne({_id: req.user.id})
-//             const token = jwt.sign({id: user.id}, config.get("secretKey"), {expiresIn: "1h"})
-//             const token = jwt.sign({id: user.id}, config.get("secretKey"), {expiresIn: "1h"})
-//             return res.json({
-//                 token,
-//                 user: {
-//                     id: user.id,
-//                     email: user.email,
-//                     diskSpace: user.diskSpace,
-//                     usedSpace: user.usedSpace,
-//                     avatar: user.avatar
-//                 }
-//             })
-//         } catch (e) {
-//             console.log(e)
-//             console.log("Server error")
-//             // res.send({message: "Server error"})
-//         }
-//     }
-// )
-
-// router.get('/enter', (req, res)=>{
-//     return res.render('./login.hbs')
-// })
-
-// router.get('/registr', (req, res)=>{
-//     return res.render('./registration.hbs')
-// })
+router.get('/start', cookieJwtAuth, getAccessToStart)
 
 router.get("/user", async function(req, res){
     const user = await User.findOne({email: 'vov2@gmail.com'})
-    // const user = await User.findOne({email: 'vov2@gmail.com'})
     console.log(`users-users: ${user}`)
     // res.end({user: `${user}`})
     // res.end({user: {
@@ -489,11 +356,9 @@ router.get("/user", async function(req, res){
             
 });
 
-// router.post('/writepaying', cookieJwtAuth, writePaying)
 router.post('/writepaying', cookieJwtAuth, writePaying)
 router.post('/sendendpay', cookieJwtAuth, sendEndPay)
 router.get('/usercabinet', cookieJwtAuth, getTokenUserData)
 router.get('/payhistory', cookieJwtAuth, getTokenUserData)
-// router.get('/usercabinet', cookieJwtAuth, getTokenUserData)
 
 module.exports = router

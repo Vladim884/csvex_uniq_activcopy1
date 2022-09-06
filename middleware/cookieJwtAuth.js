@@ -7,13 +7,10 @@ exports.cookieJwtAuth = (req, res, next) => {
     const token = req.cookies.token
     // console.log(`cookieJwtAuth-cookie-token ${req.cookies.token}`)
    if(!token){
-    res
-          .clearCookie("exelpath")  
-          .clearCookie("randFilePath")  
-          .clearCookie("csvpath")  
-          .clearCookie("dirpath")  
-          .clearCookie("token")
-          .clearCookie("cookid")
+    res 
+      .clearCookie("token")
+      .clearCookie("user")
+      .clearCookie("admin")
     // return res.redirect('http://localhost:5000/enter')
     return res.status(403).json({"message": "Ви не авторизувались"})
    }
@@ -29,12 +26,11 @@ exports.cookieJwtAuth = (req, res, next) => {
        console.log(`err: ${err}`)
     //    res.clearCookie('token')
        alert('Время сессии истекло, пожалуйста, выполните вход')
-       res.clearCookie('cookid')
-       res.clearCookie('token')
-       res.clearCookie('dirpath')
-       res.clearCookie('randFilePath')
-       res.redirect('http://localhost:5000/enter')
-            // .clearCookie('cookid')
+       res 
+         .clearCookie("token")
+         .clearCookie("user")
+         .clearCookie("admin")
+         .redirect('http://localhost:5000/enter')
    }
 }
 

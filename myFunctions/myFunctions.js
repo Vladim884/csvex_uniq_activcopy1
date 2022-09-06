@@ -3,7 +3,17 @@ const jwt = require("jsonwebtoken")
 const User = require("../models/User")
 const config = require("config")
 const alert = require('alert')
+const fs = require('fs')
 
+exports.createDir = async  (dirPath) => {
+    if( !fs.existsSync(dirPath) ){
+        fs.mkdirSync(dirPath, err => {
+            if (err)
+            throw err // не удалось создать папку
+            console.log(`Папка ${cookid} успешно создана`)
+        })
+    }
+}
 
 
 exports.formatDate = (sum) => {
@@ -107,5 +117,37 @@ exports.getUserfromToken = (token) => {
         return res.status(404).json({message: "User not found"})
     }
     return user
+}
+
+exports.moveFile = async (fromPath, toPath) => {
+    fs.rename(fromPath, toPath, err => {
+// fs.rename(`${randFilePath}`, `${dirpath}\\mycsv.csv`, err => {
+    if(err) throw err; // не удалось переместить файл
+        console.log('Файл успешно перемещён');
+        randFilePath = toPath
+    })
+}
+
+exports.deleteFolder = (p) => {
+    console.log('-deleteFolder-')
+    try {
+        let files = [];
+        if( fs.existsSync(p) ) {
+            files = fs.readdirSync(p);
+            files.forEach(function(file, index){
+                let curPath = p + "/" + file;
+                if(fs.statSync(curPath).isDirectory()) {
+                    deleteFolder(curPath);
+                } else {
+                    fs.unlinkSync(curPath);
+                }
+            });
+            fs.rmdirSync(p);
+        } else {
+            console.log('randomNameFolder not exists')
+        }
+    } catch (e) {
+        console.log(e)
+    }
 }
 
