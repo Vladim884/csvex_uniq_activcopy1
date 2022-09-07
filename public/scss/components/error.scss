@@ -1,0 +1,22 @@
+.error {
+    h1 {
+        text-align: center;
+        font-size: 30px;
+        color: $darky;
+        margin-top: 40px;
+        margin-bottom: 40px;
+    }
+    .err-img {
+        width: 200px;
+        height: 200px;
+        margin: 0 auto;
+        border-radius: 50%;
+        outline: 10px solid $medy;
+        // border: 3px solid #006666;
+        background-image: url(/img/kitten.jpg);
+        background-repeat: no-repeat;
+        background-size: 258%;
+        background-position: 82% 50%;
+
+    }
+}

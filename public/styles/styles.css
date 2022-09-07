@@ -898,6 +898,25 @@ button.btn-disabled:focus {
   color: rgb(31, 30, 30);
 }
 
+.error h1 {
+  text-align: center;
+  font-size: 30px;
+  color: #006666;
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+.error .err-img {
+  width: 200px;
+  height: 200px;
+  margin: 0 auto;
+  border-radius: 50%;
+  outline: 10px solid #99CCCC;
+  background-image: url(/img/kitten.jpg);
+  background-repeat: no-repeat;
+  background-size: 258%;
+  background-position: 82% 50%;
+}
+
 html {
   height: 100%;
 }

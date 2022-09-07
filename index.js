@@ -49,7 +49,7 @@ let req
 
 app.use(multer({dest : 'dest'}).single("filedata"))
 
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/public'))
 app.use("/api/auth", authRouter)
 app.use("/api/files", fileRouter)
 
@@ -101,6 +101,17 @@ app.use("/payhistory", function(req, res){
 
 app.use("/", function(req, res){
     res.render('index.hbs')
+})
+
+// Error handling
+app.use((err, req, res, next) => {
+    console.error('Error:', err.stack);
+    res.status(502);
+    res.render('error', {errorMsg: 'Server Error'});
+});
+app.use((req, res) => {
+    res.status(404);
+    res.render('error', {errorMsg: 'Not Found'});
 })
 
 const start = async () => {

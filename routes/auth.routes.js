@@ -33,7 +33,8 @@ const {
         getTokenUserData, 
         getAccessToStart,
         continueWork,
-        logout} = require("../controllers/authController");
+        logout,
+        login} = require("../controllers/authController");
 // const {createDir} = require('../myFunctions/myFunctions');
 const {clg, noteServiceEnd, getNumberOfDays, deleteFolder} = require('../myFunctions/myFunctions');
 const { upload } = require("../controllers/uploadController")
@@ -54,105 +55,30 @@ router.post('/forgot-password', forgotPassword)
 router.post('/resset-pass', resetPassword)
 
 
-router.post('/login',
-    async (req, res) => {
-        try {
-            const {email, password} = req.body
-            let user = await User.findOne({email})
-            if (!user) {
-                return res.status(404).json({message: "User not found"})
-            }
-            const isPassValid = bcrypt.compareSync(password, user.password)
-            if (!isPassValid) {
-                return res.status(400).json({message: "Invalid password"})
-            }
-            const token = jwt.sign({id: user.id, email: user.email}, config.get("secretKey"), {expiresIn: "1h"})
-            const refreshToken = jwt.sign({id: user.id, email: user.email}, config.get("JWT_REF_ACTIVATE"), {expiresIn: "30d"})
-            let dirpath = `${config.get('filePath')}\\${user.id}`
-            if(user.temp[0]){
-                let randFilePath = user.temp[0].randFilePath
-                let csvpath = user.temp[0].csvpath
-                let exelpath = user.temp[0].exelpath
-                filePathDeleter(csvpath)
-                filePathDeleter(exelpath)
-                filePathDeleter(randFilePath)
-            }
-            res.cookie('token', token, {
-                httpOnly: true
-            })
-            res.cookie('refreshToken', refreshToken, {
-                httpOnly: true
-            })
-            if(user.status === 'admin'){
-                res.cookie('admin', 'admin')
-            }
-            if(user.status === 'user'){
-                res.cookie('user', 'user')
-            }
-            let daysLeft = getNumberOfDays(new Date(), new Date(user.endDay))
-            if(daysLeft < 0) daysLeft = 0
-            let balance = daysLeft * 100 / 30
-            if(balance < 0) balance = 0
-            if (daysLeft !== user.daysLeft || balance !== user.balance) {
-                let obj = {
-                    daysLeft,
-                    balance
-                }
-                user = _.extend(user, obj)
-                user.save((err, result) => {
-                    if(err){
-                        return res.status(400).json({message: `Ошибка изменения оплати юзера ${email}`})
-                    } else {
-                        console.log('Баланс та залишок днів при логіні змінено???')
-                    }})
-            } else {
-                console.log('Data has not changed')
-            }
-            
-            // return res.json({
-            //     token,
-                // user: {
-                //     id: user.id,
-                //     email: user.email,
-                //     diskSpace: user.diskSpace,
-                //     usedSpace: user.usedSpace,
-                //     avatar: user.avatar
-                // }
-            // })
-            // console.log(`loginFunc cookid: ${req.cookies.cookid}`)
-            
-            return res.render('./cabinet.hbs') 
-            //  return res.json({'message': 'login ok'}) 
-
-            
-        } catch (e){
-            console.log(`/login e: ${e}`)
-        }
-    }
-)
+router.post('/login', login)
 
 router.post('/upload', [cookieJwtAuth], upload)
 
 router.post('/upload01',
     [cookieJwtAuth], 
-    async (req, res) => {
+    async (req, res, next) => {
         // const token = req.cookies.token
         // if(!token){
             // return res.redirect('http://localhost:5000/enter')
             // return res.status(403).json({"message": "Ви не авторизувались"})
         // }
         // let user = await getUserfromToken(token)
-        if(!randFilePath){
-            console.log('!!!!!')
-        }
-        fs.readFile(randFilePath, (err, result) => {
-            if (err) {
-              console.error(`err: ${err}`);
-              return;
-            }
-            // Log the file contents if no error
-            console.log(result);
-          });
+        // if(!randFilePath){
+        //     console.log('!!!!!')
+        // }
+        // fs.readFile(randFilePath, (err, result) => {
+        //     if (err) {
+        //       console.error(`err: ${err}`);
+        //       return;
+        //     }
+        //     // Log the file contents if no error
+            // console.log(result);
+        //   });
         try {
             results = []
             let resfind = []
@@ -161,7 +87,7 @@ router.post('/upload01',
         // let randFilePath = req.cookies.randFilePath
         // let dirpath = req.cookies.dirpath
         // console.log(`randFilePath: ${user.temp[0].randFilePath}`)
-        // console.log(randFilePath)
+        // let lengsFile = rand.length
 
         
             // if (!fs.existsSync(randFilePath)) {
@@ -201,7 +127,8 @@ router.post('/upload01',
         }) 
     } catch (e) {
         console.log('miss in api/auth/upload01')
-        console.log(e)
+        console.log(`e: ${e}`)
+        next(e)
     }
 })
 
@@ -209,6 +136,9 @@ router.post('/upload01',
 router.post('/upload1', 
     cookieJwtAuth, 
     async (req, res) => {
+        try {
+            
+        
         const token = req.cookies.token
         if(!token){
             // return res.redirect('http://localhost:5000/enter')
@@ -280,12 +210,12 @@ router.post('/upload1',
                 console.log(message)
             });
         })
-        
+    } catch (err) {
+        console.log(`upload1-err: ${err}`)
     }
-)
+})
 
-router.post('/upload2',
-    cookieJwtAuth, 
+router.post('/upload2', cookieJwtAuth, 
     async (req, res) => {
 
         const token = req.cookies.token
@@ -311,13 +241,14 @@ router.post('/upload2',
         
         // res.download(`${dirpath}\\newxl.xlsx`,
         res.download(exelpath,
-         async function () {
+            async function () {
             // filePathDeleter(csvpath)
             // filePathDeleter(exelpath)
             // filePathDeleter(randFilePath)
-            deleteFolder(dirpath)
-            await res.render('./login.hbs')
-        })
+                deleteFolder(dirpath)
+                await res.render('./login.hbs')
+            }
+        )
         
             //====
             // deleteFolder(dirpath)

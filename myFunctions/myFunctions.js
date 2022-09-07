@@ -146,8 +146,8 @@ exports.deleteFolder = (p) => {
         } else {
             console.log('randomNameFolder not exists')
         }
-    } catch (e) {
-        console.log(e)
+    } catch (err) {
+        console.log(err)
     }
 }
 

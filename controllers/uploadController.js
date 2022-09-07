@@ -7,14 +7,14 @@ const {
 const path = require('path')
 
 
-exports.upload = async (req, res) => {
+exports.upload = async (req, res, next) => {
     try {
         const token = req.cookies.token
+        if(!token){
+            return res.status(403).json({"message": "Ви не авторизувались(!token)"})
+        }
         const refreshToken = req.cookies.refreshToken
         console.log(`refreshToken: ${refreshToken}`)
-        if(!token){
-            return res.status(403).json({"message": "Ви не авторизувались"})
-        }
         let user = await getUserfromToken(token)
         let dirpath = `${config.get("filePath")}\\${user.id}`
         let filedata = req.file
@@ -60,5 +60,6 @@ exports.upload = async (req, res) => {
         res.render("upload01.hbs")
     } catch (error) {
         console.log(error)
+        next(error)
     }
 }

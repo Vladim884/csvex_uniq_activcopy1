@@ -13,7 +13,9 @@ const {
     transporter,
     emailOptionsSend, 
     getUserfromToken,
-    deleteFolder} = require('../myFunctions/myFunctions')
+    deleteFolder,
+    getNumberOfDays} = require('../myFunctions/myFunctions')
+const { filePathDeleter } = require("../myFunctions/filePathDeleter")
 // const {formatNowDate} = require('../myFunctions/formatNowDate')
 // const {transporter} = require('../myFunctions/transporter')
 // const {emailOptionsSend} = require('../myFunctions/emailOptionsSend')
@@ -194,6 +196,81 @@ exports.resetPassword = (req, res) => {
         
     } else {
         res.status(401).json({message: 'Ошибка аутентификации!!!'})
+    }
+}
+
+exports.login = async (req, res) => {
+    try {
+        const {email, password} = req.body
+        let user = await User.findOne({email})
+        if (!user) {
+            return res.status(404).json({message: "User not found"})
+        }
+        const isPassValid = bcrypt.compareSync(password, user.password)
+        if (!isPassValid) {
+            return res.status(400).json({message: "Invalid password"})
+        }
+        const token = jwt.sign({id: user.id, email: user.email}, config.get("secretKey"), {expiresIn: "1h"})
+        const refreshToken = jwt.sign({id: user.id, email: user.email}, config.get("JWT_REF_ACTIVATE"), {expiresIn: "30d"})
+        let dirpath = `${config.get('filePath')}\\${user.id}`
+        if(user.temp[0]){
+            let randFilePath = user.temp[0].randFilePath
+            let csvpath = user.temp[0].csvpath
+            let exelpath = user.temp[0].exelpath
+            filePathDeleter(csvpath)
+            filePathDeleter(exelpath)
+            filePathDeleter(randFilePath)
+        }
+        res.cookie('token', token, {
+            httpOnly: true
+        })
+        res.cookie('refreshToken', refreshToken, {
+            httpOnly: true
+        })
+        if(user.status === 'admin'){
+            res.cookie('admin', 'admin')
+        }
+        if(user.status === 'user'){
+            res.cookie('user', 'user')
+        }
+        let daysLeft = getNumberOfDays(new Date(), new Date(user.endDay))
+        if(daysLeft < 0) daysLeft = 0
+        let balance = daysLeft * 100 / 30
+        if(balance < 0) balance = 0
+        if (daysLeft !== user.daysLeft || balance !== user.balance) {
+            let obj = {
+                daysLeft,
+                balance
+            }
+            user = _.extend(user, obj)
+            user.save((err, result) => {
+                if(err){
+                    return res.status(400).json({message: `Ошибка изменения оплати юзера ${email}`})
+                } else {
+                    console.log('Баланс та залишок днів при логіні змінено???')
+                }})
+        } else {
+            console.log('Data has not changed')
+        }
+        
+        // return res.json({
+        //     token,
+            // user: {
+            //     id: user.id,
+            //     email: user.email,
+            //     diskSpace: user.diskSpace,
+            //     usedSpace: user.usedSpace,
+            //     avatar: user.avatar
+            // }
+        // })
+        // console.log(`loginFunc cookid: ${req.cookies.cookid}`)
+        
+        return res.render('./cabinet.hbs') 
+        //  return res.json({'message': 'login ok'}) 
+
+        
+    } catch (e){
+        console.log(`/login e: ${e}`)
     }
 }
 
