@@ -20,7 +20,7 @@ const { filePathDeleter } = require("../myFunctions/filePathDeleter")
 // const {transporter} = require('../myFunctions/transporter')
 // const {emailOptionsSend} = require('../myFunctions/emailOptionsSend')
 
-exports.signup = async (req, res) => {
+exports.signup = async (req, res, next) => {
     try {
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
@@ -52,91 +52,45 @@ exports.signup = async (req, res) => {
             return res.json({message: `Вам отправлено письмо активации на ${email}, активируйте свой аккаунт.`})
     } catch(err) {
         console.log(err)
+        next(err)
     }
 }
     
-exports.activateAccount = async (req, res) => {
-    const token = req.body.name
-    if (!token){
-        res.json({error: 'Что-то c token не так!'})
-    }
-    if (token) {
-        const {nicname, email, password} = jwt.verify(token, config.get('JWT_ACC_ACTIVATE'))
-        console.log(email)
-        console.log(password)
+exports.activateAccount = async (req, res, next) => {
     try {
-        const hashPassword = await bcrypt.hash(password, 8)
-        const user = new User({nicname, email, password: hashPassword})
-        await user.save()
-        emailOptionsSend(
-            'ivladim95@gmail.com', 
-            'Регистрация на CSV TO EXCEL.', 
-            `
-             Спасибо, что Вы зарегистрировались на CSV-UNIQ!
-             ===============================================
-             Ваши 
-             логин: ${email} 
-             пароль: ${password}
-             Сохраните эти данные в надёжном месте 
-             и удалите это сообщение.
-             `
-        )
-        return res.render('./start.hbs')
+        const token = req.body.name
+        if (!token){
+            res.json({error: 'Что-то c token не так!'})
+        }
+        if (token) {
+            const {nicname, email, password} = jwt.verify(token, config.get('JWT_ACC_ACTIVATE'))
+            console.log(email)
+            console.log(password)
+        
+            const hashPassword = await bcrypt.hash(password, 8)
+            const user = new User({nicname, email, password: hashPassword})
+            await user.save()
+            emailOptionsSend(
+                'ivladim95@gmail.com', 
+                'Регистрация на CSV TO EXCEL.', 
+                `
+                Спасибо, что Вы зарегистрировались на CSV-UNIQ!
+                ===============================================
+                Ваши 
+                логин: ${email} 
+                пароль: ${password}
+                Сохраните эти данные в надёжном месте 
+                и удалите это сообщение.
+                `
+            )
+            return res.render('./start.hbs')
+        }
     } catch(err) {
         console.log(err)
-        res.json({error: 'Что-то пошло не так!'})
+        // res.json({error: 'Что-то пошло не так!'})
+        next(err)
     }
-}}
-
-// exports.writePaying = (req, res) => {
-//     const {email, sumpay} = req.body
-//     const oneDayPay = 100 / 30
-//     const daysPaying = Math.trunc(sumpay / oneDayPay)
-//     const payingDate = new Date()
-//     const payingDayforPeople = formatNowDate()
-//     // console.log(`payingDayforPeople: ${payingDayforPeople}`)
-//     const endDay = new Date(payingDate.getTime() + (daysPaying * 24 * 60 * 60 * 1000)); 
-//     const endDayForPeople = formatDate(daysPaying)
-//     // console.log(`endDay: ${endDay}`)
-//     User.findOne({email}, (err, user) => {
-//         if(err || !user) {
-//             return res.status(400).json({message: `Пользователя с email: ${email} не существует`})
-//         }
-//     user.payments.push({date: new Date, sum: sumpay})
-//         //console.log(`resPayArr: ${resPayArr}`)
-//     // let obj1 = {
-//     //     payingDate,
-//     //     sumpay,
-//     //     daysPaying,
-//     //     endDay,
-//     //     payments
-//     // }
-//     // console.log(obj1)
-//     // user = _.extend(user, obj1)
-//     user.save((err, result) => {
-//         if(err){
-//             return res.status(400).json({message: `Ошибка изменения оплати юзера ${email}`})
-//         } else {
-//             emailOptionsSend(
-//                 'ivladim95@gmail.com',
-//                 'Оплата на CSV TO EXCEL.',
-//                 `
-//                  ${payingDayforPeople} Ви оплатили ${sumpay}грн. та отримали сервіс CSV TO EXCEL 
-//                  на протязі ${daysPaying} днів до ${endDayForPeople} включно.
-                
-//                  ===============================================
-//                  Ваши 
-//                  логин: ${email} 
-//                  Якщо цей лист потрапив до вас випадково, 
-//                  видалить його та не звертайте уваги.
-//                 `
-//             )
-//             return res.status(200).json({message: `Оплату юзера ${email} змінено`})
-//         }
-//     })
-//     })
-    
-// }
+}
 
 exports.forgotPassword = (req, res) => {
     const {email} = req.body
@@ -199,7 +153,7 @@ exports.resetPassword = (req, res) => {
     }
 }
 
-exports.login = async (req, res) => {
+exports.login = async (req, res, next) => {
     try {
         const {email, password} = req.body
         let user = await User.findOne({email})
@@ -271,6 +225,7 @@ exports.login = async (req, res) => {
         
     } catch (e){
         console.log(`/login e: ${e}`)
+        next(e)
     }
 }
 
@@ -332,44 +287,55 @@ exports.getTokenUserData = async (req, res, next) => {
 }
 
 exports.getAccessToStart = async (req, res) => {
-    const user = await User.findOne({_id: req.user.id})
-    if(+user.daysLeft < 1){
-        res.render('./cabinet', {
-            user : req.user // get the user out of session and pass to template
-        })
-    } else {
-        res.render('./start', {
-            user : req.user // get the user out of session and pass to template
-        })
+    try {
+        const user = await User.findOne({_id: req.user.id})
+        if(+user.daysLeft < 1){
+            res.render('./cabinet', {
+                user : req.user // get the user out of session and pass to template
+            })
+        } else
+        //   if  (+user.daysLeft === 1 || +user.daysLeft > 1)
+               {
+            res.render('./start', {
+                user : req.user // get the user out of session and pass to template
+            })
+        }
+    } catch (err) {
+        next(err)
     }
-    // next()
   }
 
-exports.continueWork = async (req, res, next) => {
-    try {
-        return res.render('./start.hbs')
-    } catch (e) {
-        console.log(e)
-    }
-}
+// exports.continueWork = async (req, res, next) => {
+//     try {
+//         return res.render('./start.hbs')
+//     } catch (e) {
+//         console.log(e)
+//     }
+// }
 
-exports.logout = async (req, res) => {
-    const token = req.cookies.token
-        if(!token){
-            // return res.redirect('http://localhost:5000/enter')
-            return res.status(403).json({"message": "Ви не авторизувались"})
-        }
-    let user = await getUserfromToken(token)
-    let dirpath = `${config.get("filePath")}\\${user.id}`
-    deleteFolder(dirpath)
+exports.logout = async (req, res, next) => {
+    try {
+        
+        const token = req.cookies.token
+            if(!token){
+                // return res.redirect('http://localhost:5000/enter')
+                return res.status(403).json({"message": "Ви не авторизувались"})
+            }
+        let user = await getUserfromToken(token)
+        let dirpath = `${config.get("filePath")}\\${user.id}`
+        deleteFolder(dirpath)
+        
+        res 
+        .clearCookie("token")
+        .clearCookie("user")
+        .clearCookie("admin")
+        return res
+        .status(302)
+        .redirect('/enter')
+        //   .json({ message: "Successfully logged out 😏 🍀" })
     
-    res 
-    .clearCookie("token")
-    .clearCookie("user")
-    .clearCookie("admin")
-    return res
-    .status(302)
-    .redirect('/enter')
-    //   .json({ message: "Successfully logged out 😏 🍀" })
+    } catch (err) {
+        next(err)
+    }
 }
 

@@ -38,14 +38,14 @@ hbs.registerPartials(__dirname + "/views/partials");
 
 
 // app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json({limit: '50mb'}));
+// app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 app.use(coocieParser());
 
 // app.use(fileUpload({}))
 app.use(corsMiddleware)
 app.use(express.json())
-let req
+// let req
 
 app.use(multer({dest : 'dest'}).single("filedata"))
 
@@ -60,6 +60,8 @@ app.use("/contacts", function(_, res){
         phone: "+1234567890"
     });
 })
+
+
 
 app.use("/api/auth/activate", function(req, res){
     res.render('activate.hbs')
@@ -99,8 +101,8 @@ app.use("/payhistory", function(req, res){
     res.render('payhistory.hbs')
 })
 
-app.use("/", function(req, res){
-    res.render('index.hbs')
+app.use("/", function(req, res, ){
+    res.render('main.hbs')
 })
 
 // Error handling
@@ -109,10 +111,14 @@ app.use((err, req, res, next) => {
     res.status(502);
     res.render('error', {errorMsg: 'Server Error'});
 });
+
+
 app.use((req, res) => {
     res.status(404);
     res.render('error', {errorMsg: 'Not Found'});
 })
+
+
 
 const start = async () => {
     try {

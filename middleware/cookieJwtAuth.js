@@ -4,6 +4,7 @@ const User = require("../models/User")
 let alert = require('alert')
 
 exports.cookieJwtAuth = (req, res, next) => {
+   try {
     const token = req.cookies.token
     // console.log(`cookieJwtAuth-cookie-token ${req.cookies.token}`)
    if(!token){
@@ -15,13 +16,13 @@ exports.cookieJwtAuth = (req, res, next) => {
     return res.status(403).json({"message": "Ви не авторизувались"})
    }
    
-   try {
+   
     
        //the important part
        const user = jwt.verify(token, config.get('secretKey'))
        req.user = user
     //    console.log(`user-jwt: ${user.email}`)
-       next()
+    next()
    } catch (err) {
        console.log(`err: ${err}`)
     //    res.clearCookie('token')

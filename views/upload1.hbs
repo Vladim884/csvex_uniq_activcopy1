@@ -66,7 +66,7 @@
                     {{!-- <ul> --}}
                         <div class="lifind block">
                             <input name="req_find1" class="find" id="mainphrase" />
-                            <button id="swap" type="button"><></button>
+                            <button id="swap" type="button">swap</button>
                              <button id="nextItem" type="button">next</button>
                              <button type="submit" id="data_save">Save</button>
                         </div>
@@ -91,7 +91,8 @@
     {{!-- <div><a href="/api/auth/work">Продолжить работу</a></div>
     <div><a href="/api/auth/logout">Выйти</a></div> --}}
     <div class="user-links user-links-uload1">
-        <a href="/api/auth/continueWork" class="user-link">Знову</a>
+        {{!-- <a href="/api/auth/continueWork" class="user-link">Знову</a> --}}
+        <a href="/api/auth/start" class="user-link">Знову</a>
         <a href="/api/auth/logout" class="user-link">Вийти</a>
         {{!-- <a href="/enter" class="user-link">Вхід</a>
         <a href="/registration" class="user-link">Реєстрація</a> --}}
