@@ -3,7 +3,7 @@
   <h1>Загрузка файла</h1>
   <p class="form-upload-description">Загрузите ваш файл товарных позиций prom-магазина с раширением .csv</з>
         
-      <form action="/api/auth/upload" method="post" class="form-upload" enctype="multipart/form-data">
+      <form action="/api/system/upload" method="post" class="form-upload" enctype="multipart/form-data">
       <div class="file-upload" id="file-upload">
         <label>
           <input type="file" name="filedata" onchange="getFileName ();" id="uploaded-file">
@@ -31,7 +31,7 @@ subm.disabled = false
 subm.style.cursor = "pointer";
 document.getElementById ('file-name').innerHTML = file;
 }
-const response = fetch("http://localhost:5000/api/auth/upload", { 
+const response = fetch("http://localhost:5000/api/system/upload", { 
                 method: "GET", 
                 headers: { "Authorization": "Bearer TOKEN" },
         })

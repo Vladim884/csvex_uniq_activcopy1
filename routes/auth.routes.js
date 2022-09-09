@@ -57,13 +57,13 @@ router.post('/resset-pass', resetPassword)
 
 router.post('/login', login)
 
-router.post('/upload', [cookieJwtAuth], upload)
+// router.post('/upload', [cookieJwtAuth], upload)
 
-router.post('/upload01', [cookieJwtAuth], upload01)
+// router.post('/upload01', [cookieJwtAuth], upload01)
 
 
-router.post('/upload1', cookieJwtAuth, upload1)
-router.post('/upload2', cookieJwtAuth, upload2)
+// router.post('/upload1', cookieJwtAuth, upload1)
+// router.post('/upload2', cookieJwtAuth, upload2)
 
 router.get("/logout", cookieJwtAuth, logout)
 
