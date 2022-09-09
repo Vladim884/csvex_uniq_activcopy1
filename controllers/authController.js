@@ -286,24 +286,24 @@ exports.getTokenUserData = async (req, res, next) => {
     }
 }
 
-exports.getAccessToStart = async (req, res) => {
-    try {
-        const user = await User.findOne({_id: req.user.id})
-        if(+user.daysLeft < 1){
-            res.render('./cabinet', {
-                user : req.user // get the user out of session and pass to template
-            })
-        } else
-        //   if  (+user.daysLeft === 1 || +user.daysLeft > 1)
-               {
-            res.render('./start', {
-                user : req.user // get the user out of session and pass to template
-            })
-        }
-    } catch (err) {
-        next(err)
-    }
-  }
+// exports.getAccessToStart = async (req, res) => {
+//     try {
+//         const user = await User.findOne({_id: req.user.id})
+//         if(+user.daysLeft < 1){
+//             res.render('./cabinet', {
+//                 user : req.user // get the user out of session and pass to template
+//             })
+//         } else
+//         //   if  (+user.daysLeft === 1 || +user.daysLeft > 1)
+//                {
+//             res.render('./start', {
+//                 user : req.user // get the user out of session and pass to template
+//             })
+//         }
+//     } catch (err) {
+//         next(err)
+//     }
+//   }
 
 // exports.continueWork = async (req, res, next) => {
 //     try {

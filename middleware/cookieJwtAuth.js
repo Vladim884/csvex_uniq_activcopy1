@@ -31,7 +31,8 @@ exports.cookieJwtAuth = (req, res, next) => {
          .clearCookie("token")
          .clearCookie("user")
          .clearCookie("admin")
-         .redirect('http://localhost:5000/enter')
+         // .redirect('http://localhost:5000/enter')
+         .redirect('/enter')
    }
 }
 

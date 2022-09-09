@@ -10,6 +10,7 @@ const config = require("config")
 // const fileUpload = require("express-fileupload")
 const authRouter = require("./routes/auth.routes")
 const fileRouter = require("./routes/file.routes")
+const systemRouter = require("./routes/system.routes")
 const app = express()
 // app.use(express.static(__dirname))
 const PORT = config.get('serverPort')
@@ -52,6 +53,7 @@ app.use(multer({dest : 'dest'}).single("filedata"))
 app.use(express.static(__dirname + '/public'))
 app.use("/api/auth", authRouter)
 app.use("/api/files", fileRouter)
+app.use("/api/system", systemRouter)
 
 app.use("/contacts", function(_, res){
     res.render("contacts", {
