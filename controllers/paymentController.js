@@ -1,5 +1,8 @@
 const User = require("../models/User")
 const _ = require("lodash")
+const jwt = require("jsonwebtoken")
+const config = require("config")
+
 const {
     formatDate, 
     formatNowDate, 
@@ -11,6 +14,13 @@ const {
 
 
 exports.writePaying = async (req, res) => {
+    const token = req.cookies.token
+    if(!token){
+        return res.status(403).json({"message": "Ви не авторизувались"})
+    }
+    const datatoken = jwt.verify(token, config.get('secretKey'))
+    let userRole = datatoken.userRole
+    if(userRole !== 'admin') return res.render('msg', {msg: 'У Вас не має права доступу!'})
     let {email, sumpay} = req.body
     let user = await User.findOne({email})
         if (!user) {
@@ -62,23 +72,24 @@ exports.writePaying = async (req, res) => {
     user = _.extend(user, obj1)
     user.save((err, result) => {
         if(err){
-            return res.status(400).json({message: `Ошибка изменения оплати юзера ${email}`})
+            return res.status(400).render('msg', {msg: `Ошибка изменения оплати юзера ${email}`})
         } else {
             console.log(`7 lastPayment.date: ${lastPayment.date}`)
-            // let payingDateForPeople = formatNowDate(lastPayment.date)
-            // emailOptionsSend(
-            //     'ivladim95@gmail.com',
-            //     'Оплата на CSV TO EXCEL.',
-            //     `${user.nicname}, Вас вітає команда CSV TO EXCEL!
-            //     Дякуємо, що Ви обрали наш сервіс!
-            //      ${payingDateForPeople} Ви оплатили ${sumpay}грн. та отримали активацію сервісу CSV TO EXCEL 
-            //      на ${daysPaying} днів.
-            //      ===============================================
-            //      Якщо цей лист потрапив до вас випадково, 
-            //      видалить його та не звертайте уваги.
-            //     `
-            // )
-            return res.status(200).json({message: `Оплату юзера ${email} змінено`})
+            let payingDateForPeople = formatNowDate(lastPayment.date)
+            emailOptionsSend(
+                'ivladim95@gmail.com',
+                'Оплата на CSV TO EXCEL.',
+                `${user.nicname}, Вас вітає команда CSV TO EXCEL!
+                Дякуємо, що Ви обрали наш сервіс!
+                 ${payingDateForPeople} Ви оплатили ${sumpay}грн. та отримали активацію сервісу CSV TO EXCEL 
+                 на ${daysPaying} днів.
+                 ===============================================
+                 Якщо цей лист потрапив до вас випадково, 
+                 видалить його та не звертайте уваги.
+                `
+            )
+            // return res.status(200).json({message: `Оплату юзера ${email} змінено`})
+            return res.status(200).render('msg', {msg: `Оплату юзера ${email} успішно змінено`})
         }
     })
 }

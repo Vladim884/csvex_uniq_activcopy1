@@ -27,7 +27,12 @@ exports.signup = async (req, res, next) => {
             return res.status(400).json({message: "Uncorrect request", errors})
         }
         if (!req.body.flag) {
-            return res.render('./message.hbs')
+            return res.render('registration', {
+                msg: `Щоб  зареєструватися на сайті 
+                      треба подтвердження Вашеої згоди 
+                      з умовами та офертою`
+                    }
+            )
         }
         console.log(req.body)
         const {nicname, email, password} = req.body
@@ -149,7 +154,7 @@ exports.resetPassword = (req, res) => {
         })
         
     } else {
-        res.status(401).json({message: 'Ошибка аутентификации!!!'})
+        return res.status(401).render('error', {msg: 'Ошибка аутентификации!!!'})
     }
 }
 
@@ -164,7 +169,7 @@ exports.login = async (req, res, next) => {
         if (!isPassValid) {
             return res.status(400).json({message: "Invalid password"})
         }
-        const token = jwt.sign({id: user.id, email: user.email}, config.get("secretKey"), {expiresIn: "1h"})
+        const token = jwt.sign({id: user.id, email: user.email, userRole: user.status}, config.get("secretKey"), {expiresIn: "1h"})
         const refreshToken = jwt.sign({id: user.id, email: user.email}, config.get("JWT_REF_ACTIVATE"), {expiresIn: "30d"})
         let dirpath = `${config.get('filePath')}\\${user.id}`
         if(user.temp[0]){

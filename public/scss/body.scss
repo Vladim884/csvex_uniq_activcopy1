@@ -16,7 +16,10 @@ body {
     background: #006666;
 }
 
-
+.msg {
+  margin: 20px 0;
+  text-align: center;
+}
 
   .red {
     background-color: red;
@@ -69,6 +72,7 @@ body {
       font-weight: 500;
       color: $darky;
     }
+    
     p {
       width: 500px;
       font-size: 12px;

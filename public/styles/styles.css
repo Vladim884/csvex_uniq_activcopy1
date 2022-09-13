@@ -379,7 +379,7 @@ button.btn-disabled:focus {
   border: 1px solid #006666;
   background-color: #99CCCC;
 }
-.form-block h3 {
+.form-block h1, .form-block h3 {
   font-weight: 500;
   margin: 0 auto;
   text-align: center;
@@ -933,6 +933,11 @@ body {
 ::selection {
   color: white;
   background: #006666;
+}
+
+.msg {
+  margin: 20px 0;
+  text-align: center;
 }
 
 .red {
