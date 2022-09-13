@@ -5,7 +5,9 @@ const {
     formatNowDate, 
     clg,
     emailOptionsSend,
-    getNumberOfDays } = require('../myFunctions/myFunctions')
+    getNumberOfDays, 
+    getUserfromToken} = require('../myFunctions/myFunctions')
+
 
 
 exports.writePaying = async (req, res) => {

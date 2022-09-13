@@ -78,9 +78,9 @@ app.use("/enter", function(req, res){
     res.render('enter.hbs')
 })
 
-app.use("/api/auth/start", function(req, res){
-    res.render('start.hbs')
-})
+// app.use("/api/auth/start", function(req, res){
+//     res.render('start.hbs')
+// })
 
 
 app.use("/forgpass", function(req, res){
@@ -103,7 +103,7 @@ app.use("/payhistory", function(req, res){
     res.render('payhistory.hbs')
 })
 
-app.use("/", function(req, res, ){
+app.use("/main", function(req, res, ){
     res.render('main.hbs')
 })
 
@@ -117,7 +117,7 @@ app.use((err, req, res, next) => {
 
 app.use((req, res) => {
     res.status(404);
-    res.render('error', {errorMsg: 'Not Found'});
+    res.render('error', {errorMsg: 'Not Found'})
 })
 
 

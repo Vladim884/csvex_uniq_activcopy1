@@ -1,0 +1,42 @@
+<section>
+
+  <h1>Загрузка файла</h1>
+  <p class="form-upload-description">Загрузите ваш файл товарных позиций prom-магазина с раширением .csv</з>
+        
+      <form action="/api/system/upload" method="post" class="form-upload" enctype="multipart/form-data">
+      <div class="file-upload" id="file-upload">
+        <label>
+          <input type="file" name="filedata" onchange="getFileName ();" id="uploaded-file">
+          <span class="file-upload-title">Оберіть файл csv</span>
+        </label>
+      </div>
+      <div id="file-name">
+        <span>Файл не обрано</span>
+      </div>
+      <div class="but-box">
+      
+      <input type="submit" class="filesubm" id="filesubm" value="Відправити" disabled>
+      </div>
+      </form>
+
+</section>
+<script>
+function getFileName () {
+let subm = document.getElementById('filesubm')
+let file = document.getElementById ('uploaded-file').value
+let spanName = document.getElementsByTagName('span')
+file = file.replace(/\\/g, "/").split ('/').pop ()
+spanName[0].textContent = "І'мя файла:"
+subm.disabled = false
+subm.style.cursor = "pointer";
+document.getElementById ('file-name').innerHTML = file;
+}
+const response = fetch("http://localhost:5000/api/system/upload", { 
+                method: "GET", 
+                headers: { "Authorization": "Bearer TOKEN" },
+        })
+        //const data = response.json()
+ 
+</script>
+
+
