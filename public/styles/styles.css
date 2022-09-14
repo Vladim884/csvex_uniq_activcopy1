@@ -917,6 +917,10 @@ button.btn-disabled:focus {
   background-position: 82% 50%;
 }
 
+.action input {
+  -webkit-appearance: checkbox;
+}
+
 html {
   height: 100%;
 }

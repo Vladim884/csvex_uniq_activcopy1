@@ -30,19 +30,28 @@ exports.signup = async (req, res, next) => {
             return res.render('registration', {
                 msg: `Щоб  зареєструватися на сайті 
                       треба подтвердження Вашеої згоди 
-                      з умовами та офертою`
+                      з умовами вмкористання сайту та 
+                      договором офертои`
                     }
             )
         }
-        console.log(req.body)
-        const {nicname, email, password} = req.body
+        
+        const {nicname, email, password, dataInMail} = req.body
         const candidate = await User.findOne({email})
         if(candidate) {
-            return res.status(400).json({message: `Пользователь с email: ${email} уже существует`})
+            return res.status(400).render('msg', {msg: `Користувач з email: ${email} вже існує`})
         }
-        if (!req.body.flag) {
-            return res.status(400).json({message: `Для регистрации неоходимо согласие с правилами и договором`})
-        }
+        // // if (!req.body.flag) {
+        // //     return res.status(400).json({message: `Для регистрации неоходимо согласие с правилами и договором`})
+        // // }
+        // if(req.body.dataInMail){
+        //     // let dataInMail = 'dataInMail'
+        //     const payload = {
+        //         nicname, email, password, dataMail: 'yes'
+        //     }
+        //     const token = jwt.sign(payload, config.get('JWT_ACC_ACTIVATE'), {expiresIn: 60 * 60})
+        //     console.log(dataInMail)
+        // }
         const token = jwt.sign({nicname, email, password}, config.get('JWT_ACC_ACTIVATE'), {expiresIn: 60 * 60})
         const refreshToken = jwt.sign({nicname, email, password}, config.get('JWT_REF_ACTIVATE'), {expiresIn: "30d"})
         emailOptionsSend(
@@ -54,7 +63,7 @@ exports.signup = async (req, res, next) => {
             <p>${config.get('CLIENT_URL')}/api/auth/activate?token=${token}</p>
             `
             )
-            return res.json({message: `Вам отправлено письмо активации на ${email}, активируйте свой аккаунт.`})
+            return res.render('msg', {msg: `Вам надіслано лист активації на ${email}, активуйте свій акаунт.`})
     } catch(err) {
         console.log(err)
         next(err)
@@ -65,7 +74,7 @@ exports.activateAccount = async (req, res, next) => {
     try {
         const token = req.body.name
         if (!token){
-            res.json({error: 'Что-то c token не так!'})
+            res.render('error', {errorMsg: 'Помилка активації токену'})
         }
         if (token) {
             const {nicname, email, password} = jwt.verify(token, config.get('JWT_ACC_ACTIVATE'))
@@ -75,20 +84,39 @@ exports.activateAccount = async (req, res, next) => {
             const hashPassword = await bcrypt.hash(password, 8)
             const user = new User({nicname, email, password: hashPassword})
             await user.save()
-            emailOptionsSend(
-                'ivladim95@gmail.com', 
-                'Регистрация на CSV TO EXCEL.', 
-                `
-                Спасибо, что Вы зарегистрировались на CSV-UNIQ!
-                ===============================================
-                Ваши 
-                логин: ${email} 
-                пароль: ${password}
-                Сохраните эти данные в надёжном месте 
-                и удалите это сообщение.
-                `
-            )
-            return res.render('./start.hbs')
+            // const {dataInMail} = req.body.dataInMail
+            console.log(req.body.dataInMail)
+            if(req.body.dataInMail){
+                emailOptionsSend(
+                    'ivladim95@gmail.com', 
+                    'Регистрация на CSV TO EXCEL.', 
+                    `
+                    Спасибо, что Вы зарегистрировались на CSV-UNIQ!
+                    ===============================================
+                    Ваши 
+                    логин: ${email} 
+                    пароль: ${password}
+                    Сохраните эти данные в надёжном месте 
+                    и удалите это сообщение.
+                    `
+                )
+                res.render('enter', {msg: `Активація пройшла з усвіхом! 
+                                              Введіть Ваші данні. 
+                                              Ваші логін та пароль надіслані на Вашу пошту.
+                                              Не забувайте видалити листа з Вашими данними
+                                              навіть з корзини Вашої пошти!`})
+            } else {
+                emailOptionsSend(
+                    'ivladim95@gmail.com', 
+                    'Регистрация на CSV TO EXCEL.', 
+                    `
+                    Спасибо, что Вы зарегистрировались на CSV-UNIQ!
+                    ===============================================
+                    `
+                )
+                return res.render('enter', {msg: `Активація пройшла з усвіхом! 
+                                                    Введіть Ваші данні.`})
+            }
         }
     } catch(err) {
         console.log(err)
