@@ -3,7 +3,7 @@ const active_input = document.getElementById('myt')
 
 const searchString = new URLSearchParams(window.location.search);
 
-const token = searchString.get('token');
+const token = searchString.get('check');
 // const param1 = searchString.get('param1');
 // const param2 = searchString.get('param2');
 

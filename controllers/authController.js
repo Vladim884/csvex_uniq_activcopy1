@@ -6,6 +6,7 @@ const config = require("config")
 const {check, validationResult} = require("express-validator")
 const alert = require('alert')
 
+
 const {
     formatDate, 
     formatNowDate, 
@@ -14,6 +15,8 @@ const {
     emailOptionsSend, 
     getUserfromToken,
     deleteFolder,
+    chiperToken,
+    decryptToken,
     getNumberOfDays} = require('../myFunctions/myFunctions')
 const { filePathDeleter } = require("../myFunctions/filePathDeleter")
 // const {formatNowDate} = require('../myFunctions/formatNowDate')
@@ -36,20 +39,22 @@ exports.signup = async (req, res, next) => {
             )
         }
         
-        const {nicname, email, password, dataInMail} = req.body
+        const {nicname, email, password} = req.body
         const candidate = await User.findOne({email})
         if(candidate) {
             return res.status(400).render('msg', {msg: `Користувач з email: ${email} вже існує`})
         }
-        const token = jwt.sign({nicname, email, password}, config.get('JWT_ACC_ACTIVATE'), {expiresIn: 60 * 60})
-        const refreshToken = jwt.sign({nicname, email, password}, config.get('JWT_REF_ACTIVATE'), {expiresIn: "30d"})
+        const token = jwt.sign({nicname, email, password}, config.get('JWT_ACC_ACTIVATE'), {expiresIn: 60 * 3})
+        const token1 = chiperToken(token, config.get('secretKeyForToken1'))
+
+        // const refreshToken = jwt.sign({nicname, email, password}, config.get('JWT_REF_ACTIVATE'), {expiresIn: "30d"})
         emailOptionsSend(
             'ivladim95@gmail.com',
             'ACTIVATE YOUR ACCOUNT',
             '',
             `
             <h4>Доброго дня, ${nicname}! Кликните на ссылку для активации Вашего аккаунта</h4>
-            <p>${config.get('CLIENT_URL')}/api/auth/activate?token=${token}</p>
+            <p>${config.get('CLIENT_URL')}/api/auth/activate?check=${token1}</p>
             `
             )
             return res.render('msg', {msg: `Вам надіслано лист активації на ${email}, активуйте свій акаунт.`})
@@ -61,7 +66,9 @@ exports.signup = async (req, res, next) => {
     
 exports.activateAccount = async (req, res, next) => {
     try {
-        const token = req.body.name
+        let token1 = req.body.name
+        let token = decryptToken(token1, config.get('secretKeyForToken1'))
+        
         if (!token){
             res.render('error', {errorMsg: 'Помилка активації токену'})
         }

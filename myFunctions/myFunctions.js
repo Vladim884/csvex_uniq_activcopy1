@@ -4,6 +4,7 @@ const User = require("../models/User")
 const config = require("config")
 const alert = require('alert')
 const fs = require('fs')
+const CryptoJS = require("crypto-js")
 
 exports.createDir = async  (dirPath) => {
     if( !fs.existsSync(dirPath) ){
@@ -149,5 +150,20 @@ exports.deleteFolder = (p) => {
     } catch (err) {
         console.log(err)
     }
+}
+
+exports.chiperToken = (token, secret) => {
+    let token1 = token.replace(/\./g, 'Х')
+    let ciphertext = CryptoJS.AES.encrypt(token1, secret)
+    return ciphertext
+}
+
+exports.decryptToken = (ciphertext, secret) => {
+    //Decrypt
+    ciphertext = ciphertext.replace(/ /g, '+')
+    const bytes  = CryptoJS.AES.decrypt(ciphertext, secret)
+    let token2 = bytes.toString(CryptoJS.enc.Utf8)
+    token = token2.replace(/Х/g, '\.')
+    return token
 }
 

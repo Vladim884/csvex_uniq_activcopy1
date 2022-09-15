@@ -116,8 +116,12 @@ app.use("/main", function(req, res, ){
 // Error handling
 app.use((err, req, res, next) => {
     console.error('Error:', err.stack);
-    res.status(502);
-    res.render('error', {errorMsg: 'Server Error'});
+    res.status(502)
+    if(Object.values(err)[1] === 'jwt expired'){
+        res.render('error', {errorMsg: `Срок активації скінчився`, er: ''})
+    }
+
+    res.render('error', {errorMsg: `Server Error`});
 });
 
 
