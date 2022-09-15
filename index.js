@@ -75,8 +75,14 @@ app.use("/registration", function(req, res){
     res.render('registration.hbs')
 })
 app.use("/enter", function(req, res){
-    res.render('enter.hbs')
+    res.render('enter.hbs',{msg: ``,
+    email: `vov1@gmail.com`,
+    password: `1111`
+    })
 })
+
+// fields: `<input ${type="text"}  ${name="email"} ${value="vov1@.gmail"}>`
+
 
 // app.use("/api/auth/start", function(req, res){
 //     res.render('start.hbs')

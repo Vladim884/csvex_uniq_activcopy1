@@ -2,8 +2,9 @@
     <div class="form-block">
         <h1>Вхід у систему</h1>
         <form action="/api/auth/login" method="post" id="regform">
-            <input type="text" name="email" value="vov1@gmail.com" placeholder="Введіть ваш email">
-            <input type="password" name="password" value="1111" placeholder="Введіть пароль">
+        
+            <input type="text" name="email" value={{email}} placeholder="Введіть ваш email">
+            <input type="password" name="password" value={{password}} placeholder="Введіть пароль">
             <div>
                 <button 
                 type="submit">Вхід</button>

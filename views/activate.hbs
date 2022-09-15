@@ -1,11 +1,14 @@
 
-<form action="/api/auth/email-activate" method="post" class="action">
-    <input type="hidden" name="name" value="Vasya" id="myt">
-    <div class="checking">
-                <input type="checkbox" name="dataInMail" id="check-mail">
-                <label for="check-mail">Надіслати на пошту пароль та логін? (Необов'язково)</label>
-            </div>
-    <button type="submit" id="act">Activate</button>
-</form>
+<div class="form-block">
+    <h3>Активаація</h3>
+    <form action="/api/auth/email-activate" method="post" class="action">
+        <input type="hidden" name="name" value="Vasya" id="myt">
+        <div class="checking">
+                    <input type="checkbox" name="dataInMail" id="check-mail">
+                    <label for="check-mail">Надіслати на пошту пароль та логін? (Необов'язково)</label>
+                </div>
+        <button type="submit" id="act">Activate</button>
+    </form>
+    </div>
 
 <script src='/js/activate.js'></script>

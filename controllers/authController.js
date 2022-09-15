@@ -41,17 +41,6 @@ exports.signup = async (req, res, next) => {
         if(candidate) {
             return res.status(400).render('msg', {msg: `Користувач з email: ${email} вже існує`})
         }
-        // // if (!req.body.flag) {
-        // //     return res.status(400).json({message: `Для регистрации неоходимо согласие с правилами и договором`})
-        // // }
-        // if(req.body.dataInMail){
-        //     // let dataInMail = 'dataInMail'
-        //     const payload = {
-        //         nicname, email, password, dataMail: 'yes'
-        //     }
-        //     const token = jwt.sign(payload, config.get('JWT_ACC_ACTIVATE'), {expiresIn: 60 * 60})
-        //     console.log(dataInMail)
-        // }
         const token = jwt.sign({nicname, email, password}, config.get('JWT_ACC_ACTIVATE'), {expiresIn: 60 * 60})
         const refreshToken = jwt.sign({nicname, email, password}, config.get('JWT_REF_ACTIVATE'), {expiresIn: "30d"})
         emailOptionsSend(
@@ -84,8 +73,8 @@ exports.activateAccount = async (req, res, next) => {
             const hashPassword = await bcrypt.hash(password, 8)
             const user = new User({nicname, email, password: hashPassword})
             await user.save()
-            // const {dataInMail} = req.body.dataInMail
-            console.log(req.body.dataInMail)
+
+            // console.log(req.body.dataInMail)
             if(req.body.dataInMail){
                 emailOptionsSend(
                     'ivladim95@gmail.com', 
@@ -104,7 +93,9 @@ exports.activateAccount = async (req, res, next) => {
                                               Введіть Ваші данні. 
                                               Ваші логін та пароль надіслані на Вашу пошту.
                                               Не забувайте видалити листа з Вашими данними
-                                              навіть з корзини Вашої пошти!`})
+                                              навіть з корзини Вашої пошти!`,
+                                    password,
+                                    email})
             } else {
                 emailOptionsSend(
                     'ivladim95@gmail.com', 
@@ -114,8 +105,13 @@ exports.activateAccount = async (req, res, next) => {
                     ===============================================
                     `
                 )
-                return res.render('enter', {msg: `Активація пройшла з усвіхом! 
-                                                    Введіть Ваші данні.`})
+                return res.render('enter', {
+                    msg: `Активація пройшла з усвіхом! 
+                          Введіть Ваші данні.`,
+                
+                          password,
+                          email}
+                      )
             }
         }
     } catch(err) {
