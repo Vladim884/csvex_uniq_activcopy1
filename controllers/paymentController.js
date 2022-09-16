@@ -9,12 +9,14 @@ const {
     clg,
     emailOptionsSend,
     getNumberOfDays, 
-    getUserfromToken} = require('../myFunctions/myFunctions')
+    getUserfromToken,
+    decryptToken} = require('../myFunctions/myFunctions')
 
 
 
 exports.writePaying = async (req, res) => {
-    const token = req.cookies.token
+    const xtext = req.cookies.xtext
+    const token = decryptToken(xtext, config.get('secretKeyForToken1'))
     if(!token){
         return res.status(403).json({"message": "Ви не авторизувались"})
     }

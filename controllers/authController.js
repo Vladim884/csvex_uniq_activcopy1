@@ -214,6 +214,11 @@ exports.login = async (req, res, next) => {
         res.cookie('token', token, {
             httpOnly: true
         })
+        const xtext = chiperToken(token, config.get('secretKeyForToken1')).toString()
+        console.log(xtext)
+        res.cookie('xtext', xtext, {
+            httpOnly: true
+        })
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true
         })
@@ -298,7 +303,8 @@ exports.sendEndPay = async (req, res) => {
 
 
 exports.getTokenUserData = async (req, res, next) => {
-    const token = req.cookies.token
+    const xtext = req.cookies.xtext
+        const token = decryptToken(xtext, config.get('secretKeyForToken1'))
     if(!token){
         return res.status(403).json({"message": "Ви не авторизувались"})
     }
@@ -324,10 +330,12 @@ exports.getTokenUserData = async (req, res, next) => {
 
 exports.logout = async (req, res, next) => {
     try {
-        const token = req.cookies.token
+        let xtext = req.cookies.xtext
+        console.log(xtext)
+        let token = decryptToken(xtext, config.get('secretKeyForToken1'))
         if(!token){
             return   res 
-            .clearCookie("token")
+            .clearCookie("xtext")
             .clearCookie("user")
             .clearCookie("admin")
             // return res
@@ -337,7 +345,7 @@ exports.logout = async (req, res, next) => {
         let user = await getUserfromToken(token)
         if(!user){
             return   res 
-               .clearCookie("token")
+               .clearCookie("xtext")
                .clearCookie("user")
                .clearCookie("admin")
                .status(302)
@@ -347,7 +355,7 @@ exports.logout = async (req, res, next) => {
         deleteFolder(dirpath)
         
         res 
-        .clearCookie("token")
+        .clearCookie("xtext")
         .clearCookie("user")
         .clearCookie("admin")
         return res

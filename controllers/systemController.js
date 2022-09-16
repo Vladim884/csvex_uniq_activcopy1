@@ -10,7 +10,8 @@ const {
     getUserfromToken, 
     moveFile,
     deleteFolder, 
-    createDir } = require("../myFunctions/myFunctions")
+    createDir, 
+    decryptToken} = require("../myFunctions/myFunctions")
 
 
 class systemController {
@@ -33,7 +34,8 @@ class systemController {
 
     async upload(req, res, next) {
         try {
-            const token = req.cookies.token
+            const xtext = req.cookies.xtext
+            const token = decryptToken(xtext, config.get('secretKeyForToken1'))
             if(!token){
                 return res.status(403).json({"message": "Ви не авторизувались(!token)"})
             }
@@ -87,7 +89,8 @@ class systemController {
     async upload01(req, res, next) {
         
         try {
-            const token = req.cookies.token
+            const xtext = req.cookies.xtext
+            const token = decryptToken(xtext, config.get('secretKeyForToken1'))
             if(!token){
                 return res.status(403).json({"message": "Ви не авторизувались(!token)"})
             }
@@ -135,7 +138,8 @@ class systemController {
 
     async upload1(req, res, next) {
         try {
-            const token = req.cookies.token
+            const xtext = req.cookies.xtext
+            const token = decryptToken(xtext, config.get('secretKeyForToken1'))
             if(!token){
                 return res.status(403).json({"message": "Ви не авторизувались"})
             }
@@ -214,7 +218,8 @@ class systemController {
 
     async upload2(req, res, next) {
         try {            
-            const token = req.cookies.token
+            const xtext = req.cookies.xtext
+            const token = decryptToken(xtext, config.get('secretKeyForToken1'))
             if(!token){
                 return res.status(403).json({"message": "Ви не авторизувались"})
             }
