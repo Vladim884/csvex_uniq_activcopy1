@@ -163,7 +163,7 @@ exports.decryptToken = (ciphertext, secret) => {
     ciphertext = ciphertext.replace(/ /g, '+')
     const bytes  = CryptoJS.AES.decrypt(ciphertext, secret)
     let token2 = bytes.toString(CryptoJS.enc.Utf8)
-    token = token2.replace(/Х/g, '\.')
+    let token = token2.replace(/Х/g, '\.')
     return token
 }
 

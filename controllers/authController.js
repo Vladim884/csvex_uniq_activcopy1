@@ -128,32 +128,29 @@ exports.activateAccount = async (req, res, next) => {
     }
 }
 
-exports.forgotPassword = (req, res) => {
+exports.forgotPassword = (req, res, next) => {
     const {email} = req.body
     const user = User.findOne({email}, (err, user) => {
         if(err || !user) {
-            return res.status(400).json({message: `Пользователя с email: ${email} не существует`})
+            return res.status(400).render('error', {msg: `Пользователя с email: ${email} не существует`})
         }
     })
     const token = jwt.sign({_id: user._id, email}, config.get('RESET_PASSWORD_KEY'), {expiresIn: '20m'})
-    const mailOptions = {
-        from: config.get('EMAIL'), // sender address
-         to: 'ivladim95@gmail.com', // list of receivers
-        subject: 'RESET YOUR PASSWORD',
-        html: `
-            <h4>Кликните на ссылку для сброса Вашего пароля</h4>
-            <p>${config.get('CLIENT_URL')}/resetpass?resetlink=${token}</p>
-            `
-    }
+    // const token1 = chiperToken(token, config.get('secretKeyForToken1'))
+    emailOptionsSend(
+        'ivladim95@gmail.com',
+        'RESET YOUR PASSWORD',
+        '',
+        `<h4>Кликните на ссылку для сброса Вашего пароля</h4>
+        <p>${config.get('CLIENT_URL')}/resetpass?resetlink=${token}</p>
+        `
+    )
+  
     return user.updateOne({resetLink: token}, (err, succces) => {
         if(err){
-            return res.status(400).json({message: `Ошибка ссылки сброса пароля`})
+            return res.status(400).render('error', {msg: `Ошибка ссылки сброса пароля`})
         } else {
-            transporter.sendMail(mailOptions, function (err, info) {
-                if(err) console.log(err)
-                console.log(info);
-                return res.json({message: `Вам отправлена ссылка сброса пароля на ${email}.`})
-            })
+            return res.render('msg', {msg: `Вам отправлена ссылка сброса пароля на ${email}.`})
         }
     })
 }
@@ -167,7 +164,7 @@ exports.resetPassword = (req, res) => {
             }
             User.findOne({resetLink}, async (err, user) => {
                 if(err || !user) {
-                    return res.status(400).json({message: `Пользователя с таким токеном не существует`})
+                    return res.status(400).render('msg', {msg: `Ошибка! Пользователя с таким email не существует`})
                 }
                 const hashPassword = await bcrypt.hash(newPass, 8)
                 let obj = {
@@ -176,9 +173,9 @@ exports.resetPassword = (req, res) => {
                 user = _.extend(user, obj)
                 user.save((err, result) => {
                     if(err){
-                        return res.status(400).json({message: `Ошибка сброса пароля`})
+                        return res.status(400).render('error', {msg: `Ошибка сброса пароля`})
                     } else {
-                        return res.status(200).json({message: `Пароль был изменен`})
+                        return res.status(200).render('msg', {msg: `Пароль был изменен`})
                     }
                 })
             })
@@ -322,42 +319,27 @@ exports.getTokenUserData = async (req, res, next) => {
     }
 }
 
-// exports.getAccessToStart = async (req, res) => {
-//     try {
-//         const user = await User.findOne({_id: req.user.id})
-//         if(+user.daysLeft < 1){
-//             res.render('./cabinet', {
-//                 user : req.user // get the user out of session and pass to template
-//             })
-//         } else
-//         //   if  (+user.daysLeft === 1 || +user.daysLeft > 1)
-//                {
-//             res.render('./start', {
-//                 user : req.user // get the user out of session and pass to template
-//             })
-//         }
-//     } catch (err) {
-//         next(err)
-//     }
-//   }
-
-// exports.continueWork = async (req, res, next) => {
-//     try {
-//         return res.render('./start.hbs')
-//     } catch (e) {
-//         console.log(e)
-//     }
-// }
-
 exports.logout = async (req, res, next) => {
     try {
-        
         const token = req.cookies.token
-            if(!token){
-                // return res.redirect('http://localhost:5000/enter')
-                return res.status(403).json({"message": "Ви не авторизувались"})
-            }
+        if(!token){
+            return   res 
+            .clearCookie("token")
+            .clearCookie("user")
+            .clearCookie("admin")
+            // return res
+            .status(302)
+            .redirect('/enter')
+        }
         let user = await getUserfromToken(token)
+        if(!user){
+            return   res 
+               .clearCookie("token")
+               .clearCookie("user")
+               .clearCookie("admin")
+               .status(302)
+               .redirect('/enter')
+           }
         let dirpath = `${config.get("filePath")}\\${user.id}`
         deleteFolder(dirpath)
         
