@@ -136,13 +136,13 @@ exports.forgotPassword = (req, res, next) => {
         }
     })
     const token = jwt.sign({_id: user._id, email}, config.get('RESET_PASSWORD_KEY'), {expiresIn: '20m'})
-    // const token1 = chiperToken(token, config.get('secretKeyForToken1'))
+    const token1 = chiperToken(token, config.get('secretKeyForToken1'))
     emailOptionsSend(
         'ivladim95@gmail.com',
         'RESET YOUR PASSWORD',
         '',
         `<h4>Кликните на ссылку для сброса Вашего пароля</h4>
-        <p>${config.get('CLIENT_URL')}/resetpass?resetlink=${token}</p>
+        <p>${config.get('CLIENT_URL')}/resetpass?resetlink=${token1}</p>
         `
     )
   
@@ -156,11 +156,14 @@ exports.forgotPassword = (req, res, next) => {
 }
 
 exports.resetPassword = (req, res) => {
-    const {resetLink, newPass} = req.body
+    const {crypt, newPass} = req.body
+    console.log(`crypt: ${crypt}`)
+    let resetLink = decryptToken(crypt, config.get('secretKeyForToken1'))
+    
     if (resetLink) {
         jwt.verify(resetLink, config.get('RESET_PASSWORD_KEY'), (err, decodeData) => {
             if (err) {
-                res.status(401).json({message: 'Некорректная или устаревшая ссылка сброса пароля'})
+                res.status(401).render('error', {msg: 'Некорректная или устаревшая ссылка сброса пароля'})
             }
             User.findOne({resetLink}, async (err, user) => {
                 if(err || !user) {
