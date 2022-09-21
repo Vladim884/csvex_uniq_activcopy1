@@ -5,8 +5,8 @@ const jwt = require("jsonwebtoken")
 const config = require("config")
 const {check, validationResult} = require("express-validator")
 const alert = require('alert')
-
-
+const UserDto = require('../dtos/user-dto')
+const tokenService = require('../services/tokenService')
 const {
     formatDate, 
     formatNowDate, 
@@ -44,10 +44,9 @@ exports.signup = async (req, res, next) => {
         if(candidate) {
             return res.status(400).render('msg', {msg: `Користувач з email: ${email} вже існує`})
         }
-        const token = jwt.sign({nicname, email, password}, config.get('JWT_ACC_ACTIVATE'), {expiresIn: 60 * 3})
+        const token = jwt.sign({nicname, email, password}, config.get('JWT_ACC_ACTIVATE'), {expiresIn: '15m'})
         const token1 = chiperToken(token, config.get('secretKeyForToken1'))
-
-        // const refreshToken = jwt.sign({nicname, email, password}, config.get('JWT_REF_ACTIVATE'), {expiresIn: "30d"})
+        
         emailOptionsSend(
             'ivladim95@gmail.com',
             'ACTIVATE YOUR ACCOUNT',
@@ -72,55 +71,58 @@ exports.activateAccount = async (req, res, next) => {
         if (!token){
             res.render('error', {errorMsg: 'Помилка активації токену'})
         }
-        if (token) {
-            const {nicname, email, password} = jwt.verify(token, config.get('JWT_ACC_ACTIVATE'))
-            console.log(email)
-            console.log(password)
-        
-            const hashPassword = await bcrypt.hash(password, 8)
-            const user = new User({nicname, email, password: hashPassword})
-            await user.save()
+        const {nicname, email, password} = jwt.verify(token, config.get('JWT_ACC_ACTIVATE'))
+        // console.log(email)
+        // console.log(password)
+    
+        const hashPassword = await bcrypt.hash(password, 8)
+        const user = new User({nicname, email, password: hashPassword})
+        const refreshToken = jwt.sign({nicname, email, password}, config.get('JWT_REF_ACTIVATE'), {expiresIn: '30d'})
+        const userDto = new UserDto(user)
+        await tokenService.saveToken(userDto.id, refreshToken, {maxAge: 30*24*60*60*1000, httpOnly: true})
+        res.cookie('refreshToken', refreshToken)
+        await user.save()
 
-            // console.log(req.body.dataInMail)
-            if(req.body.dataInMail){
-                emailOptionsSend(
-                    'ivladim95@gmail.com', 
-                    'Регистрация на CSV TO EXCEL.', 
-                    `
-                    Спасибо, что Вы зарегистрировались на CSV-UNIQ!
-                    ===============================================
-                    Ваши 
-                    логин: ${email} 
-                    пароль: ${password}
-                    Сохраните эти данные в надёжном месте 
-                    и удалите это сообщение.
-                    `
-                )
-                res.render('enter', {msg: `Активація пройшла з усвіхом! 
-                                              Введіть Ваші данні. 
-                                              Ваші логін та пароль надіслані на Вашу пошту.
-                                              Не забувайте видалити листа з Вашими данними
-                                              навіть з корзини Вашої пошти!`,
-                                    password,
-                                    email})
-            } else {
-                emailOptionsSend(
-                    'ivladim95@gmail.com', 
-                    'Регистрация на CSV TO EXCEL.', 
-                    `
-                    Спасибо, что Вы зарегистрировались на CSV-UNIQ!
-                    ===============================================
-                    `
-                )
-                return res.render('enter', {
-                    msg: `Активація пройшла з усвіхом! 
-                          Введіть Ваші данні.`,
-                
-                          password,
-                          email}
-                      )
+        // console.log(req.body.dataInMail)
+        if(req.body.dataInMail){
+            emailOptionsSend(
+                'ivladim95@gmail.com', 
+                'Регистрация на CSV TO EXCEL.', 
+                `
+                Спасибо, что Вы зарегистрировались на CSV-UNIQ!
+                ===============================================
+                Ваши 
+                логин: ${email} 
+                пароль: ${password}
+                Сохраните эти данные в надёжном месте 
+                и удалите это сообщение.
+                `
+            )
+            res.render('enter', {msg: `Активація пройшла з усвіхом! 
+                                            Введіть Ваші данні. 
+                                            Ваші логін та пароль надіслані на Вашу пошту.
+                                            Не забувайте видалити листа з Вашими данними
+                                            навіть з корзини Вашої пошти!`,
+                                password,
+                                email})
+        } else {
+            emailOptionsSend(
+                'ivladim95@gmail.com', 
+                'Регистрация на CSV TO EXCEL.', 
+                `
+                Спасибо, что Вы зарегистрировались на CSV-UNIQ!
+                ===============================================
+                `
+            )
+            return res.render('enter', {
+                msg: `Активація пройшла з усвіхом! 
+                        Введіть Ваші данні.`,
+            
+                        password,
+                        email}
+                    )
             }
-        }
+        // }
     } catch(err) {
         console.log(err)
         // res.json({error: 'Что-то пошло не так!'})
@@ -330,32 +332,33 @@ exports.getTokenUserData = async (req, res, next) => {
 
 exports.logout = async (req, res, next) => {
     try {
-        let xtext = req.cookies.xtext
-        console.log(xtext)
-        let token = decryptToken(xtext, config.get('secretKeyForToken1'))
-        if(!token){
-            return   res 
-            .clearCookie("xtext")
-            .clearCookie("user")
-            .clearCookie("admin")
-            // return res
-            .status(302)
-            .redirect('/enter')
-        }
-        let user = await getUserfromToken(token)
-        if(!user){
-            return   res 
-               .clearCookie("xtext")
-               .clearCookie("user")
-               .clearCookie("admin")
-               .status(302)
-               .redirect('/enter')
-           }
-        let dirpath = `${config.get("filePath")}\\${user.id}`
-        deleteFolder(dirpath)
+        // let xtext = req.cookies.xtext
+        // console.log(xtext)
+        // let token = decryptToken(xtext, config.get('secretKeyForToken1'))
+        // if(!token){
+        //     return   res 
+        //     .clearCookie("xtext")
+        //     .clearCookie("user")
+        //     .clearCookie("admin")
+        //     // return res
+        //     .status(302)
+        //     .redirect('/enter')
+        // }
+        // let user = await getUserfromToken(token)
+        // if(!user){
+        //     return   res 
+        //        .clearCookie("xtext")
+        //        .clearCookie("user")
+        //        .clearCookie("admin")
+        //        .status(302)
+        //        .redirect('/enter')
+        //    }
+        // let dirpath = `${config.get("filePath")}\\${user.id}`
+        // deleteFolder(dirpath)
         
         res 
         .clearCookie("xtext")
+        .clearCookie("token")
         .clearCookie("user")
         .clearCookie("admin")
         return res

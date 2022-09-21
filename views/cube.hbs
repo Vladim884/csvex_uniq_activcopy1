@@ -1,0 +1,56 @@
+<nav>
+    <a href="#back">Задняя грань</a>
+    <a href="#top">Верхняя грань</a>
+    <a href="#front">Фронтальная грань</a>
+    <a href="#bottom">Нижняя грань</a>
+    <a href="#left">Левая грань</a>
+    <a href="#right">Правая грань</a>
+</nav>
+
+<section class="cube">
+    <article class="back">
+        <img src="town.png" alt="">
+    </article>
+    <article class="top">
+        <img src="car.png" alt="">
+    </article>
+    <article class="front">
+        <h2>Фронтальная грань</h2>
+        <p>Представьте, что грань — это единица материала и здесь находится какой-то анонс или картинка из галереи.</p>
+    </article>
+    <article class="bottom">
+        <img src="soyuz.png" alt="">
+    </article>
+    <article class="left">
+        <img src="ship.png" alt="">
+    </article>
+    <article class="right">
+        <img src="plane.png" alt="">
+    </article>
+</section>
+
+<script>
+    function selectEdge(){
+    const cube = document.querySelector('.cube');
+    const degs = { 
+        back:   {X: -180, Y:   0},
+        top:    {X:   90, Y:   0},
+        front:  {X:    0, Y:   0},
+        bottom: {X:  -90, Y:   0},
+        left:   {X:    0, Y: -90},
+        right:  {X:    0, Y:  90},
+    }
+
+    document.querySelectorAll('nav a').forEach(elem => {
+        elem.addEventListener('click', (e) => {
+            e.preventDefault();
+            let edgeName = e.target.hash.replace(/#/, '');
+            cube.style.transform = 'perspective(700px) rotateX('+degs[edgeName].X+'deg) rotateY('+degs[edgeName].Y+'deg)';
+        })
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    selectEdge();
+});
+</script>
