@@ -31,17 +31,29 @@ for (let i = 0; i < li.length; i++) {
     }
 }
 
-const deleteHeaderEnterLink = () => {
+const deleteHeaderEnterLink = async () => {
+    const response = await fetch("http://localhost:5000/api/auth/usercabinet", { 
+    method: "GET", 
+    headers: { "Content-Type": "application/json" }
+})
+const data = await response.json()
+const user = data.user
+console.log(user)
 //    console.log(`cookie array: ${document.cookie.split(';')}`)
-    let cookArray = document.cookie.split(';')
-    for (let i = 0; i < cookArray.length; i++) {
-        if (cookArray[i].split('=')[0].trim() === 'user'
-            ||
-            cookArray[i].split('=')[0].trim() === 'admin') {
-            linkEnter.classList.add('hidden')
-            linkLogout.classList.remove('hidden')
-            linkCabinet.classList.remove('hidden')
-        }
+    // let cookArray = document.cookie.split(';')
+    // for (let i = 0; i < cookArray.length; i++) {
+    //     if (cookArray[i].split('=')[0].trim() === 'user'
+    //         ||
+    //         cookArray[i].split('=')[0].trim() === 'admin') {
+            // linkEnter.classList.add('hidden')
+            // linkLogout.classList.remove('hidden')
+            // linkCabinet.classList.remove('hidden')
+    //     }
+    // }
+    if (user.status === 'user' || user.status === 'admin'){
+        linkEnter.classList.add('hidden')
+        linkLogout.classList.remove('hidden')
+        linkCabinet.classList.remove('hidden')
     }
 }
 

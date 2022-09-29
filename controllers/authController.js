@@ -1,5 +1,6 @@
 const User = require("../models/User")
 const bcrypt = require("bcryptjs")
+const moment = require("moment")
 const _ = require("lodash")
 const jwt = require("jsonwebtoken")
 const config = require("config")
@@ -262,9 +263,24 @@ exports.login = async (req, res, next) => {
         // })
         // console.log(`loginFunc cookid: ${req.cookies.cookid}`)
         
-        return res.render('./cabinet.hbs') 
+        // return res.render('./cabinet.hbs') 
         //  return res.json({'message': 'login ok'}) 
-
+        return res.render('./cabinet1.hbs'
+        , {
+            nicname: user.nicname,
+            email: user.email,
+            registrDate: moment(user.registrDate).format('DD.MM.YYYY'),
+            role: user.status,
+            // tegService: `Активовано на ${user.finData[0].daysLeft} дні`,
+            tegService: '${user.finData[0].daysLeft} дні',
+            // balance: user.finData[0].balance,
+            balance: 'user.finData[0].balance',
+            // lastPaymentCab: lastPaymentCab,
+            lastPaymentCab: 'lastPaymentCab',
+            linkHistory: 'Перейти',
+            linkPay: 'Сплатити'
+        }
+        ) 
         
     } catch (e){
         console.log(`/login e: ${e}`)
@@ -319,7 +335,7 @@ exports.getTokenUserData = async (req, res, next) => {
         if (!user) {
             return res.status(404).json({message: "User not found"})
         }
-        console.log(Object.values(user))
+        // console.log(Object.values(user))
     //    console.log(`user-jwt: ${user.email}`)
     return res.json({ user })
     // return res.render('./cabinet.hbs')
