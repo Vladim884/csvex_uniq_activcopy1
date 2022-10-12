@@ -20,9 +20,7 @@ const {
     decryptToken,
     getNumberOfDays} = require('../myFunctions/myFunctions')
 const { filePathDeleter } = require("../myFunctions/filePathDeleter")
-// const {formatNowDate} = require('../myFunctions/formatNowDate')
-// const {transporter} = require('../myFunctions/transporter')
-// const {emailOptionsSend} = require('../myFunctions/emailOptionsSend')
+const mailer = require("../nodemailer/nodemailer")
 
 exports.signup = async (req, res, next) => {
     try {
@@ -47,19 +45,19 @@ exports.signup = async (req, res, next) => {
         }
         const token = jwt.sign({nicname, email, password}, config.get('JWT_ACC_ACTIVATE'), {expiresIn: '15m'})
         const token1 = chiperToken(token, config.get('secretKeyForToken1'))
-        
-        emailOptionsSend(
-            'ivladim95@gmail.com',
-            'ACTIVATE YOUR ACCOUNT',
-            '',
-            `
-            <h4>Доброго дня, ${nicname}! Кликните на ссылку для активации Вашего аккаунта</h4>
-            <p>${config.get('CLIENT_URL')}/api/auth/activate?check=${token1}</p>
-            `
-            )
-            return res.render('msg', {msg: `Вам надіслано лист активації на ${email}, активуйте свій акаунт.`})
+        const message = {
+            to: 'ivladim95@gmail.com',
+            subject: 'Congratulations! You are successfully registred on our site',
+            html: `
+                
+                <h4>Доброго дня, ${nicname}! Кликните на ссылку для активации Вашего аккаунта</h4>
+                <p>${config.get('CLIENT_URL')}/api/auth/activate?check=${token1}</p>
+                `
+        }
+        mailer(message)
+        return res.render('msg', {msg: `Вам надіслано лист активації на ${email}, активуйте свій акаунт.`})
     } catch(err) {
-        console.log(err)
+        // console.log(err)
         next(err)
     }
 }
@@ -73,9 +71,7 @@ exports.activateAccount = async (req, res, next) => {
             res.render('error', {errorMsg: 'Помилка активації токену'})
         }
         const {nicname, email, password} = jwt.verify(token, config.get('JWT_ACC_ACTIVATE'))
-        // console.log(email)
-        // console.log(password)
-    
+        
         const hashPassword = await bcrypt.hash(password, 8)
         const user = new User({nicname, email, password: hashPassword})
         const refreshToken = jwt.sign({nicname, email, password}, config.get('JWT_REF_ACTIVATE'), {expiresIn: '30d'})
@@ -83,50 +79,57 @@ exports.activateAccount = async (req, res, next) => {
         await tokenService.saveToken(userDto.id, refreshToken, {maxAge: 30*24*60*60*1000, httpOnly: true})
         res.cookie('refreshToken', refreshToken)
         await user.save()
-
-        // console.log(req.body.dataInMail)
+        console.log('user.save()')
         if(req.body.dataInMail){
-            emailOptionsSend(
-                'ivladim95@gmail.com', 
-                'Регистрация на CSV TO EXCEL.', 
-                `
-                Спасибо, что Вы зарегистрировались на CSV-UNIQ!
-                ===============================================
-                Ваши 
-                логин: ${email} 
-                пароль: ${password}
-                Сохраните эти данные в надёжном месте 
-                и удалите это сообщение.
-                `
-            )
-            res.render('enter', {msg: `Активація пройшла з усвіхом! 
-                                            Введіть Ваші данні. 
-                                            Ваші логін та пароль надіслані на Вашу пошту.
-                                            Не забувайте видалити листа з Вашими данними
-                                            навіть з корзини Вашої пошти!`,
-                                password,
-                                email})
-        } else {
-            emailOptionsSend(
-                'ivladim95@gmail.com', 
-                'Регистрация на CSV TO EXCEL.', 
-                `
-                Спасибо, что Вы зарегистрировались на CSV-UNIQ!
-                ===============================================
-                `
-            )
+        const message = {
+                to: 'ivladim95@gmail.com',
+                subject: 'Congratulations! You are successfully registred on our site',
+                html: `
+                    <h2>Поздравляем, Вы успешно зарегистрировались на нашем сайте!</h2>
+                    
+                    <i>данные вашей учетной записи:</i>
+                    <ul>
+                        <li>login: {email}</li>
+                        <li>password: {password}</li>
+                    </ul>
+                    ${
+                    req.body.promo
+                        ? `Вы подписаны на рассылку наших акций и предложений,
+                    чтобы отписаться от рассылки перейдите по ссылке
+                    <a href="{process.env.HOST}/unsubscribe/{req.body.email}/">отписаться от рассылки</a>`
+                        : ''
+                    }
+                    <p>Данное письмо не требует ответа.<p>`
+            }
+            // console.log(req.body.promo)
+            mailer(message)
+            // user = req.body
             return res.render('enter', {
                 msg: `Активація пройшла з усвіхом! 
                         Введіть Ваші данні.`,
-            
                         password,
-                        email}
-                    )
+                        email
+                })
+            
+            } else {
+                const message = {
+                    to: 'ivladim95@gmail.com',
+                    subject: 'Congratulations! You are successfully registred on our site',
+                    html: `
+                        <h2>Поздравляем, Вы успешно зарегистрировались на нашем сайте!</h2>
+                    `    
+                }
+                mailer(message)
+                return res.render('enter', {
+                    msg: `Активація пройшла з усвіхом! 
+                            Введіть Ваші данні.`,
+                            password,
+                            email
+                })
             }
-        // }
     } catch(err) {
         console.log(err)
-        // res.json({error: 'Что-то пошло не так!'})
+        // res.json({err: 'Что-то пошло не так!'})
         next(err)
     }
 }
@@ -340,7 +343,7 @@ exports.getTokenUserData = async (req, res, next) => {
     return res.json({ user })
     // return res.render('./cabinet.hbs')
     } catch (err) {
-        console.log(`err: ${err}`)
+        console.log(`getTokenUserData err: ${err}`)
         res.status(401).json({message: 'Помилка встановлення юзера'})
 
     }
@@ -348,30 +351,6 @@ exports.getTokenUserData = async (req, res, next) => {
 
 exports.logout = async (req, res, next) => {
     try {
-        // let xtext = req.cookies.xtext
-        // console.log(xtext)
-        // let token = decryptToken(xtext, config.get('secretKeyForToken1'))
-        // if(!token){
-        //     return   res 
-        //     .clearCookie("xtext")
-        //     .clearCookie("user")
-        //     .clearCookie("admin")
-        //     // return res
-        //     .status(302)
-        //     .redirect('/enter')
-        // }
-        // let user = await getUserfromToken(token)
-        // if(!user){
-        //     return   res 
-        //        .clearCookie("xtext")
-        //        .clearCookie("user")
-        //        .clearCookie("admin")
-        //        .status(302)
-        //        .redirect('/enter')
-        //    }
-        // let dirpath = `${config.get("filePath")}\\${user.id}`
-        // deleteFolder(dirpath)
-        
         res 
         .clearCookie("xtext")
         .clearCookie("token")

@@ -29,7 +29,7 @@ exports.cookieJwtAuth = (req, res, next) => {
       
        console.log(`err: ${err}`)
     //    res.clearCookie('token')
-       alert('Время сессии истекло, пожалуйста, выполните вход')
+      //  alert('Время сессии истекло, пожалуйста, выполните вход')
        res 
          .clearCookie("token")
          .clearCookie("user")

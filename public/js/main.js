@@ -3,6 +3,7 @@
 const linkEnter = document.getElementById('enter')
 //form logout from account
 const linkLogout = document.getElementById('logout')
+const linkLogout1 = document.getElementById('logout1')
 const linkCabinet = document.getElementById('cabinet')
 const linkWritePaying = document.getElementById('writepaying')
 const iconBtn = document.getElementById('icon')
@@ -38,7 +39,7 @@ const deleteHeaderEnterLink = async () => {
 })
 const data = await response.json()
 const user = data.user
-console.log(user)
+console.log(`user.status: ${user.status}`)
 //    console.log(`cookie array: ${document.cookie.split(';')}`)
     // let cookArray = document.cookie.split(';')
     // for (let i = 0; i < cookArray.length; i++) {
@@ -83,6 +84,14 @@ linkLogout.onclick = function (e) {
    if (!confirm('Вы уверены, что хотите выйти?')){
     e.preventDefault();
    }
+}
+
+if(linkLogout1){
+    linkLogout.onclick = function (e) {
+        if (!confirm('Вы уверены, что хотите выйти?')){
+         e.preventDefault();
+        }
+     }
 }
 
  
