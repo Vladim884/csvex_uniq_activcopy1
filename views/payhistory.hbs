@@ -28,7 +28,7 @@ const formatDate = (sum) => {
     const paymentList = document.querySelector("ul.payment-list")
     const user = getUser()
     async function getUser() {
-        const response = await fetch("http://localhost:5000/api/auth/payhistory", { 
+        const response = await fetch("http://localhost:5000/api/payment/payhistory", { 
             method: "GET", 
             headers: { "Content-Type": "application/json" }
         })

@@ -15,6 +15,7 @@ const {
 
 
 class systemController {
+    
     async getAccessToStart(req, res, next) {
         try {
             const user = await User.findOne({_id: req.user.id})
@@ -87,7 +88,6 @@ class systemController {
     }
 
     async upload01(req, res, next) {
-        
         try {
             const xtext = req.cookies.xtext
             const token = decryptToken(xtext, config.get('secretKeyForToken1'))

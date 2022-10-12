@@ -2,6 +2,7 @@ const User = require("../models/User")
 const _ = require("lodash")
 const jwt = require("jsonwebtoken")
 const config = require("config")
+const alert = require("alert")
 
 const {
     formatDate, 
@@ -11,6 +12,7 @@ const {
     getNumberOfDays, 
     getUserfromToken,
     decryptToken} = require('../myFunctions/myFunctions')
+const mailer = require("../nodemailer/nodemailer")
 
 class paymentController {
     async writePaying (req, res) {
@@ -77,19 +79,18 @@ class paymentController {
             } else {
                 console.log(`7 lastPayment.date: ${lastPayment.date}`)
                 let payingDateForPeople = formatNowDate(lastPayment.date)
-                emailOptionsSend(
-                    'ivladim95@gmail.com',
-                    'Оплата на CSV TO EXCEL.',
-                    `${user.nicname}, Вас вітає команда CSV TO EXCEL!
-                    Дякуємо, що Ви обрали наш сервіс!
-                     ${payingDateForPeople} Ви оплатили ${sumpay}грн. та отримали активацію сервісу CSV TO EXCEL 
-                     на ${daysPaying} днів.
-                     ===============================================
-                     Якщо цей лист потрапив до вас випадково, 
-                     видалить його та не звертайте уваги.
-                    `
-                )
-                // return res.status(200).json({message: `Оплату юзера ${email} змінено`})
+                const message = {
+                    to: 'ivladim95@gmail.com',
+                    subject: 'Оплата послуги на CSV TO EXCEL',
+                    html: `
+                        <h4>${user.nicname}, Вас вітає команда CSV TO EXCEL!</h4>
+                        <p>Дякуємо, що Ви обрали наш сервіс!</p>
+                        <p>${payingDateForPeople} Ви оплатили ${sumpay}грн. </p>
+                        <p>отримали активацію сервісу CSV TO EXCEL на ${daysPaying} днів.</p>
+                        `
+                }
+                mailer(message)
+                
                 return res.status(200).render('msg', {msg: `Оплату юзера ${email} успішно змінено`})
             }
         })
@@ -104,21 +105,19 @@ class paymentController {
                     let nowday = formatNowDate()
                     let endDay = formatDate(restDay)
                     clg('endDay', `${endDay}`)
-                    emailOptionsSend(
-                        'ivladim95@gmail.com',
-                        'Оплата на CSV TO EXCEL.',
-                        `
-                         Доброго дня!
-                        Сьогодні ${nowday} у Вас залишилось ${restDay} днів до ${endDay} включно.
-                        Потурбуйтеся про своєчасну оплату сервісу!
-                         ===============================================
-                         Ваши 
-                         логин: ${users[i].email} 
-                         Якщо цей лист потрапив до вас випадково, 
-                         видалить його та не звертайте уваги.
-                        `
-                    )
-                    setTimeout(() => {}, 3000);
+                    const message = {
+                        to: 'ivladim95@gmail.com',
+                        subject: 'Оплата послуги на CSV TO EXCEL',
+                        html: `
+                            <h4>Доброго дня! ${users[i].nicname}, Вас вітає команда CSV TO EXCEL!</h4>
+                            <p> Дякуємо, що Ви обрали наш сервіс!</p>
+                            <p>Сьогодні ${nowday} у Вас залишилось ${restDay} днів до ${endDay} включно.</p>
+                            <p>Потурбуйтеся про своєчасну оплату сервісу!</p>
+                            `
+                    }
+                    
+                    
+                    setTimeout(() => {mailer(message)}, 5000);
             }
             
         }

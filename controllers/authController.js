@@ -9,13 +9,13 @@ const alert = require('alert')
 const UserDto = require('../dtos/user-dto')
 const tokenService = require('../services/tokenService')
 const {
-    formatDate, 
-    formatNowDate, 
-    clg,
-    transporter,
-    emailOptionsSend, 
-    getUserfromToken,
-    deleteFolder,
+    // formatDate, 
+    // formatNowDate, 
+    // clg,
+    // transporter,
+    // emailOptionsSend, 
+    // getUserfromToken,
+    // deleteFolder,
     chiperToken,
     decryptToken,
     getNumberOfDays} = require('../myFunctions/myFunctions')
@@ -152,15 +152,7 @@ class authController {
                 `
         }
         mailer(message)
-        // emailOptionsSend(
-        //     'ivladim95@gmail.com',
-        //     'RESET YOUR PASSWORD',
-        //     '',
-        //     `<h4>Кликните на ссылку для сброса Вашего пароля</h4>
-        //     <p>${config.get('CLIENT_URL')}/resetpass?resetlink=${token1}</p>
-        //     `
-        // )
-      
+        
         return user.updateOne({resetLink: token}, (err, succces) => {
             if(err){
                 return res.status(400).render('error', {msg: `Ошибка ссылки сброса пароля`})
@@ -291,8 +283,7 @@ class authController {
                 lastPaymentCab: 'lastPaymentCab',
                 linkHistory: 'Перейти',
                 linkPay: 'Сплатити'
-            }
-            ) 
+            }) 
             
         } catch (e){
             console.log(`/login e: ${e}`)
@@ -339,11 +330,8 @@ class authController {
         } catch (err) {
             console.log(`getTokenUserData err: ${err}`)
             res.status(401).json({message: 'Помилка встановлення юзера'})
-    
         }
     }
-
-
 }
 
 module.exports = new authController()

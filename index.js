@@ -11,6 +11,7 @@ const config = require("config")
 const authRouter = require("./routes/auth.routes")
 const fileRouter = require("./routes/file.routes")
 const systemRouter = require("./routes/system.routes")
+const paymentRouter = require("./routes/payment.routes")
 const app = express()
 // app.use(express.static(__dirname))
 const PORT = config.get('serverPort')
@@ -54,6 +55,7 @@ app.use(express.static(__dirname + '/public'))
 app.use("/api/auth", authRouter)
 app.use("/api/files", fileRouter)
 app.use("/api/system", systemRouter)
+app.use("/api/payment", paymentRouter)
 
 app.use("/contacts", function(_, res){
     res.render("contacts", {
