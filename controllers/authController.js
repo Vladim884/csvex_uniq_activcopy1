@@ -143,14 +143,23 @@ exports.forgotPassword = (req, res, next) => {
     })
     const token = jwt.sign({_id: user._id, email}, config.get('RESET_PASSWORD_KEY'), {expiresIn: '20m'})
     const token1 = chiperToken(token, config.get('secretKeyForToken1'))
-    emailOptionsSend(
-        'ivladim95@gmail.com',
-        'RESET YOUR PASSWORD',
-        '',
-        `<h4>Кликните на ссылку для сброса Вашего пароля</h4>
-        <p>${config.get('CLIENT_URL')}/resetpass?resetlink=${token1}</p>
-        `
-    )
+    const message = {
+        to: 'ivladim95@gmail.com',
+        subject: 'RESET YOUR PASSWORD',
+        html: `
+            <h4>Кликните на ссылку для сброса Вашего пароля</h4>
+            <p>${config.get('CLIENT_URL')}/resetpass?resetlink=${token1}</p>
+            `
+    }
+    mailer(message)
+    // emailOptionsSend(
+    //     'ivladim95@gmail.com',
+    //     'RESET YOUR PASSWORD',
+    //     '',
+    //     `<h4>Кликните на ссылку для сброса Вашего пароля</h4>
+    //     <p>${config.get('CLIENT_URL')}/resetpass?resetlink=${token1}</p>
+    //     `
+    // )
   
     return user.updateOne({resetLink: token}, (err, succces) => {
         if(err){
