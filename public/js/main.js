@@ -32,7 +32,7 @@ for (let i = 0; i < li.length; i++) {
     }
 }
 
-const deleteHeaderEnterLink = async () => {
+const delEnterForAdmOrUserLink = async () => {
     const response = await fetch("http://localhost:5000/api/auth/usercabinet", { 
     method: "GET", 
     headers: { "Content-Type": "application/json" }
@@ -40,38 +40,31 @@ const deleteHeaderEnterLink = async () => {
 const data = await response.json()
 const user = data.user
 console.log(`user.status: ${user.status}`)
-//    console.log(`cookie array: ${document.cookie.split(';')}`)
-    // let cookArray = document.cookie.split(';')
-    // for (let i = 0; i < cookArray.length; i++) {
-    //     if (cookArray[i].split('=')[0].trim() === 'user'
-    //         ||
-    //         cookArray[i].split('=')[0].trim() === 'admin') {
-            // linkEnter.classList.add('hidden')
-            // linkLogout.classList.remove('hidden')
-            // linkCabinet.classList.remove('hidden')
-    //     }
-    // }
+
     if (user.status === 'user' || user.status === 'admin'){
         linkEnter.classList.add('hidden')
         linkLogout.classList.remove('hidden')
         linkCabinet.classList.remove('hidden')
     }
-}
-
-deleteHeaderEnterLink()
-//==================
-//deleting enter-header-link if the user is logged in
-const viewAdminWritePayLink = () => {
-    let cookArray = document.cookie.split(';')
-    console.log(cookArray)
-    for (let i = 0; i < cookArray.length; i++) {
-        if (cookArray[i].split('=')[0].trim() === 'admin') {
-            linkWritePaying.classList.remove('hidden')
-        }
+    if (user.status === 'admin'){
+        linkWritePaying.classList.remove('hidden')
     }
 }
+
+delEnterForAdmOrUserLink()
+//==================
+//deleting enter-header-link if the user is logged in
+// const viewAdminWritePayLink = () => {
+//     let cookArray = document.cookie.split(';')
+//     console.log(cookArray)
+//     for (let i = 0; i < cookArray.length; i++) {
+//         if (cookArray[i].split('=')[0].trim() === 'admin') {
+//             linkWritePaying.classList.remove('hidden')
+//         }
+//     }
+// }
     
-viewAdminWritePayLink()
+// viewAdminWritePayLink()
     //================================
 const enter_button = document.getElementById('enter')
 // const logout_button = document.getElementById('logout')
@@ -87,7 +80,7 @@ linkLogout.onclick = function (e) {
 }
 
 if(linkLogout1){
-    linkLogout.onclick = function (e) {
+    linkLogout1.onclick = function (e) {
         if (!confirm('Вы уверены, что хотите выйти?')){
          e.preventDefault();
         }
