@@ -255,20 +255,6 @@ class authController {
                 console.log('Data has not changed')
             }
             
-            // return res.json({
-            //     token,
-                // user: {
-                //     id: user.id,
-                //     email: user.email,
-                //     diskSpace: user.diskSpace,
-                //     usedSpace: user.usedSpace,
-                //     avatar: user.avatar
-                // }
-            // })
-            // console.log(`loginFunc cookid: ${req.cookies.cookid}`)
-            
-            // return res.render('./cabinet.hbs') 
-            //  return res.json({'message': 'login ok'}) 
             return res.render('./cabinet1.hbs'
             , {
                 nicname: user.nicname,

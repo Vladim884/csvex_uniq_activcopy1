@@ -8,8 +8,9 @@ const transporter = nodemailer.createTransport(
     auth: {
         type: 'OAuth2',
         user: config.get('EMAIL'),
-        accessToken: 'ya29.a0Aa4xrXOd-Fe8nmRD_M6dYFV4gpU8_amEUjdO-E9jQTU48fCpXnen9nGzt2QiXHxfMH-xum-O0bAh8DBCL364l4vC9r-uYc0YNLvWfz63FpaefZKB3185gDXFqaQL5eMvTlMWNTdNGn-wIZFLXGiponqn8_0yaCgYKATASARISFQEjDvL9lwv4-5gkCkp_2XwJBlKKPQ0163',
-        refreshToken: '1//0471QfnVlYYNQCgYIARAAGAQSNwF-L9IrQBOoOkFjbBp1Mbtm5sCLaO1CedsfbJR2baSRWsfzlk2TNBf3PCikgDPH1ayGIgLh-yk',
+        accessToken: config.get('ACCESSTOKEN'),
+        expires: 1664907671439 + 60000,
+        refreshToken: config.get('REFRESHTOKEN'),
         clientId: '631769748026-3pnknff7fivb6n3s61f4944ffob42hrj.apps.googleusercontent.com',
         clientSecret: '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',
         }
