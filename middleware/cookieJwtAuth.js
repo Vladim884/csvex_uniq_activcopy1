@@ -21,13 +21,14 @@ exports.cookieJwtAuth = (req, res, next) => {
    
     
        //the important part
-       const user = jwt.verify(token, config.get('secretKey'))
+       const user = jwt.verify(token, config.get('JWT_ACC_ACTIVATE'))
+       console.log(user)
        req.user = user
     //    console.log(`user-jwt: ${user.email}`)
     next()
    } catch (err) {
       
-       console.log(`err: ${err}`)
+       console.log(`jsonwebtoken err: ${err}`)
     //    res.clearCookie('token')
       //  alert('Время сессии истекло, пожалуйста, выполните вход')
        res 

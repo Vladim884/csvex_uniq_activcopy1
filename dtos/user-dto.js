@@ -1,10 +1,10 @@
 module.exports = class UserDto{
-    nicname
+    role
     id
     email
 
     constructor(model){
-        this.nicname = model.nicname
+        this.role = model.status
         this.id = model._id
         this.email = model.email
     }

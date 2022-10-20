@@ -7,6 +7,7 @@ const router = new Router()
 const {cookieJwtAuth} = require('../middleware/cookieJwtAuth')
 const authController = require("../controllers/authController")
 const paymentController = require("../controllers/paymentController")
+const tokenService = require("../services/tokenService")
 // const { 
 //         signup, 
 //         activateAccount, 
