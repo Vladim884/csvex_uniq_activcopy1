@@ -6,36 +6,31 @@ let alert = require('alert')
 exports.cookieJwtAuth = (req, res, next) => {
    try {
     const token = req.cookies.token
+    // const token = ''
     
     // console.log(`cookieJwtAuth-cookie-token ${req.cookies.token}`)
    if(!token){
     res 
       .clearCookie("token")
-      .clearCookie("user")
-      .clearCookie("admin")
-      next(err)
-    // return res.redirect('http://localhost:5000/enter')
-    return res.status(403).json({"message": "Ви не авторизувались"})
+      .clearCookie("refreshToken")
+      .clearCookie("xtext")
+      // next(err)
+    return res.status(403).render('msg', {msg: "Ви не авторизовані"})
    }
    
-   
-    
        //the important part
        const user = jwt.verify(token, config.get('JWT_ACC_ACTIVATE'))
-       console.log(user)
        req.user = user
-    //    console.log(`user-jwt: ${user.email}`)
-    next()
+      next()
    } catch (err) {
-      
        console.log(`jsonwebtoken err: ${err}`)
     //    res.clearCookie('token')
       //  alert('Время сессии истекло, пожалуйста, выполните вход')
+      // next(err)
        res 
          .clearCookie("token")
-         .clearCookie("user")
-         .clearCookie("admin")
-         // .redirect('http://localhost:5000/enter')
+         .clearCookie("refreshToken")
+         .clearCookie("xtext")
          .redirect('/enter')
    }
 }

@@ -15,6 +15,7 @@ const {
 const { filePathDeleter } = require("../myFunctions/filePathDeleter")
 const mailer = require("../nodemailer/nodemailer")
 const userService = require("../services/userService")
+const { deleterOldFile } = require("../services/fileService")
 
 class authController {
     async signup (req, res, next) {
@@ -39,7 +40,7 @@ class authController {
                 return res.status(400).render('msg', {msg: `Користувач з email: ${email} вже існує`})
             }
             const token = jwt.sign({nicname, email, password}, config.get('JWT_ACC_ACTIVATE'), {expiresIn: '15m'})
-            const token1 = chiperToken(token, config.get('secretKeyForToken1'))
+            const token1 = chiperToken(token, config.get('secretKeyForChiperToken'))
             const message = {
                 to: 'ivladim95@gmail.com',
                 subject: 'Congratulations! You are successfully registred on our site',
@@ -59,7 +60,7 @@ class authController {
     async activateAccount(req, res, next) {
         try {
             let token1 = req.body.name
-            let token = decryptToken(token1, config.get('secretKeyForToken1'))
+            let token = decryptToken(token1, config.get('secretKeyForChiperToken'))
             
             if (!token){
                 res.render('error', {errorMsg: 'Помилка активації токену'})
@@ -136,7 +137,7 @@ class authController {
             }
         })
         const token = jwt.sign({_id: user._id, email}, config.get('RESET_PASSWORD_KEY'), {expiresIn: '20m'})
-        const token1 = chiperToken(token, config.get('secretKeyForToken1'))
+        const token1 = chiperToken(token, config.get('secretKeyForChiperToken'))
         const message = {
             to: 'ivladim95@gmail.com',
             subject: 'RESET YOUR PASSWORD',
@@ -159,7 +160,7 @@ class authController {
     async resetPassword (req, res) {
         const {crypt, newPass} = req.body
         console.log(`crypt: ${crypt}`)
-        let resetLink = decryptToken(crypt, config.get('secretKeyForToken1'))
+        let resetLink = decryptToken(crypt, config.get('secretKeyForChiperToken'))
         
         if (resetLink) {
             jwt.verify(resetLink, config.get('RESET_PASSWORD_KEY'), (err, decodeData) => {
@@ -193,50 +194,24 @@ class authController {
     async login (req, res, next) {
         try {
             const {email, password} = req.body
-            // let user
-            // let user = await User.findOne({email})
-            // if (!user) {
-            //     return res.status(404).json({message: "User not found"})
-            // }
-            // const isPassValid = bcrypt.compareSync(password, user.password)
-            // if (!isPassValid) {
-            //     return res.status(400).json({message: "Invalid password"})
-            // }
-            // const token = jwt.sign({id: user.id, email: user.email, userRole: user.status}, config.get("secretKey"), {expiresIn: "1h"})
-            // const refreshToken = jwt.sign({id: user.id, email: user.email}, config.get("JWT_REF_ACTIVATE"), {expiresIn: "30d"})
-
             const userData = await userService.login(email, password)
-            const user = userData.user
+            let user = userData.user
             const token = userData.token
             const refreshToken = userData.refreshToken
 
-
-            let dirpath = `${config.get('filePath')}\\${user.id}`
-            if(user.temp[0]){
-                let randFilePath = user.temp[0].randFilePath
-                let csvpath = user.temp[0].csvpath
-                let exelpath = user.temp[0].exelpath
-                filePathDeleter(csvpath)
-                filePathDeleter(exelpath)
-                filePathDeleter(randFilePath)
-            }
-            res.cookie('token', token, {
+            deleterOldFile(user)
+            
+            const xtext = chiperToken(token, config.get('secretKeyForChiperToken')).toString()
+            res.cookie('xtext', xtext, {
                 httpOnly: true
             })
-            const xtext = chiperToken(token, config.get('secretKeyForToken1')).toString()
-            console.log(`xtext: ${xtext}`)
-            res.cookie('xtext', xtext, {
+            res.cookie('token', token, {
                 httpOnly: true
             })
             res.cookie('refreshToken', refreshToken, {
                 httpOnly: true
             })
-            // if(user.status === 'admin'){
-            //     res.cookie('admin', 'admin')
-            // }
-            // if(user.status === 'user'){
-            //     res.cookie('user', 'user')
-            // }
+            
             let daysLeft = getNumberOfDays(new Date(), new Date(user.endDay))
             if(daysLeft < 0) daysLeft = 0
             let balance = daysLeft * 100 / 30
@@ -252,25 +227,16 @@ class authController {
                         return res.status(400).json({message: `Ошибка изменения оплати юзера ${email}`})
                     } else {
                         console.log('Баланс та залишок днів при логіні змінено???')
-                    }})
+                    }
+                })
             } else {
                 console.log('Data has not changed')
             }
             
-            return res.render('./cabinet1.hbs', {
-                nicname: user.nicname,
-                email: user.email,
-                registrDate: moment(user.registrDate).format('DD.MM.YYYY'),
-                role: user.status,
-                // tegService: `Активовано на ${user.finData[0].daysLeft} дні`,
-                tegService: '${user.finData[0].daysLeft} дні',
-                // balance: user.finData[0].balance,
-                balance: 'user.finData[0].balance',
-                // lastPaymentCab: lastPaymentCab,
-                lastPaymentCab: 'lastPaymentCab',
-                linkHistory: 'Перейти',
-                linkPay: 'Сплатити'
-            }) 
+            return res.render(
+                './cabinet1.hbs', 
+                await userService.getCabinetFields(user)
+            ) 
             
         } catch (e){
             console.log(`/login e: ${e}`)
@@ -281,14 +247,13 @@ class authController {
     async logout (req, res, next) {
         try {
             res 
-            .clearCookie("xtext")
-            .clearCookie("token")
-            .clearCookie("user")
-            .clearCookie("admin")
+                .clearCookie("xtext")
+                .clearCookie("token")
+                .clearCookie("refreshToken")
             return res
-            .status(302)
-            .redirect('/enter')
-            //   .json({ message: "Successfully logged out 😏 🍀" })
+                        .status(302)
+                        .redirect('/enter')
+                        //   .json({ message: "Successfully logged out 😏 🍀" })
         
         } catch (err) {
             next(err)
@@ -297,24 +262,24 @@ class authController {
 
     async getTokenUserData (req, res, next) {
         try {
-            console.log('start getTokenUserData')
+            // console.log('start getTokenUserData')
         const xtext = req.cookies.xtext
-        const token = decryptToken(xtext, config.get('secretKeyForToken1'))
-        console.log(token)
+        const token = decryptToken(xtext, config.get('secretKeyForChiperToken'))
+        // console.log(token)
         if(!token){
             return res.status(403).json({"message": "Ви не авторизувались"})
         }
         
-            const datauser = jwt.verify(token, config.get('JWT_ACC_ACTIVATE'))
+        const datauser = jwt.verify(token, config.get('JWT_ACC_ACTIVATE'))
         //    req.user = user
-           console.log(`user-jwt: ${datauser.email}`)
-           const email = datauser.email
-            const user = await User.findOne({email})
-            if (!user) {
-                return res.status(404).json({message: "User not found"})
-            }
-            // console.log(Object.values(user))
-        //    console.log(`user-jwt: ${user.email}`)
+        //    console.log(`user-jwt: ${datauser.email}`)
+        const email = datauser.email
+        const user = await User.findOne({email})
+        if (!user) {
+            return res.status(404).json({message: "User not found"})
+        }
+        // console.log(Object.values(user))
+        // console.log(`user-jwt: ${user.email}`)
         return res.json({ user })
         // return res.render('./cabinet.hbs')
         } catch (err) {

@@ -4,11 +4,9 @@ const bcrypt = require("bcryptjs")
 const config = require("config")
 const jwt = require("jsonwebtoken")
 const tokenService = require("./tokenService")
+const moment = require("moment")
 
 class UserService {
-
-
-
     async login(email, password){
         try {
             let user = await User.findOne({email})
@@ -21,8 +19,7 @@ class UserService {
             }
             const userDto = new UserDto(user)
             const tokens = tokenService.generateTokens({...userDto})
-            // const token = jwt.sign({id: user.id, email: user.email, userRole: user.status}, config.get("secretKey"), {expiresIn: "1h"})
-            // const refreshToken = jwt.sign({id: user.id, email: user.email}, config.get("JWT_REF_ACTIVATE"), {expiresIn: "30d"})
+            
             await tokenService.saveToken(user.id, tokens.refreshToken)
             return {...tokens, user}
         } catch (error) {
@@ -50,6 +47,25 @@ class UserService {
         const tokens = tokenService.generateTokens({...userDto})
         await tokenService.saveToken(userData.id, tokens.refreshToken)
         return {...tokens, user: userDto}
+
+    }
+
+    async getCabinetFields(user){
+        // console.log(user)
+        return {
+            nicname: user.nicname,
+            email: user.email,
+            registrDate: moment(user.registrDate).format('DD.MM.YYYY'),
+            role: user.status,
+            // tegService: `Активовано на ${user.finData[0].daysLeft} дні`,
+            tegService: '${user.finData[0].daysLeft} дні',
+            // balance: user.finData[0].balance,
+            balance: 'user.finData[0].balance',
+            // lastPaymentCab: lastPaymentCab,
+            lastPaymentCab: 'lastPaymentCab',
+            linkHistory: 'Перейти',
+            linkPay: 'Сплатити'
+        }
     }
 }
 

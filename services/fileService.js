@@ -1,6 +1,7 @@
 const fs = require('fs')
 const File = require('../models/File')
 const config = require('config')
+const { filePathDeleter } = require('../myFunctions/filePathDeleter')
 
 class FileService {
 
@@ -18,6 +19,17 @@ class FileService {
                 return reject({message: 'File error'})
             }
         }))
+    }
+
+    deleterOldFile(user){
+        if(user.temp[0]){
+            let randFilePath = user.temp[0].randFilePath
+            let csvpath = user.temp[0].csvpath
+            let exelpath = user.temp[0].exelpath
+            filePathDeleter(csvpath)
+            filePathDeleter(exelpath)
+            filePathDeleter(randFilePath)
+        }
     }
 
 }

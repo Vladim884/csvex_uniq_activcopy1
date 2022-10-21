@@ -49,8 +49,7 @@ router.get('/user', cookieJwtAuth, async function(req, res){
             
 });
 
-// router.post('/writepaying', [cookieJwtAuth], paymentController.writePaying)
-// router.post('/sendendpay', cookieJwtAuth, paymentController.sendEndPay)
+
 router.get('/usercabinet', cookieJwtAuth, authController.getTokenUserData)
 
 module.exports = router
