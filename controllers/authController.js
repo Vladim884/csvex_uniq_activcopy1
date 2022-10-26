@@ -11,11 +11,13 @@ const tokenService = require('../services/tokenService')
 const {
         chiperToken,
         decryptToken,
-        getNumberOfDays } = require('../myFunctions/myFunctions')
+        getNumberOfDays, 
+        getUserfromToken} = require('../myFunctions/myFunctions')
 const { filePathDeleter } = require("../myFunctions/filePathDeleter")
 const mailer = require("../nodemailer/nodemailer")
 const userService = require("../services/userService")
 const { deleterOldFile } = require("../services/fileService")
+const Token = require("../models/Token")
 
 class authController {
     async signup (req, res, next) {
@@ -206,14 +208,16 @@ class authController {
                 httpOnly: true
             })
             res.cookie('token', token, {
+                maxAge: 5000,
                 httpOnly: true
             })
             res.cookie('refreshToken', refreshToken, {
+                maxAge: 300000,
                 httpOnly: true
             })
             
             let daysLeft = getNumberOfDays(new Date(), new Date(user.endDay))
-            if(daysLeft < 0) daysLeft = 0
+            if(daysLeft < 0) daysLeft = 1
             let balance = daysLeft * 100 / 30
             if(balance < 0) balance = 0
             if (daysLeft !== user.daysLeft || balance !== user.balance) {
@@ -246,6 +250,12 @@ class authController {
 
     async logout (req, res, next) {
         try {
+            const {refreshToken} = req.cookies
+            // console.log(`authContr-logout-req.coocies.refreshToken: ${refreshToken}`)
+            const token = await userService.logout(refreshToken)
+            // await userService.logout(refreshToken)
+            // await Token.deleteOne({refreshToken})
+            // await Token.deleteOne({user: '630e574ccba3eb09782eee65'})
             res 
                 .clearCookie("xtext")
                 .clearCookie("token")
@@ -260,15 +270,47 @@ class authController {
         }
     }
 
+    async reresh(req, res, next){
+        try {
+            const {refreshToken} = req.cookies
+            const userData = await userService.refresh(refreshToken)
+            
+            res.cookie('refreshToken', refreshToken, {
+                maxAge: 24*30*60*60*1000,
+                httpOnly: true
+            })
+            res.json(userData)
+        } catch (err) {
+            console.log(`refresh err: ${err}`)
+            next(err)
+        }
+            
+    }
+
     async getTokenUserData (req, res, next) {
         try {
-            // console.log('start getTokenUserData')
-        const xtext = req.cookies.xtext
-        const token = decryptToken(xtext, config.get('secretKeyForChiperToken'))
-        // console.log(token)
-        if(!token){
-            return res.status(403).json({"message": "Ви не авторизувались"})
-        }
+        // const token = req.cookies.token
+        // if(!token){
+        //     return res.status(403).json({"message": "Ви не авторизувались"})
+        // }
+
+        let token = req.cookies.token
+            if(token){
+                let user = await getUserfromToken(token)
+            } else {
+                const {refreshToken} = req.cookies
+                    if(!refreshToken){
+                        return res.status(403).json({"message": "systemContr/upload Ви не авторизувались(!token)"})
+                    } else {
+                        const refData = await userService.refresh(refreshToken)
+                        console.log(refData)
+                        res.cookie('refreshToken', refData.refreshToken, {
+                            maxAge: 24*30*60*60*1000,
+                            httpOnly: true
+                        })
+                        token = refData.token
+                    }
+            }
         
         const datauser = jwt.verify(token, config.get('JWT_ACC_ACTIVATE'))
         //    req.user = user

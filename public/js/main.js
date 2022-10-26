@@ -31,12 +31,15 @@ for (let i = 0; i < li.length; i++) {
         li[i].children[0].classList.add('active');
     }
 }
-
+//================================================
 const delEnterForAdmOrUserLink = async () => {
+    // const searchStr = window.location.href
+    // console.log(searchStr)
     const response = await fetch("http://localhost:5000/api/auth/usercabinet", { 
     method: "GET", 
     headers: { "Content-Type": "application/json" }
 })
+
 const data = await response.json()
 const user = data.user
 console.log(`user.status: ${user.status}`)
@@ -50,21 +53,8 @@ console.log(`user.status: ${user.status}`)
         linkWritePaying.classList.remove('hidden')
     }
 }
-
 delEnterForAdmOrUserLink()
-//==================
-//deleting enter-header-link if the user is logged in
-// const viewAdminWritePayLink = () => {
-//     let cookArray = document.cookie.split(';')
-//     console.log(cookArray)
-//     for (let i = 0; i < cookArray.length; i++) {
-//         if (cookArray[i].split('=')[0].trim() === 'admin') {
-//             linkWritePaying.classList.remove('hidden')
-//         }
-//     }
-// }
-    
-// viewAdminWritePayLink()
+
     //================================
 const enter_button = document.getElementById('enter')
 // const logout_button = document.getElementById('logout')

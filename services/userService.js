@@ -29,20 +29,24 @@ class UserService {
 
     }
     async logout(refreshToken){
+        // console.log(`UserService-logout-refreshToken: ${refreshToken}`)
         const token = await tokenService.removeToken(refreshToken)
         return token
     }
     
     async refresh(refreshToken){
         if(!refreshToken) {
-            throw ApiError.UnauthorizadError()
+            console.log('UserService/refresh(refreshToken): !refreshToken')
         }
         const userData = tokenService.validateRefreshToken(refreshToken)
+        // const userData = jwt.verify(refreshToken, config.get('JWT_REF_ACTIVATE'))
+        console.log(`userData: ${userData}`)
         const tokenFromDb = await tokenService.findToken(refreshToken)
         if(!userData || !tokenFromDb){
-            throw ApiError.UnauthorizadError()
+            console.log('UserService/refresh(refreshToken): !userData || !tokenFromDb')
         }
-        const user = User.findById(userData.id)
+        const user = await User.findById({_id: userData.id})
+
         const userDto = new UserDto(user)
         const tokens = tokenService.generateTokens({...userDto})
         await tokenService.saveToken(userData.id, tokens.refreshToken)

@@ -11,7 +11,10 @@ const {
     moveFile,
     deleteFolder, 
     createDir, 
-    decryptToken} = require("../myFunctions/myFunctions")
+    decryptToken,
+    getUserfromRefToken} = require("../myFunctions/myFunctions")
+const authController = require("./authController")
+const userService = require("../services/userService")
 
 
 class systemController {
@@ -35,14 +38,39 @@ class systemController {
 
     async upload(req, res, next) {
         try {
-            const xtext = req.cookies.xtext
-            const token = decryptToken(xtext, config.get('secretKeyForToken1'))
-            if(!token){
-                return res.status(403).json({"message": "Ви не авторизувались(!token)"})
+            // const xtext = req.cookies.xtext
+            // const token = decryptToken(xtext, config.get('secretKeyForToken1'))
+            //======
+            // const cookies = req.cookies
+            // const {refreshToken} = req.cookies
+            // console.log(`upload-refreshToken: ${refreshToken}`)
+            // if(!refreshToken){
+            //     return res.status(403).json({"message": "systemContr/upload Ви не авторизувались(!token)"})
+            // }
+            
+            // let user = await getUserfromRefToken(refreshToken)
+
+            let token = req.cookies.token
+            if(token){
+                let user = await getUserfromToken(token)
+                
+            } else {
+                const {refreshToken} = req.cookies
+                    if(!refreshToken){
+                        return res.status(403).json({"message": "systemContr/upload Ви не авторизувались(!token)"})
+                    } else {
+                        const refData = await userService.refresh(refreshToken)
+                        console.log(refData)
+                        res.cookie('refreshToken', refData.refreshToken, {
+                            maxAge: 24*30*60*60*1000,
+                            httpOnly: true
+                        })
+                        token = refData.token
+                        
+                    }
             }
-            const refreshToken = req.cookies.refreshToken
-            console.log(`refreshToken: ${refreshToken}`)
-            let user = await getUserfromToken(token)
+            // const token = decryptToken(xtext, config.get('secretKeyForToken1'))
+            const user = await getUserfromToken(token)
             let dirpath = `${config.get("filePath")}\\${user.id}`
             let filedata = req.file
             deleteFolder(dirpath)
@@ -89,13 +117,15 @@ class systemController {
 
     async upload01(req, res, next) {
         try {
-            const xtext = req.cookies.xtext
-            const token = decryptToken(xtext, config.get('secretKeyForToken1'))
-            if(!token){
-                return res.status(403).json({"message": "Ви не авторизувались(!token)"})
+            // const xtext = req.cookies.xtext
+            // const token = decryptToken(xtext, config.get('secretKeyForToken1'))
+            const {refreshToken} = req.cookies
+            console.log(`upload01-refreshToken: ${refreshToken}`)
+            if(!refreshToken){
+                return res.status(403).json({"message": "systemContr/upload01 Ви не авторизувались(!token)"})
             }
             
-            let user = await getUserfromToken(token)
+            let user = await getUserfromRefToken(refreshToken)
             let randFilePath = user.temp[0].randFilePath
             let dirpath = `${config.get("filePath")}\\${user.id}`
             let results = []
@@ -138,12 +168,19 @@ class systemController {
 
     async upload1(req, res, next) {
         try {
-            const xtext = req.cookies.xtext
-            const token = decryptToken(xtext, config.get('secretKeyForToken1'))
-            if(!token){
-                return res.status(403).json({"message": "Ви не авторизувались"})
+            // const xtext = req.cookies.xtext
+            // const token = decryptToken(xtext, config.get('secretKeyForToken1'))
+            // if(!token){
+            //     return res.status(403).json({"message": "Ви не авторизувались"})
+            // }
+            // let user = await getUserfromToken(token)
+            const {refreshToken} = req.cookies
+            console.log(`upload01-refreshToken: ${refreshToken}`)
+            if(!refreshToken){
+                return res.status(403).json({"message": "systemContr/upload01 Ви не авторизувались(!token)"})
             }
-            let user = await getUserfromToken(token)
+            
+            let user = await getUserfromRefToken(refreshToken)
             let randFilePath = user.temp[0].randFilePath
             let dirpath = `${config.get("filePath")}\\${user.id}`
             let results = []
@@ -218,12 +255,13 @@ class systemController {
 
     async upload2(req, res, next) {
         try {            
-            const xtext = req.cookies.xtext
-            const token = decryptToken(xtext, config.get('secretKeyForToken1'))
-            if(!token){
-                return res.status(403).json({"message": "Ви не авторизувались"})
+            const {refreshToken} = req.cookies
+            console.log(`upload01-refreshToken: ${refreshToken}`)
+            if(!refreshToken){
+                return res.status(403).json({"message": "systemContr/upload01 Ви не авторизувались(!token)"})
             }
-            let user = await getUserfromToken(token)
+            
+            let user = await getUserfromRefToken(refreshToken)
             let dirpath = `${config.get("filePath")}\\${user.id}`
             
             let randFilePath = user.temp[0].randFilePath
