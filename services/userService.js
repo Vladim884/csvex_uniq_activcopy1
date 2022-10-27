@@ -19,7 +19,7 @@ class UserService {
             }
             const userDto = new UserDto(user)
             const tokens = tokenService.generateTokens({...userDto})
-            
+            console.log(`ttt ${tokens.refreshToken}`)
             await tokenService.saveToken(user.id, tokens.refreshToken)
             return {...tokens, user}
         } catch (error) {

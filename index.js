@@ -73,9 +73,7 @@ app.use("/api/auth/activate", function(req, res){
 app.use("/cabinet", function(req, res){
     res.render('cabinet.hbs')
 })
-app.use("/cabinet", function(req, res){
-    res.render('cabinet.hbs')
-})
+
 app.use("/registration", function(req, res){
     res.render('registration.hbs')
 })

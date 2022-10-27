@@ -86,8 +86,8 @@ class authController {
                         
                         <i>данные вашей учетной записи:</i>
                         <ul>
-                            <li>login: {email}</li>
-                            <li>password: {password}</li>
+                            <li>login: ${email}</li>
+                            <li>password: ${password}</li>
                         </ul>
                         ${
                         req.body.promo
@@ -101,12 +101,14 @@ class authController {
                 // console.log(req.body.promo)
                 mailer(message)
                 // user = req.body
-                return res.render('enter', {
-                    msg: `Активація пройшла з усвіхом! 
-                            Введіть Ваші данні.`,
-                            password,
-                            email
-                    })
+                //======
+                // return res.render('enter', {
+                //     msg: `Активація пройшла з усвіхом! 
+                //             Введіть Ваші данні.`,
+                //             password,
+                //             email
+                //     })
+                //======
                 
                 } else {
                     const message = {
@@ -117,13 +119,21 @@ class authController {
                         `    
                     }
                     mailer(message)
-                    return res.render('enter', {
-                        msg: `Активація пройшла з усвіхом! 
-                                Введіть Ваші данні.`,
-                                password,
-                                email
-                    })
+                    //======
+                    // return res.render('enter', {
+                    //     msg: `Активація пройшла з усвіхом! 
+                    //             Введіть Ваші данні.`,
+                    //             password,
+                    //             email
+                    // })
+                    //=========
                 }
+                return res.render('enter', {
+                    msg: `Активація пройшла з усвіхом! 
+                            Введіть Ваші данні.`,
+                            password,
+                            email
+                })
         } catch(err) {
             console.log(err)
             // res.json({err: 'Что-то пошло не так!'})
@@ -204,20 +214,20 @@ class authController {
             deleterOldFile(user)
             
             const xtext = chiperToken(token, config.get('secretKeyForChiperToken')).toString()
-            res.cookie('xtext', xtext, {
-                httpOnly: true
-            })
-            res.cookie('token', token, {
-                maxAge: 5000,
-                httpOnly: true
-            })
+            // res.cookie('xtext', xtext, {
+            //     httpOnly: true
+            // })
+            // res.cookie('token', token, {
+            //     maxAge: 5000,
+            //     httpOnly: true
+            // })
             res.cookie('refreshToken', refreshToken, {
                 maxAge: 300000,
                 httpOnly: true
             })
             
             let daysLeft = getNumberOfDays(new Date(), new Date(user.endDay))
-            if(daysLeft < 0) daysLeft = 1
+            if(daysLeft < 0) daysLeft = 0
             let balance = daysLeft * 100 / 30
             if(balance < 0) balance = 0
             if (daysLeft !== user.daysLeft || balance !== user.balance) {
@@ -226,7 +236,7 @@ class authController {
                     balance
                 }
                 user = _.extend(user, obj)
-                user.save((err, result) => {
+                await user.save((err, result) => {
                     if(err){
                         return res.status(400).json({message: `Ошибка изменения оплати юзера ${email}`})
                     } else {
@@ -236,11 +246,14 @@ class authController {
             } else {
                 console.log('Data has not changed')
             }
-            
+
             return res.render(
-                './cabinet1.hbs', 
-                await userService.getCabinetFields(user)
-            ) 
+                './cabinet.hbs')
+            
+            // return res.render(
+            //     './cabinet1.hbs', 
+            //     await userService.getCabinetFields(user)
+            // ) 
             
         } catch (e){
             console.log(`/login e: ${e}`)

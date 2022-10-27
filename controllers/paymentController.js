@@ -13,16 +13,33 @@ const {
     getUserfromToken,
     decryptToken} = require('../myFunctions/myFunctions')
 const mailer = require("../nodemailer/nodemailer")
+const userService = require("../services/userService")
 
 class paymentController {
     async writePaying (req, res) {
-        const xtext = req.cookies.xtext
-        const token = decryptToken(xtext, config.get('secretKeyForToken1'))
-        if(!token){
-            return res.status(403).json({"message": "Ви не авторизувались"})
-        }
-        const datatoken = jwt.verify(token, config.get('secretKey'))
-        let userRole = datatoken.userRole
+        let token = req.cookies.token
+            if(token){
+                let user = await getUserfromToken(token)
+                
+            } else {
+                const {refreshToken} = req.cookies
+                    if(!refreshToken){
+                        return res.status(403).json({"message": "systemContr/upload Ви не авторизувались(!token)"})
+                    } else {
+                        const refData = await userService.refresh(refreshToken)
+                        console.log(`paymentController/writePaying-refData: ${refData.token}`)
+                        res.cookie('refreshToken', refData.refreshToken, {
+                            maxAge: 24*30*60*60*1000,
+                            httpOnly: true
+                        })
+                        token = refData.token
+                        
+                    }
+            }
+        console.log(`paymentController/writePaying-token2: ${token}`)
+        const datatoken = jwt.verify(token, config.get('JWT_ACC_ACTIVATE'))
+        let userRole = datatoken.role
+        console.log(userRole)
         if(userRole !== 'admin') return res.render('msg', {msg: 'У Вас не має права доступу!'})
         let {email, sumpay} = req.body
         let user = await User.findOne({email})
