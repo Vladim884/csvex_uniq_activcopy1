@@ -7,23 +7,23 @@
 
 
 
+
 <script>
-   
-const formatDate = (sum) => {
+//const formatDate = (sum) => {
     // payingDay = new Date()
-    const date = new Date(new Date(sum).getTime())
-    console.log(`sum: ${sum}`)
-      let dd = date.getDate()
-      if (dd < 10) dd = '0' + dd
+    //const date = new Date(new Date(sum).getTime())
+    //console.log(`sum: ${sum}`)
+      //let dd = date.getDate()
+      //if (dd < 10) dd = '0' + dd
     
-      let mm = date.getMonth() + 1
-      if (mm < 10) mm = '0' + mm
+      //let mm = date.getMonth() + 1
+      //if (mm < 10) mm = '0' + mm
     
-      let yy = date.getFullYear() % 100
-      if (yy < 10) yy = '0' + yy
+      //let yy = date.getFullYear() % 100
+      //if (yy < 10) yy = '0' + yy
     
-      return dd + '.' + mm + '.' + yy
-}
+      //return dd + '.' + mm + '.' + yy
+//}
     const pageTitle = document.querySelector("h1.history-page-title")
     const paymentList = document.querySelector("ul.payment-list")
     const user = getUser()
@@ -43,25 +43,27 @@ const formatDate = (sum) => {
 
         //console.log(`${user.nicname} ${user.payments[1].number}`)
         //{{!-- console.log(user) --}}
-        for (i=user.payments.length-1;i>=0;i--) {
-            console.log(user.payments[i].number)
-            d = new Date(user.payments[i].date)
-            console.log(d)
-            //document.write('<div>user.payments[i].number</div>')
-            // создаем элемент
-            var elem = document.createElement("li");
-            // создаем для него текст
-            var elemText = document.createTextNode(`
-                плата за послугу "Генератор тегів"
-                №${user.payments[i].number}
-                дата: ${formatDate(d)}
-                сума: ${user.payments[i].sum}.00(грн)`)
-            // добавляем текст в элемент в качестве дочернего элемента
-            elem.appendChild(elemText);
-            // добавляем элемент в блок div
-            paymentList.appendChild(elem)
-            
-        }
+            for (i=user.payments.length-1;i>=0;i--) {
+                console.log(user.payments[i].number)
+                //console.log(d)
+                //document.write('<div>user.payments[i].number</div>')
+                //d = new Date(user.payments[i].date)
+                const d = moment(user.payments[i].date).format()
+                console.log(`d: ${d}`)
+                // создаем элемент
+                var elem = document.createElement("li");
+                // создаем для него текст
+                var elemText = document.createTextNode(`
+                    плата за послугу "Генератор тегів"
+                    №${user.payments[i].number}
+                    дата: ${moment(d).format('DD.MM.YY')} /
+                    сума: ${user.payments[i].sum}.00(грн)`)
+                // добавляем текст в элемент в качестве дочернего элемента
+                elem.appendChild(elemText);
+                // добавляем элемент в блок div
+                paymentList.appendChild(elem)
+                
+            }
         }
     }
 

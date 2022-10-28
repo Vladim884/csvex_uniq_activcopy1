@@ -1,4 +1,5 @@
 const {Schema, model, ObjectId} = require("mongoose")
+const moment = require("moment")
 
 
 const User = new Schema({
@@ -19,7 +20,9 @@ const User = new Schema({
     password: {type: String, required: true},
     registrDate: {
         type: Date, 
-        default: new Date(new Date())
+        default: moment().format()
+        // default: new Date(new Date())
+        
     },
     paymentNumber: {type: Number, default: 0},
     payingDate: {type: Date, default: new Date()},

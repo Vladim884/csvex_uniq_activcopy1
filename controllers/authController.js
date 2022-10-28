@@ -206,6 +206,12 @@ class authController {
     async login (req, res, next) {
         try {
             const {email, password} = req.body
+            const candidate = await User.findOne({email})
+            if(!candidate) {
+                return res.status(400).render('msg', {
+                    msg: `Користувача з email: ${email} не знайдено, спробуйте ввести інший email,
+                     чи зареєструватися на сайті`})
+            }
             const userData = await userService.login(email, password)
             let user = userData.user
             const token = userData.token

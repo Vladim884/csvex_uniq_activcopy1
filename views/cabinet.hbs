@@ -2,7 +2,7 @@
     <h1 class="cabinet-title">Кабінет</h1>
     <div class="data-block">
         <ul class="data-fields">
-            <li class="field"><span>Вітаємо,</span></li>
+            <li class="field"><span>Вітаємо,</li>
             <li class="field"><span>Email:</span></li>
             <li class="field">userID:</li>
             <li class="field">Дата реєстрації:</li>
@@ -29,22 +29,24 @@
 </div>
 
 <script>
-    const formatNowDate = (d) => {
+    //const moment = require('moment') 
+
+    //const formatNowDate = (d) => {
     // payingDay = new Date()
-    const date = new Date(new Date(d).getTime())
+    //const date = new Date(new Date(d).getTime())
     // const date = new Date().getTime()
-    console.log(`date: ${date}`)
-      let dd = date.getDate();
-      if (dd < 10) dd = '0' + dd;
+    //console.log(`date: ${date}`)
+      //let dd = date.getDate();
+      //if (dd < 10) dd = '0' + dd;
     
-      let mm = date.getMonth() + 1;
-      if (mm < 10) mm = '0' + mm;
+      //let mm = date.getMonth() + 1;
+      //if (mm < 10) mm = '0' + mm;
     
-      let yy = date.getFullYear() % 100;
-      if (yy < 10) yy = '0' + yy;
+      //let yy = date.getFullYear() % 100;
+      //if (yy < 10) yy = '0' + yy;
     
-      return dd + '.' + mm + '.' + yy;
-    }
+      //return dd + '.' + mm + '.' + yy;
+    //}
     getUser();
     async function getUser() {
         const fieldUser = document.querySelector('.field-user')
@@ -57,8 +59,6 @@
         const fieldBalance = document.querySelector('.field-balance')
         const linkHistory = document.querySelector('.linkhistory')
         const linkPay = document.querySelector('.linkpay')
-
-
         const response = await fetch("http://localhost:5000/api/auth/usercabinet", { 
                 method: "GET", 
                 headers: { "Content-Type": "application/json" },
@@ -83,13 +83,14 @@
         fieldBalance.textContent = user.balance.toFixed(2) + '(грн)'
         fieldActiveGenerator.textContent = `Активовано на ${user.daysLeft} днів`
         //const registrDate = document.querySelector('.field-registrDate')
-        registrDate.textContent = formatNowDate(user.registrDate)
+        //registrDate.textContent = formatNowDate(user.registrDate)
+        registrDate.textContent = moment(user.registrDate).format("DD.MM.YYYY")
         let lastPayments = user.payments[user.payments.length - 1];
         if(!lastPayments) {lastPayingDate.textContent = 'Оплат ще не було'}
         else {
             lastPayingDate.textContent = ` 
                 №${lastPayments.number} /
-                ${formatNowDate(lastPayments.date)} / 
+                ${moment(lastPayments.date).format("DD.MM.YY")} /
                 ${lastPayments.sum}.00(грн)`
             }
         linkHistory.textContent = `Переглянути`
@@ -97,7 +98,4 @@
         //return data
         
     }
-
-    
-
 </script>
