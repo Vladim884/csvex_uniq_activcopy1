@@ -112,8 +112,8 @@ exports.getNumberOfDays = (start, end) => {
 
 exports.getUserfromToken = (token) => {
     const datatoken = jwt.verify(token, config.get('JWT_ACC_ACTIVATE'))
-    let email = datatoken.email
-    let user = User.findOne({email})
+    let id = datatoken.id
+    let user = User.findOne({_id: id})
     if (!user) {
         return res.status(404).json({message: "User not found"})
     }
@@ -121,9 +121,10 @@ exports.getUserfromToken = (token) => {
 }
 
 exports.getUserfromRefToken = (refreshToken) => {
-    const datatoken = jwt.verify(refreshToken, config.get('JWT_REF_ACTIVATE'))
-    let email = datatoken.email
-    let user = User.findOne({email})
+    const dataToken = jwt.verify(refreshToken, config.get('JWT_REF_ACTIVATE'))
+    console.log(`getUserfromRefToken-dataToken: ${dataToken}`)
+    let id = dataToken.id
+    let user = User.findOne({_id: id})
     if (!user) {
         return res.status(404).json({message: "User not found"})
     }

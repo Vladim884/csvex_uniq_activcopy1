@@ -50,17 +50,19 @@ class systemController {
             
             // let user = await getUserfromRefToken(refreshToken)
 
+            
             let token = req.cookies.token
+            const {refreshToken} = req.cookies
             if(token){
                 let user = await getUserfromToken(token)
                 
             } else {
-                const {refreshToken} = req.cookies
+                // const {refreshToken} = req.cookies
                     if(!refreshToken){
                         return res.status(403).json({"message": "systemContr/upload Ви не авторизувались(!token)"})
                     } else {
                         const refData = await userService.refresh(refreshToken)
-                        console.log(refData)
+                        console.log(`systContr-upload-refData: ${refData}`)
                         res.cookie('refreshToken', refData.refreshToken, {
                             maxAge: 24*30*60*60*1000,
                             httpOnly: true
@@ -116,7 +118,9 @@ class systemController {
     }
 
     async upload01(req, res, next) {
+        console.log('upl01')
         try {
+            
             // const xtext = req.cookies.xtext
             // const token = decryptToken(xtext, config.get('secretKeyForToken1'))
             const {refreshToken} = req.cookies
@@ -126,6 +130,8 @@ class systemController {
             }
             
             let user = await getUserfromRefToken(refreshToken)
+            console.log(`upo1-user: ${user}`)
+            
             let randFilePath = user.temp[0].randFilePath
             let dirpath = `${config.get("filePath")}\\${user.id}`
             let results = []

@@ -1,0 +1,8 @@
+module.exports = class ClientDto{
+    role
+    
+
+    constructor(model){
+        this.role = model.status
+    }
+}

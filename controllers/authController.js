@@ -216,17 +216,17 @@ class authController {
             let user = userData.user
             const token = userData.token
             const refreshToken = userData.refreshToken
-
+            console.log(`authContr-login-user: ${user}`)
             deleterOldFile(user)
             
-            const xtext = chiperToken(token, config.get('secretKeyForChiperToken')).toString()
+            // const xtext = chiperToken(token, config.get('secretKeyForChiperToken')).toString()
             // res.cookie('xtext', xtext, {
             //     httpOnly: true
             // })
-            // res.cookie('token', token, {
-            //     maxAge: 5000,
-            //     httpOnly: true
-            // })
+            res.cookie('token', token, {
+                maxAge: 5000,
+                httpOnly: true
+            })
             res.cookie('refreshToken', refreshToken, {
                 maxAge: 300000,
                 httpOnly: true
@@ -271,7 +271,9 @@ class authController {
         try {
             const {refreshToken} = req.cookies
             // console.log(`authContr-logout-req.coocies.refreshToken: ${refreshToken}`)
-            const token = await userService.logout(refreshToken)
+            const userData = await userService.logout(refreshToken)
+            console.log(`auuthContr-logout-token: ${userData}`)
+            // deleterOldFile(user)
             // await userService.logout(refreshToken)
             // await Token.deleteOne({refreshToken})
             // await Token.deleteOne({user: '630e574ccba3eb09782eee65'})
@@ -307,40 +309,44 @@ class authController {
     }
 
     async getTokenUserData (req, res, next) {
+        console.log('getTokenUserData')
         try {
-        // const token = req.cookies.token
-        // if(!token){
-        //     return res.status(403).json({"message": "Ви не авторизувались"})
-        // }
+        
 
         let token = req.cookies.token
+        let user
             if(token){
-                let user = await getUserfromToken(token)
+                user = await getUserfromToken(token)
+                console.log(`user1: ${user}`)
             } else {
+
                 const {refreshToken} = req.cookies
                     if(!refreshToken){
-                        return res.status(403).json({"message": "systemContr/upload Ви не авторизувались(!token)"})
+                        return res.status(403).json({"message": "authContr-getTokenUserData Ви не авторизувались(!token)"})
                     } else {
+                        console.log(`else`)
                         const refData = await userService.refresh(refreshToken)
-                        console.log(refData)
+                        console.log(`authContr-getTokenUserData-refData ${Object.values(refData)}`)
                         res.cookie('refreshToken', refData.refreshToken, {
                             maxAge: 24*30*60*60*1000,
                             httpOnly: true
                         })
                         token = refData.token
+                        user = await getUserfromToken(token)
+                        console.log(`user2: ${user}`)
                     }
             }
         
-        const datauser = jwt.verify(token, config.get('JWT_ACC_ACTIVATE'))
+        // const datauser = jwt.verify(token, config.get('JWT_ACC_ACTIVATE'))
         //    req.user = user
         //    console.log(`user-jwt: ${datauser.email}`)
-        const email = datauser.email
-        const user = await User.findOne({email})
+        // const id = datauser.id
+        // const user = await User.findOne({id})
         if (!user) {
             return res.status(404).json({message: "User not found"})
         }
         // console.log(Object.values(user))
-        // console.log(`user-jwt: ${user.email}`)
+        console.log(`user2: ${user}`)
         return res.json({ user })
         // return res.render('./cabinet.hbs')
         } catch (err) {
