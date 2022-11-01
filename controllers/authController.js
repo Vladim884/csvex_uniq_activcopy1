@@ -7,6 +7,7 @@ const config = require("config")
 const {check, validationResult} = require("express-validator")
 const alert = require('alert')
 const UserDto = require('../dtos/user-dto')
+const RoleDto = require('../dtos/role-dto')
 const tokenService = require('../services/tokenService')
 const {
         chiperToken,
@@ -216,7 +217,7 @@ class authController {
             let user = userData.user
             const token = userData.token
             const refreshToken = userData.refreshToken
-            console.log(`authContr-login-user: ${user}`)
+            // console.log(`authContr-login-user: ${user}`)
             deleterOldFile(user)
             
             // const xtext = chiperToken(token, config.get('secretKeyForChiperToken')).toString()
@@ -314,11 +315,15 @@ class authController {
         
 
         let token = req.cookies.token
-        let user
             if(token){
-                user = await getUserfromToken(token)
+                const user = await getUserfromToken(token)
+                if (!user) {
+                    return res.status(404).json({message: "User not found"})
+                }
                 console.log(`user1: ${user}`)
-            } else {
+                return res.json({ user })
+            } 
+                else {
 
                 const {refreshToken} = req.cookies
                     if(!refreshToken){
@@ -332,26 +337,68 @@ class authController {
                             httpOnly: true
                         })
                         token = refData.token
-                        user = await getUserfromToken(token)
+                        const user = await getUserfromToken(token)
+                        if (!user) {
+                            return res.status(404).json({message: "User not found"})
+                        }
                         console.log(`user2: ${user}`)
+                        return res.json({ user })
+                        
                     }
             }
-        
-        // const datauser = jwt.verify(token, config.get('JWT_ACC_ACTIVATE'))
-        //    req.user = user
-        //    console.log(`user-jwt: ${datauser.email}`)
-        // const id = datauser.id
-        // const user = await User.findOne({id})
-        if (!user) {
-            return res.status(404).json({message: "User not found"})
-        }
-        // console.log(Object.values(user))
-        console.log(`user2: ${user}`)
-        return res.json({ user })
-        // return res.render('./cabinet.hbs')
+
         } catch (err) {
             console.log(`getTokenUserData err: ${err}`)
             res.status(401).json({message: 'Помилка встановлення юзера'})
+        }
+    }
+    
+    async getTokenUserRole (req, res, next) {
+        console.log('getTokenUserStatus')
+        try {
+        
+
+        let token = req.cookies.token
+            if(token){
+                const user = await getUserfromToken(token)
+                if (!user) {
+                    return res.status(404).json({message: "User not found"})
+                }
+                console.log(`usertoken: ${user}`)
+                const userRole = new RoleDto(user)
+                console.log(userRole)
+                
+                return res.json({ userRole })
+            } 
+                else {
+
+                const {refreshToken} = req.cookies
+                    if(!refreshToken){
+                        return res.status(403).json({"message": "authContr-getTokenUserData Ви не авторизувались(!token)"})
+                    } else {
+                        console.log(`else`)
+                        const refData = await userService.refresh(refreshToken)
+                        console.log(`authContr-getTokenUserData-refData ${Object.values(refData)}`)
+                        res.cookie('refreshToken', refData.refreshToken, {
+                            maxAge: 24*30*60*60*1000,
+                            httpOnly: true
+                        })
+                        token = refData.token
+                        const user = await getUserfromToken(token)
+                        if (!user) {
+                            return res.status(404).json({message: "User not found"})
+                        }
+                        console.log(`user2: ${user}`)
+                        const userRole = new RoleDto(user)
+                
+                        return res.json({ userRole })
+                        
+                    }
+            }
+
+        } catch (err) {
+            console.log(`getTokenUserRole err: ${err}`)
+            res.status(401).json({message: 'Помилка встановлення ролі юзера'})
         }
     }
 }

@@ -1,4 +1,7 @@
 // window.addEventListener('load', function(){
+
+// const { recommender } = require("googleapis/build/src/apis/recommender")
+
 //form logout from account
 const linkEnter = document.getElementById('enter')
 //form logout from account
@@ -35,16 +38,18 @@ for (let i = 0; i < li.length; i++) {
 const delEnterForAdmOrUserLink = async () => {
     // const searchStr = window.location.href
     // console.log(searchStr)
-    const response = await fetch("http://localhost:5000/api/auth/usercabinet", { 
+    const response = await fetch("http://localhost:5000/api/auth/userstatus", { 
     method: "GET", 
     headers: { "Content-Type": "application/json" }
 })
 
 const data = await response.json()
-const user = data.user
-console.log(`user.status: ${user.status}`)
+const user = data.userRole
+console.log(`user.status: ${user.role}`)
+// console.log(`user.status: ${user.status}`)
+// if(!user) console.log('error!!!')
 
-    if (user.status === 'user' || user.status === 'admin'){
+    if (user.role === 'user' || user.role === 'admin'){
         linkEnter.classList.add('hidden')
         linkLogout.classList.remove('hidden')
         linkCabinet.classList.remove('hidden')

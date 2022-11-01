@@ -51,5 +51,6 @@ router.get('/user', cookieJwtAuth, async function(req, res){
 
 
 router.get('/usercabinet', cookieJwtAuth, authController.getTokenUserData)
+router.get('/userstatus', cookieJwtAuth, authController.getTokenUserRole)
 
 module.exports = router
