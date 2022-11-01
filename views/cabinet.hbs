@@ -52,7 +52,7 @@
         
         fieldUser.textContent = `${user.nicname}!`
         fieldEmail.textContent = user.email
-        fieldUserId.textContent = user._id
+        fieldUserId.textContent = user.id
         fieldStatusData.textContent = user.status
         //fieldBalance.textContent = (100/30 * user.daysLeft).toFixed(2) + '(грн)'
         fieldBalance.textContent = user.balance.toFixed(2) + '(грн)'
@@ -60,13 +60,14 @@
         //const registrDate = document.querySelector('.field-registrDate')
         //registrDate.textContent = formatNowDate(user.registrDate)
         registrDate.textContent = moment(user.registrDate).format("DD.MM.YYYY")
-        let lastPayments = user.payments[user.payments.length - 1];
-        if(!lastPayments) {lastPayingDate.textContent = 'Оплат ще не було'}
+        //let lastPayments = user.payments[user.payments.length - 1];
+        let lastPayment = user.lastPayment
+        if(!lastPayment) {lastPayingDate.textContent = 'Оплат ще не було'}
         else {
             lastPayingDate.textContent = ` 
-                №${lastPayments.number} /
-                ${moment(lastPayments.date).format("DD.MM.YY")} /
-                ${lastPayments.sum}.00(грн)`
+                №${lastPayment.number} /
+                ${moment(lastPayment.date).format("DD.MM.YY")} /
+                ${lastPayment.sum}.00(грн)`
             }
         linkHistory.textContent = `Переглянути`
         linkPay.textContent = `Сплатити`

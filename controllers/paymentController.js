@@ -3,6 +3,8 @@ const _ = require("lodash")
 const jwt = require("jsonwebtoken")
 const config = require("config")
 const alert = require("alert")
+const PaymentsDto = require('../dtos/payments-dto')
+
 
 const {
     formatDate, 
@@ -140,6 +142,58 @@ class paymentController {
         }
         alert('Завершено')
         res.json({message: 'Листи о скором завершенні дії сервісу відправлено'})
+    }
+
+
+    async getTokenPaymentsData(req, res, next){
+        console.log('getTokenPaymentsData')
+        try {
+        
+
+        let token = req.cookies.token
+            if(token){
+                const user = await getUserfromToken(token)
+                if (!user) {
+                    return res.status(404).json({message: "User not found"})
+                }
+                console.log(`usertoken: ${user}`)
+                const userPayments = new PaymentsDto(user)
+                console.log(userPayments)
+                
+                return res.json({ userPayments })
+            } 
+                else {
+
+                const {refreshToken} = req.cookies
+                    if(!refreshToken){
+                        return res.status(403).json({"message": "authContr-getTokenUserData Ви не авторизувались(!token)"})
+                    } else {
+                        console.log(`else`)
+                        const refData = await userService.refresh(refreshToken)
+                        console.log(`paymentContr-getTokenUserData-refData ${Object.values(refData)}`)
+                        res.cookie('refreshToken', refData.refreshToken, {
+                            maxAge: 24*30*60*60*1000,
+                            httpOnly: true
+                        })
+                        token = refData.token
+                        const user = await getUserfromToken(token)
+                        if (!user) {
+                            return res.status(404).json({message: "User not found"})
+                        }
+                        console.log(`user2: ${user}`)
+                        const userData = new PaymentsDto(user)
+
+                        console.log(userData)
+                    
+                        return res.json({ userData })
+                        
+                    }
+            }
+
+        } catch (err) {
+            console.log(`getTokenUserRole err: ${err}`)
+            res.status(401).json({message: 'Помилка встановлення ролі юзера'})
+        }
     }
 }
 

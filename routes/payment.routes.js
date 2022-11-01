@@ -6,6 +6,6 @@ const { cookieJwtAuth } = require("../middleware/cookieJwtAuth")
 
 router.post('/writepaying', cookieJwtAuth, paymentController.writePaying)
 router.post('/sendendpay', cookieJwtAuth, paymentController.sendEndPay)
-router.get('/payhistory', cookieJwtAuth, getTokenUserData)
+router.get('/payhistory', cookieJwtAuth, paymentController.getTokenPaymentsData)
 
 module.exports = router

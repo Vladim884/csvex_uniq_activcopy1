@@ -33,31 +33,33 @@
             headers: { "Content-Type": "application/json" }
         })
         const data = await response.json()
-        const user = data.user
-        console.log(user)
+        const payments = data.userData.payments
+        const nicname = data.userData.nicname
+        console.log(payments)
+        console.log(nicname)
         if(!user) {
             pageTitle.textContent = `Ви не авторизовані! Виповніть вхід`
         } else {
-            pageTitle.textContent = `Історія платежів ${user.nicname}`
+            pageTitle.textContent = `Історія платежів ${nicname}`
        // }
 
         //console.log(`${user.nicname} ${user.payments[1].number}`)
         //{{!-- console.log(user) --}}
-            for (i=user.payments.length-1;i>=0;i--) {
+            for (i=payments.length-1;i>=0;i--) {
                 //console.log(user.payments[i].number)
                 //console.log(d)
                 //document.write('<div>user.payments[i].number</div>')
                 //d = new Date(user.payments[i].date)
-                const d = moment(user.payments[i].date).format()
+                const d = moment(payments[i].date).format()
                 //console.log(`d: ${d}`)
                 // создаем элемент
                 var elem = document.createElement("li");
                 // создаем для него текст
                 var elemText = document.createTextNode(`
                      Плата за послугу "Генератор тегів"
-                    №${user.payments[i].number}
+                    №${payments[i].number}
                     дата: ${moment(d).format('DD.MM.YY')} /
-                    сума: ${user.payments[i].sum}.00(грн)`)
+                    сума: ${payments[i].sum}.00(грн)`)
                 // добавляем текст в элемент в качестве дочернего элемента
                 elem.appendChild(elemText);
                 // добавляем элемент в блок div

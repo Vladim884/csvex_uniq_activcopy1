@@ -7,6 +7,7 @@ const config = require("config")
 const {check, validationResult} = require("express-validator")
 const alert = require('alert')
 const UserDto = require('../dtos/user-dto')
+const UsercabinetDto = require('../dtos/usercabinet-dto')
 const RoleDto = require('../dtos/role-dto')
 const tokenService = require('../services/tokenService')
 const {
@@ -316,7 +317,10 @@ class authController {
 
         let token = req.cookies.token
             if(token){
-                const user = await getUserfromToken(token)
+                const userData = await getUserfromToken(token)
+                
+                const user = new UsercabinetDto(userData)
+                console.log(user)
                 if (!user) {
                     return res.status(404).json({message: "User not found"})
                 }
