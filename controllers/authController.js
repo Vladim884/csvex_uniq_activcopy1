@@ -341,12 +341,15 @@ class authController {
                             httpOnly: true
                         })
                         token = refData.token
-                        const user = await getUserfromToken(token)
-                        if (!user) {
-                            return res.status(404).json({message: "User not found"})
-                        }
-                        console.log(`user2: ${user}`)
-                        return res.json({ user })
+                        const userData = await getUserfromToken(token)
+                
+                const user = new UsercabinetDto(userData)
+                console.log(user)
+                if (!user) {
+                    return res.status(404).json({message: "User not found"})
+                }
+                // console.log(`user1: ${user}`)
+                return res.json({ user })
                         
                     }
             }
@@ -392,7 +395,7 @@ class authController {
                         if (!user) {
                             return res.status(404).json({message: "User not found"})
                         }
-                        console.log(`user2: ${user}`)
+                        // console.log(`user2: ${user}`)
                         const userRole = new RoleDto(user)
                 
                         return res.json({ userRole })

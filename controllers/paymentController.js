@@ -168,9 +168,8 @@ class paymentController {
                     if(!refreshToken){
                         return res.status(403).json({"message": "authContr-getTokenUserData Ви не авторизувались(!token)"})
                     } else {
-                        console.log(`else`)
                         const refData = await userService.refresh(refreshToken)
-                        console.log(`paymentContr-getTokenUserData-refData ${Object.values(refData)}`)
+                        // console.log(`paymentContr-getTokenUserData-refData ${Object.values(refData)}`)
                         res.cookie('refreshToken', refData.refreshToken, {
                             maxAge: 24*30*60*60*1000,
                             httpOnly: true
@@ -180,7 +179,7 @@ class paymentController {
                         if (!user) {
                             return res.status(404).json({message: "User not found"})
                         }
-                        console.log(`user2: ${user}`)
+                        // console.log(`user2: ${user}`)
                         const userData = new PaymentsDto(user)
 
                         console.log(userData)

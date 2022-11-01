@@ -49,8 +49,9 @@
 
         const user = data.user
         const role = user.status
+        console.log(user)
         
-        fieldUser.textContent = `${user.nicname}!`
+        fieldUser.textContent = user.nicname
         fieldEmail.textContent = user.email
         fieldUserId.textContent = user.id
         fieldStatusData.textContent = user.status
