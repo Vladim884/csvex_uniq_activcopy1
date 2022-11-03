@@ -2,6 +2,7 @@ const User = require("../models/User")
 const _ = require("lodash")
 const jwt = require("jsonwebtoken")
 const config = require("config")
+const moment = require("moment")
 const alert = require("alert")
 const PaymentsDto = require('../dtos/payments-dto')
 
@@ -18,10 +19,11 @@ const mailer = require("../nodemailer/nodemailer")
 const userService = require("../services/userService")
 
 class paymentController {
-    async writePaying (req, res) {
+    async writePaying (req, res, next) {
         let token = req.cookies.token
+        let admin
             if(token){
-                let user = await getUserfromToken(token)
+                admin = await getUserfromToken(token)
                 
             } else {
                 const {refreshToken} = req.cookies
@@ -35,13 +37,14 @@ class paymentController {
                             httpOnly: true
                         })
                         token = refData.token
+                        admin = await getUserfromToken(token)
                         
                     }
             }
-        // console.log(`paymentController/writePaying-token2: ${token}`)
+        console.log(`admin: ${admin}`)
         const datatoken = jwt.verify(token, config.get('JWT_ACC_ACTIVATE'))
-        let userRole = datatoken.role
-        // console.log(userRole)
+        let userRole = admin.status
+        console.log(`userRole: ${userRole}`)
         if(userRole !== 'admin') return res.render('msg', {msg: 'У Вас не має права доступу!'})
         let {email, sumpay} = req.body
         let user = await User.findOne({email})
@@ -51,47 +54,70 @@ class paymentController {
         //==================
         let number = ++user.paymentNumber
         user.paymentNumber = number
-        user.payments.push({number, date: new Date, sum: sumpay})
+        user.payments.push({number, date: moment().format(), sum: sumpay})
         //==================
+        
         let lastPayment = user.payments[user.payments.length - 1]
+        const today = lastPayment.date
+        user.payingDate = today
         //=================================
-        let daysPaying = lastPayment.sum / (100/30)
-        // console.log(daysPaying)
+        //Кол-во новых оплаченных дней: 
+        let daysPayingLast = lastPayment.sum / (100/30)
+        console.log(daysPayingLast)
+        //=====================
+        //Кол-во новіх оплаченных минут: 
+        let minutessPaying = daysPayingLast*24*60
+        console.log(`minutessPaying: ${minutessPaying}`)
         //=====================
         // console.log(lastPayment.date)
         // console.log(user.endDay)
-        let datesDifferent = getNumberOfDays(lastPayment.date, user.endDay)
-        // console.log(`datesDifferent: ${datesDifferent}`)
-        // let lastPaymentDate = lastPayment.date
-        let sumdays = datesDifferent + daysPaying
-        let D = new Date(lastPayment.date)
+        var a = moment(today);
+        var b = moment(user.endDay);
+        console.log(a)
+        console.log(b)
+        //сколько минут остлось с предыдущей оплаты
+        let diffMinutes = b.diff(a, 'minutes')
+        // let diffMinutes = -5
+        if (diffMinutes < 0) diffMinutes = 0
+        console.log(`diffMinutes: ${diffMinutes}`)
+
+        // сколько теперь осталось оплаченных минут sumpay???
+        let sumMinutesLast = diffMinutes + minutessPaying
+        console.log(`сколько теперь осталось оплаченных минут: ${sumMinutesLast}`)
+
+        //конечная дата оплаченных дней:
+        const endDay = moment(today).add(sumMinutesLast, 'minutes')
+        user.endDay = endDay;
+        console.log(`endDay: ${endDay}`)
+
         
-        //paymentDateEnd:
-        //datsLeftActiveServise
-        if(datesDifferent > 0) {
-            user.endDay = D.setDate(D.getDate() + sumdays)
-            user.daysLeft = datesDifferent + daysPaying
-            clg(`3 lastPayment.date: ${lastPayment.date}`)
-        } else {
-            user.endDay = D.setDate(D.getDate() + daysPaying)
-            user.daysLeft = daysPaying
-        }
-        // console.log(`user.endDay: ${user.endDay}`)
-        // console.log(`user.daysLeft: ${user.daysLeft}`)
+        const balance = (100/30/24/60) * sumMinutesLast
+        console.log(`balance: ${balance}`)
+
+
+        
+        
+
+
+       
     
-        //========================
-    
+        //оплачено за все время:
         user.sumpay = +user.sumpay + +lastPayment.sum
-        // console.log(`user.sumpay: ${user.sumpay}`)
+        console.log(`user.sumpay: ${user.sumpay}`)
         //===========================
-        user.balance = user.daysLeft * 100 / 30
-        // console.log(`user.balance: ${user.balance}`)
+        user.balance = balance
+
+
+
+        console.log(`user.balance: ${user.balance}`)
+
+        //итоговое количество оставшихся дней
+        user.daysLeft = sumMinutesLast /60/24
             
-        let obj1 = {
-            payingDate: lastPayment.date,
-            daysPaying,
-        }
-        user = _.extend(user, obj1)
+        // let obj1 = {
+        //     payingDate: lastPayment.date,
+        // }
+        // user = _.extend(user, obj1)
         user.save((err, result) => {
             if(err){
                 return res.status(400).render('msg', {msg: `Ошибка изменения оплати юзера ${email}`})
@@ -105,7 +131,7 @@ class paymentController {
                         <h4>${user.nicname}, Вас вітає команда CSV TO EXCEL!</h4>
                         <p>Дякуємо, що Ви обрали наш сервіс!</p>
                         <p>${payingDateForPeople} Ви оплатили ${sumpay}грн. </p>
-                        <p>отримали активацію сервісу CSV TO EXCEL на ${daysPaying} днів.</p>
+                        <p>отримали активацію сервісу CSV TO EXCEL на x днів.</p>
                         `
                 }
                 mailer(message)

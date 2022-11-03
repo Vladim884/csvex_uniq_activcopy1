@@ -9,7 +9,6 @@ const transporter = nodemailer.createTransport(
         type: 'OAuth2',
         user: config.get('EMAIL'),
         accessToken: config.get('ACCESSTOKEN'),
-        expires: 1664907671439 + 60000,
         refreshToken: config.get('REFRESHTOKEN'),
         clientId: '631769748026-3pnknff7fivb6n3s61f4944ffob42hrj.apps.googleusercontent.com',
         clientSecret: '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',

@@ -54,7 +54,8 @@ console.log(`user.status: ${user.role}`)
         linkLogout.classList.remove('hidden')
         linkCabinet.classList.remove('hidden')
     }
-    if (user.status === 'admin'){
+    if (user.role === 'admin'){
+        console.log('admin')
         linkWritePaying.classList.remove('hidden')
     }
 }
