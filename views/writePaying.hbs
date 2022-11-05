@@ -11,13 +11,31 @@
                 {{!-- disabled --}}
                 >
                 Вписати оплату</button>
-            </div>
         </form>
     </div>
 
     <div class="form-block">
+        <h1>Знайти юзера</h1>
+        <form action="/api/payment/finduser" method="post">
+            <input type="text" name="email" placeholder="Введить email юзера">
+            <button type="submit">Знайти</button>
+        </form>
+    </div>
+
+    <div class="form-block">
+        <h1>Історія оплат юзера</h1>
+        <form action="/api/payment/finduserpayments" method="post">
+            <input type="text" name="email" placeholder="Введить email юзера">
+            <button type="submit">Знайти</button>
+        </form>
+    </div>
+
+    
+
+    <div class="form-block">
         <h3>Лист про оплату</h3>
-        <form action="/api/payment/sendendpay" method="post" id="regform">
+         <form action="/api/payment/sendendpay" method="post" id="regform1">
+        {{!-- <form action="/api/payment/sendendpay" method="post" id="regform"> --}}
                 {{!-- <input type="text" name="email" placeholder="Введить email юзера">
                 <input type="number" name="sumpay" placeholder="Введить суму оплати юзера"> --}}
             
@@ -27,7 +45,6 @@
                 {{!-- disabled --}}
                 >
                 Нагадати про оплату</button>
-            </div>
         </form>
     </div>
 {{!-- </div> --}}

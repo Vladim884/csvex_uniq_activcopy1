@@ -40,7 +40,7 @@ class UserService {
         }
         const userData = tokenService.validateRefreshToken(refreshToken)
         // const userData = jwt.verify(refreshToken, config.get('JWT_REF_ACTIVATE'))
-        console.log(`UserService-refresh-userData: ${Object.values(userData)}`)
+        // console.log(`UserService-refresh-userData: ${Object.values(userData)}`)
         const tokenFromDb = await tokenService.findToken(refreshToken)
         if(!userData || !tokenFromDb){
             console.log('UserService/refresh(refreshToken): !userData || !tokenFromDb')

@@ -27,7 +27,9 @@ exports.cookieJwtAuth = async (req, res, next) => {
    
    } else {
       //the important part
+      
       const user = jwt.verify(token, config.get('JWT_ACC_ACTIVATE'))
+      console.log('authCoocie')
       req.user = user
       next()
    }

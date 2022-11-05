@@ -21,6 +21,7 @@ but_data_save.onclick = () => {
 but_download.onclick = function(){ // функция при клике на неё 
         contmenu_box.classList.remove('hidden')
         wrap_box.classList.add('hidden')
+        // console.log('but_download.onclick: script disabled')
 }
 
 

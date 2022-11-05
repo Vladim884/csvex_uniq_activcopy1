@@ -385,7 +385,7 @@ class authController {
                     } else {
                         console.log(`else`)
                         const refData = await userService.refresh(refreshToken)
-                        console.log(`authContr-getTokenUserData-refData ${Object.values(refData)}`)
+                        // console.log(`authContr-getTokenUserData-refData ${Object.values(refData)}`)
                         res.cookie('refreshToken', refData.refreshToken, {
                             maxAge: 24*30*60*60*1000,
                             httpOnly: true

@@ -1,6 +1,7 @@
 const User = require("../models/User")
 const config = require("config")
 const fs = require('fs')
+const rimraf = require('rimraf')
 const path = require('path')
 const csv = require('csv-parser')
 const json2csv = require("json2csv")
@@ -15,6 +16,7 @@ const {
     getUserfromRefToken} = require("../myFunctions/myFunctions")
 const authController = require("./authController")
 const userService = require("../services/userService")
+const { deleterOldFile } = require("../services/fileService")
 
 
 class systemController {
@@ -23,8 +25,11 @@ class systemController {
         try {
             const user = await User.findOne({_id: req.user.id})
             if(+user.daysLeft === 0){
+
+                // rimraf.sync(dirpath)
                 res.render('./cabinet', {
-                    user : req.user // get the user out of session and pass to template
+                    user : req.user, // get the user out of session and pass to template
+                    msg: 'Немає коштів для отримання послуги'
                 })
             } else  {
                 res.render('./start', {
@@ -38,18 +43,6 @@ class systemController {
 
     async upload(req, res, next) {
         try {
-            // const xtext = req.cookies.xtext
-            // const token = decryptToken(xtext, config.get('secretKeyForToken1'))
-            //======
-            // const cookies = req.cookies
-            // const {refreshToken} = req.cookies
-            // console.log(`upload-refreshToken: ${refreshToken}`)
-            // if(!refreshToken){
-            //     return res.status(403).json({"message": "systemContr/upload Ви не авторизувались(!token)"})
-            // }
-            
-            // let user = await getUserfromRefToken(refreshToken)
-
             
             let token = req.cookies.token
             const {refreshToken} = req.cookies
@@ -75,11 +68,14 @@ class systemController {
             const user = await getUserfromToken(token)
             let dirpath = `${config.get("filePath")}\\${user.id}`
             let filedata = req.file
+            // console.log(filedata)
             deleteFolder(dirpath)
             let originalFile = filedata.originalname
             let randFilePath = `${config.get("filePath")}\\${filedata.filename}` //path for  file .csv in 'dest/req.cookies.cookid/' in project-folder
     
             let fileExt = path.extname(originalFile)
+            // const origName = path.parse(originalFile).name  // file-name without ext-name (not used)
+            
             if(fileExt !== '.csv') return res.send('Некоректне розширення файлу! Поверниться на крок назад, та оберить файл с розширенням ".csv" на прикінці.')
             await createDir(dirpath)
             
@@ -274,10 +270,14 @@ class systemController {
             let csvpath = user.temp[0].csvpath
             let exelpath = user.temp[0].exelpath
     
-            res.download(exelpath,
-                async function () {
+            res.download(exelpath, 
+                
+                function () {
+                    
                     deleteFolder(dirpath)
-                    // await res.render('login.hbs')
+                    
+                    //unable to render page after res.:
+                    // await res.render('service/done.hbs') 
                 })
             } catch (err) {
             next(err)     

@@ -5,6 +5,8 @@ const config = require("config")
 const moment = require("moment")
 const alert = require("alert")
 const PaymentsDto = require('../dtos/payments-dto')
+const {check, validationResult} = require("express-validator")
+
 
 
 const {
@@ -47,6 +49,7 @@ class paymentController {
         console.log(`userRole: ${userRole}`)
         if(userRole !== 'admin') return res.render('msg', {msg: 'У Вас не має права доступу!'})
         let {email, sumpay} = req.body
+        console.log(email)
         let user = await User.findOne({email})
             if (!user) {
                 return res.status(404).json({message: "User not found"})
@@ -63,6 +66,7 @@ class paymentController {
         //=================================
         //Кол-во новых оплаченных дней: 
         let daysPayingLast = lastPayment.sum / (100/30)
+        if(daysPayingLast < 0) daysPayingLast = 0
         console.log(daysPayingLast)
         //=====================
         //Кол-во новіх оплаченных минут: 
@@ -140,6 +144,112 @@ class paymentController {
             }
         })
     }
+
+    
+
+
+    async finduser (req, res, next) {
+        try {
+            let token = req.cookies.token
+        let admin
+            if(token){
+                admin = await getUserfromToken(token)
+                
+            } else {
+                const {refreshToken} = req.cookies
+                    if(!refreshToken){
+                        return res.status(403).json({"message": "systemContr/upload Ви не авторизувались(!token)"})
+                    } else {
+                        const refData = await userService.refresh(refreshToken)
+                        // console.log(`paymentController/writePaying-refData: ${refData.token}`)
+                        res.cookie('refreshToken', refData.refreshToken, {
+                            maxAge: 24*30*60*60*1000,
+                            httpOnly: true
+                        })
+                        token = refData.token
+                        admin = await getUserfromToken(token)
+                        
+                    }
+            }
+        console.log(`admin: ${admin}`)
+        const datatoken = jwt.verify(token, config.get('JWT_ACC_ACTIVATE'))
+        let userRole = admin.status
+        console.log(`userRole: ${userRole}`)
+        if(userRole !== 'admin') return res.render('msg', {msg: 'У Вас не має права доступу!'})
+
+
+            const errors = validationResult(req)
+            if (!errors.isEmpty()) {
+                return res.status(400).json({message: "Uncorrect request", errors})
+            }
+            console.log('start finduser')
+            const {email} = req.body
+            const user = await User.findOne({email})
+            if (!user) return res.status(404).render('error', {errorMsg: `юзера з email: "${email}" не знайдено`})
+
+            // console.log(`users-users: ${user}`)
+    
+    res.json({user})
+            
+        } catch (err) {
+            console.log(err)
+        }
+        
+    }
+
+
+    async findUserPayments (req, res, next) {
+        try {
+            let token = req.cookies.token
+        let admin
+            if(token){
+                admin = await getUserfromToken(token)
+                console.log(`findUserPayments-token-admin`)
+                
+            } else {
+                const {refreshToken} = req.cookies
+                    if(!refreshToken){
+                        return res.status(403).json({"message": "systemContr/upload Ви не авторизувались(!token)"})
+                    } else {
+                        const refData = await userService.refresh(refreshToken)
+                        // console.log(`paymentController/writePaying-refData: ${refData.token}`)
+                        res.cookie('refreshToken', refData.refreshToken, {
+                            maxAge: 24*30*60*60*1000,
+                            httpOnly: true
+                        })
+                        token = refData.token
+                        admin = await getUserfromToken(token)
+                        console.log(`findUserPayments-ref-token-admin`)
+                        
+                    }
+            }
+        console.log(`admin: ${admin}`)
+        const datatoken = jwt.verify(token, config.get('JWT_ACC_ACTIVATE'))
+        let userRole = admin.status
+        console.log(`userRole: ${userRole}`)
+        if(userRole !== 'admin') return res.render('msg', {msg: 'У Вас не має права доступу!'})
+
+
+            const errors = validationResult(req)
+            if (!errors.isEmpty()) {
+                return res.status(400).json({message: "Uncorrect request", errors})
+            }
+            console.log('start finduser')
+            const {email} = req.body
+            const user = await User.findOne({email})
+            if (!user) return res.status(404).render('error', {errorMsg: `юзера з email: "${email}" не знайдено`})
+            // console.log(`users-users: ${user}`)
+            let payments = user.payments
+    
+            res.json({payments})
+            
+        } catch (err) {
+            console.log(err)
+        }
+        
+    }
+
+
 
     async sendEndPay (req, res) {
         const users = await User.find()

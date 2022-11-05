@@ -140,21 +140,21 @@ exports.moveFile = async (fromPath, toPath) => {
     })
 }
 
-exports.deleteFolder = (p) => {
+exports.deleteFolder = (dirpath) => {
     console.log('-deleteFolder-')
     try {
         let files = [];
-        if( fs.existsSync(p) ) {
-            files = fs.readdirSync(p);
+        if( fs.existsSync(dirpath) ) {
+            files = fs.readdirSync(dirpath);
             files.forEach(function(file, index){
-                let curPath = p + "/" + file;
+                let curPath = dirpath + "/" + file;
                 if(fs.statSync(curPath).isDirectory()) {
                     deleteFolder(curPath);
                 } else {
                     fs.unlinkSync(curPath);
                 }
             });
-            fs.rmdirSync(p);
+            fs.rmdirSync(dirpath);
         } else {
             console.log('randomNameFolder not exists')
         }

@@ -12,6 +12,7 @@ const authRouter = require("./routes/auth.routes")
 const fileRouter = require("./routes/file.routes")
 const systemRouter = require("./routes/system.routes")
 const paymentRouter = require("./routes/payment.routes")
+const menuRouter = require("./routes/menu.routes")
 const app = express()
 // app.use(express.static(__dirname))
 const PORT = config.get('serverPort')
@@ -57,21 +58,22 @@ app.use("/api/files", fileRouter)
 app.use("/api/system", systemRouter)
 app.use("/api/payment", paymentRouter)
 
-app.use("/contacts", function(_, res){
-    res.render("contacts", {
-        title: "Мои контакты",
-        email: "gavgav@mycorp.com",
-        phone: "+1234567890"
-    });
-})
+app.use('/menu', menuRouter)
+
+
+
 
 
 
 app.use("/api/auth/activate", function(req, res){
     res.render('activate.hbs')
 })
-app.use("/cabinet", function(req, res){
-    res.render('cabinet.hbs')
+// app.use("/cabinet", function(req, res){
+//     res.render('cabinet.hbs')
+// })
+
+app.use("service/done", function(req, res){
+    res.render('done.hbs')
 })
 
 app.use("/registration", function(req, res){
@@ -102,6 +104,10 @@ app.use("/resetpass", function(req, res){
 app.use("/about", function(req, res){
     res.render('about.hbs')
 })
+
+app.use("/finduser", function(req, res){
+    res.render('finduser.hbs')
+})
 app.use("/paying", function(req, res){
     res.render('paying.hbs')
 })
@@ -112,6 +118,9 @@ app.use("/payhistory", function(req, res){
     res.render('payhistory.hbs')
 })
 
+// app.use("/", function(req, res){
+//     res.render('main.hbs')
+// })
 app.use("/main", function(req, res, ){
     res.render('main.hbs')
 })
