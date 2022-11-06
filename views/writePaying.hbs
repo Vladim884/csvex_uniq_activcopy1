@@ -29,12 +29,12 @@
             <button type="submit">Знайти</button>
         </form>
     </div>
-    
+
     <div class="form-block">
         <h1>Видалити користувача</h1>
         <form action="/api/payment/deleteuser" method="post">
             <input type="text" name="email" placeholder="Введить email юзера">
-            <button type="submit">Видалити</button>
+            <button type="submit" id="delus">Видалити</button>
         </form>
     </div>
 
@@ -55,7 +55,11 @@
                 Нагадати про оплату</button>
         </form>
     </div>
-{{!-- </div> --}}
- 
-
-{{!-- <script src="/js/reg.js"></script> --}}
+    <script>
+        const btnUserDel = document.getElementById('delus')
+    btnUserDel.onclick = function (e) {
+   if (!confirm('Ви певні, що бажаєте видалити з бази даних цього користувача? Після натиску кнопки "ok" всі данні користувача будуть видалені.' )){
+    e.preventDefault();
+   }
+}
+    </script>
