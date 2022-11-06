@@ -8,6 +8,7 @@ router.post('/writepaying', cookieJwtAuth, paymentController.writePaying)
 router.post('/sendendpay', cookieJwtAuth, paymentController.sendEndPay)
 router.post('/finduser', cookieJwtAuth, paymentController.finduser)
 router.post('/finduserpayments', cookieJwtAuth, paymentController.findUserPayments)
+router.post('/deleteuser', cookieJwtAuth, paymentController.deleteUser)
 
 router.get('/payhistory', cookieJwtAuth, paymentController.getTokenPaymentsData)
 

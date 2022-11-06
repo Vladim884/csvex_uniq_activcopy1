@@ -124,7 +124,7 @@ class paymentController {
         // user = _.extend(user, obj1)
         user.save((err, result) => {
             if(err){
-                return res.status(400).render('msg', {msg: `Ошибка изменения оплати юзера ${email}`})
+                return res.status(400).render('msg', {msg: `Помилка зміни оплати користувача з email: "${email}"`})
             } else {
                 console.log(`7 lastPayment.date: ${lastPayment.date}`)
                 let payingDateForPeople = formatNowDate(lastPayment.date)
@@ -135,12 +135,12 @@ class paymentController {
                         <h4>${user.nicname}, Вас вітає команда CSV TO EXCEL!</h4>
                         <p>Дякуємо, що Ви обрали наш сервіс!</p>
                         <p>${payingDateForPeople} Ви оплатили ${sumpay}грн. </p>
-                        <p>отримали активацію сервісу CSV TO EXCEL на x днів.</p>
+                        <p>та отримали активацію сервісу CSV TO EXCEL на ${daysPayingLast} днів.</p>
                         `
                 }
                 mailer(message)
                 
-                return res.status(200).render('msg', {msg: `Оплату юзера ${email} успішно змінено`})
+                return res.status(200).render('msg', {msg: `Оплату користувача з email: "${email}" успішно змінено`})
             }
         })
     }
@@ -151,10 +151,9 @@ class paymentController {
     async finduser (req, res, next) {
         try {
             let token = req.cookies.token
-        let admin
+            let admin
             if(token){
                 admin = await getUserfromToken(token)
-                
             } else {
                 const {refreshToken} = req.cookies
                     if(!refreshToken){
@@ -168,15 +167,13 @@ class paymentController {
                         })
                         token = refData.token
                         admin = await getUserfromToken(token)
-                        
                     }
             }
-        console.log(`admin: ${admin}`)
-        const datatoken = jwt.verify(token, config.get('JWT_ACC_ACTIVATE'))
-        let userRole = admin.status
-        console.log(`userRole: ${userRole}`)
-        if(userRole !== 'admin') return res.render('msg', {msg: 'У Вас не має права доступу!'})
-
+            // console.log(`admin: ${admin}`)
+            // const datatoken = jwt.verify(token, config.get('JWT_ACC_ACTIVATE'))
+            let userRole = admin.status
+            // console.log(`userRole: ${userRole}`)
+            if(userRole !== 'admin') return res.render('msg', {msg: 'У Вас не має права доступу!'})
 
             const errors = validationResult(req)
             if (!errors.isEmpty()) {
@@ -189,12 +186,12 @@ class paymentController {
 
             // console.log(`users-users: ${user}`)
     
-    res.json({user})
-            
+            res.json({user})
+                
         } catch (err) {
             console.log(err)
+            return res.render('error', {msg: 'err'})
         }
-        
     }
 
 
@@ -204,12 +201,12 @@ class paymentController {
         let admin
             if(token){
                 admin = await getUserfromToken(token)
-                console.log(`findUserPayments-token-admin`)
+                // console.log(`findUserPayments-token-admin`)
                 
             } else {
                 const {refreshToken} = req.cookies
                     if(!refreshToken){
-                        return res.status(403).json({"message": "systemContr/upload Ви не авторизувались(!token)"})
+                        return res.status(403).render('error', {msg: "systemContr/upload Ви не авторизувались(!token)"})
                     } else {
                         const refData = await userService.refresh(refreshToken)
                         // console.log(`paymentController/writePaying-refData: ${refData.token}`)
@@ -219,15 +216,16 @@ class paymentController {
                         })
                         token = refData.token
                         admin = await getUserfromToken(token)
-                        console.log(`findUserPayments-ref-token-admin`)
+                        // console.log(`findUserPayments-ref-token-admin`)
                         
                     }
             }
-        console.log(`admin: ${admin}`)
-        const datatoken = jwt.verify(token, config.get('JWT_ACC_ACTIVATE'))
-        let userRole = admin.status
-        console.log(`userRole: ${userRole}`)
-        if(userRole !== 'admin') return res.render('msg', {msg: 'У Вас не має права доступу!'})
+
+            // console.log(`admin: ${admin}`)
+            // const datatoken = jwt.verify(token, config.get('JWT_ACC_ACTIVATE'))
+            let userRole = admin.status
+            // console.log(`userRole: ${userRole}`)
+            if(userRole !== 'admin') return res.status(403).render('error', {msg: 'У Вас не має права доступу!'})
 
 
             const errors = validationResult(req)
@@ -250,34 +248,91 @@ class paymentController {
     }
 
 
+    async deleteUser (req, res, next) {
+        try {
+            let token = req.cookies.token
+            let admin
+            if(token){
+                admin = await getUserfromToken(token)
+                
+            } else {
+                const {refreshToken} = req.cookies
+                    if(!refreshToken){
+                        return res.status(403).render('error', {msg: "systemContr/upload Ви не авторизувались(!token)"})
+                    } else {
+                        const refData = await userService.refresh(refreshToken)
+                        // console.log(`paymentController/writePaying-refData: ${refData.token}`)
+                        res.cookie('refreshToken', refData.refreshToken, {
+                            maxAge: 24*30*60*60*1000,
+                            httpOnly: true
+                        })
+                        token = refData.token
+                        admin = await getUserfromToken(token)
+                    }
+            }
+            // console.log(`admin: ${admin}`)
+            // const datatoken = jwt.verify(token, config.get('JWT_ACC_ACTIVATE'))
+            let userRole = admin.status
+            console.log(`userRole: ${userRole}`)
+            if(userRole !== 'admin') return res.status(405).render('error', {msg: 'У Вас не має права доступу!'})
+
+
+            const errors = validationResult(req)
+            if (!errors.isEmpty()) {
+                return res.status(400).render('error', {msg: "Некоректеий запрос", er: errors})
+            }
+            // console.log('start finduser')
+            const {email} = req.body
+            const user = await User.findOne({email})
+            if (!user) return res.status(404).render('error', {msg: `Користувача з email: "${email}" не знайдено`})
+
+            // console.log(`users-users: ${user}`)
+    
+            await User.deleteOne({email})
+            res.status(200).render('msg', {msg: `Користувача з email: "${email}" видалено`})
+            
+        } catch (err) {
+            console.log(err)
+            render('error', {msg: err})
+        }
+        
+    }
 
     async sendEndPay (req, res) {
-        const users = await User.find()
-        for (let i = 0; i < users.length; i++) {
-            const restDay = Math.round((users[i].endDay - new Date()) / (60 * 60 * 24 * 1000))
-            clg('restDay', `${restDay}`)
-            if (restDay < 9 && restDay > 0){
-                    let nowday = formatNowDate()
-                    let endDay = formatDate(restDay)
-                    clg('endDay', `${endDay}`)
-                    const message = {
-                        to: 'ivladim95@gmail.com',
-                        subject: 'Оплата послуги на CSV TO EXCEL',
-                        html: `
-                            <h4>Доброго дня! ${users[i].nicname}, Вас вітає команда CSV TO EXCEL!</h4>
-                            <p> Дякуємо, що Ви обрали наш сервіс!</p>
-                            <p>Сьогодні ${nowday} у Вас залишилось ${restDay} днів до ${endDay} включно.</p>
-                            <p>Потурбуйтеся про своєчасну оплату сервісу!</p>
-                            `
-                    }
-                    
-                    
-                    setTimeout(() => {mailer(message)}, 5000);
+        try {
+            const users = await User.find()
+            console.log(users)
+            for (let i = 0; i < users.length; i++) {
+                const restDay = Math.round((users[i].endDay - new Date()) / (60 * 60 * 24 * 1000))
+                clg('restDay', `${restDay}`)
+                if (restDay < 9 && restDay > 0){
+                        let nowday = formatNowDate()
+                        let endDay = formatDate(restDay)
+                        clg('endDay', `${endDay}`)
+                        const message = {
+                            to: 'ivladim95@gmail.com',
+                            subject: 'Оплата послуги на CSV TO EXCEL',
+                            html: `
+                                <h4>Доброго дня! ${users[i].nicname}, Вас вітає команда CSV TO EXCEL!</h4>
+                                <p> Дякуємо, що Ви обрали наш сервіс!</p>
+                                <p>Сьогодні ${nowday} у Вас залишилось ${restDay} днів до ${endDay} включно.</p>
+                                <p>Потурбуйтеся про своєчасну оплату сервісу!</p>
+                                `
+                        }
+                        
+                        
+                        setTimeout(() => {mailer(message)}, 5000);
+                } else {
+                    return res.status(200).render('msg', {msg: `Користувачів, в яких строк дії послуги закінчується, не знайдено.`})
+                }
+                
             }
-            
+            // alert('Завершено')
+            res.status(200).render('msg', {msg: 'Листи о скором завершенні дії сервісу відправлено'})
+        } catch (error) {
+            console.log(error)
+            res.status(400).render('error', {msg: error})
         }
-        alert('Завершено')
-        res.json({message: 'Листи о скором завершенні дії сервісу відправлено'})
     }
 
 
@@ -290,11 +345,11 @@ class paymentController {
             if(token){
                 const user = await getUserfromToken(token)
                 if (!user) {
-                    return res.status(404).json({message: "User not found"})
+                    return res.status(404).render('msg', {message: "User not found"})
                 }
-                console.log(`usertoken: ${user}`)
+                // console.log(`usertoken: ${user}`)
                 const userPayments = new PaymentsDto(user)
-                console.log(userPayments)
+                // console.log(userPayments)
                 
                 return res.json({ userPayments })
             } 
@@ -302,7 +357,7 @@ class paymentController {
 
                 const {refreshToken} = req.cookies
                     if(!refreshToken){
-                        return res.status(403).json({"message": "authContr-getTokenUserData Ви не авторизувались(!token)"})
+                        return res.status(403).render('msg', {msg: "authContr-getTokenUserData Ви не авторизувались(!token)"})
                     } else {
                         const refData = await userService.refresh(refreshToken)
                         // console.log(`paymentContr-getTokenUserData-refData ${Object.values(refData)}`)
@@ -318,7 +373,7 @@ class paymentController {
                         // console.log(`user2: ${user}`)
                         const userData = new PaymentsDto(user)
 
-                        console.log(userData)
+                        // console.log(userData)
                     
                         return res.json({ userData })
                         
@@ -327,92 +382,9 @@ class paymentController {
 
         } catch (err) {
             console.log(`getTokenUserRole err: ${err}`)
-            res.status(401).json({message: 'Помилка встановлення ролі юзера'})
+            res.status(401).render('error', {message: 'Помилка встановлення ролі юзера'})
         }
     }
 }
 
 module.exports = new paymentController()
-
-
-// exports.writePaying = async (req, res) => {
-//     const xtext = req.cookies.xtext
-//     const token = decryptToken(xtext, config.get('secretKeyForToken1'))
-//     if(!token){
-//         return res.status(403).json({"message": "Ви не авторизувались"})
-//     }
-//     const datatoken = jwt.verify(token, config.get('secretKey'))
-//     let userRole = datatoken.userRole
-//     if(userRole !== 'admin') return res.render('msg', {msg: 'У Вас не має права доступу!'})
-//     let {email, sumpay} = req.body
-//     let user = await User.findOne({email})
-//         if (!user) {
-//             return res.status(404).json({message: "User not found"})
-//         }
-//     //==================
-//     let number = ++user.paymentNumber
-//     user.paymentNumber = number
-//     user.payments.push({number, date: new Date, sum: sumpay})
-//     //==================
-//     let lastPayment = user.payments[user.payments.length - 1]
-//     //=================================
-//     let daysPaying = lastPayment.sum / (100/30)
-//     // console.log(daysPaying)
-//     //=====================
-//     // console.log(lastPayment.date)
-//     // console.log(user.endDay)
-//     let datesDifferent = getNumberOfDays(lastPayment.date, user.endDay)
-//     // console.log(`datesDifferent: ${datesDifferent}`)
-//     // let lastPaymentDate = lastPayment.date
-//     let sumdays = datesDifferent + daysPaying
-//     let D = new Date(lastPayment.date)
-    
-//     //paymentDateEnd:
-//     //datsLeftActiveServise
-//     if(datesDifferent > 0) {
-//         user.endDay = D.setDate(D.getDate() + sumdays)
-//         user.daysLeft = datesDifferent + daysPaying
-//         clg(`3 lastPayment.date: ${lastPayment.date}`)
-//     } else {
-//         user.endDay = D.setDate(D.getDate() + daysPaying)
-//         user.daysLeft = daysPaying
-//     }
-//     // console.log(`user.endDay: ${user.endDay}`)
-//     // console.log(`user.daysLeft: ${user.daysLeft}`)
-
-//     //========================
-
-//     user.sumpay = +user.sumpay + +lastPayment.sum
-//     // console.log(`user.sumpay: ${user.sumpay}`)
-//     //===========================
-//     user.balance = user.daysLeft * 100 / 30
-//     // console.log(`user.balance: ${user.balance}`)
-        
-//     let obj1 = {
-//         payingDate: lastPayment.date,
-//         daysPaying,
-//     }
-//     user = _.extend(user, obj1)
-//     user.save((err, result) => {
-//         if(err){
-//             return res.status(400).render('msg', {msg: `Ошибка изменения оплати юзера ${email}`})
-//         } else {
-//             console.log(`7 lastPayment.date: ${lastPayment.date}`)
-//             let payingDateForPeople = formatNowDate(lastPayment.date)
-//             emailOptionsSend(
-//                 'ivladim95@gmail.com',
-//                 'Оплата на CSV TO EXCEL.',
-//                 `${user.nicname}, Вас вітає команда CSV TO EXCEL!
-//                 Дякуємо, що Ви обрали наш сервіс!
-//                  ${payingDateForPeople} Ви оплатили ${sumpay}грн. та отримали активацію сервісу CSV TO EXCEL 
-//                  на ${daysPaying} днів.
-//                  ===============================================
-//                  Якщо цей лист потрапив до вас випадково, 
-//                  видалить його та не звертайте уваги.
-//                 `
-//             )
-//             // return res.status(200).json({message: `Оплату юзера ${email} змінено`})
-//             return res.status(200).render('msg', {msg: `Оплату юзера ${email} успішно змінено`})
-//         }
-//     })
-// }
