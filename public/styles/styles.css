@@ -430,6 +430,51 @@ button.btn-disabled:focus {
   -webkit-appearance: checkbox;
 }
 
+.container-form {
+  margin: 0 auto;
+  padding: 0 5px;
+}
+.container-form h1 {
+  margin: 20px 0;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: #006666;
+  text-align: center;
+}
+.container-form .row {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 5px -10px;
+}
+
+.form-admin-panel {
+  width: calc(25% - 10px);
+  font-size: 12px;
+  margin: 5px;
+}
+.form-admin-panel h2 {
+  text-transform: none;
+}
+.form-admin-panel button {
+  text-transform: none;
+  font-size: small;
+}
+
+@media screen and (max-width: 680px) {
+  .form-admin-panel {
+    width: calc(33.33% - 10px);
+  }
+}
+@media screen and (max-width: 575px) {
+  .form-admin-panel {
+    width: calc(50% - 10px);
+  }
+}
+@media screen and (max-width: 295px) {
+  .form-admin-panel {
+    width: calc(100% - 10px);
+  }
+}
 /* styles for upload-file-button*/
 .form-upload-description {
   width: 70%;

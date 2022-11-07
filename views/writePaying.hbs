@@ -1,65 +1,99 @@
+<div class="container-form">
+    <h1>Панель управління</h1>
 
-    <div class="form-block">
-        <h3>Запис оплати</h3>
-        <form action="/api/payment/writepaying" method="post" id="regform">
+    <div class="row">
+
+        <div class="form-block form-admin-panel">
+            <h2>Запис оплати</h2>
+            <form action="/api/payment/writepaying" method="post" id="regform">
+                    <input type="text" name="email" placeholder="Введить email юзера">
+                    <input type="number" name="sumpay" placeholder="Введить суму оплати юзера">
+                    <button type="submit">Вписати оплату</button>
+            </form>
+        </div>
+
+        <div class="form-block  form-admin-panel">
+            <h2>Знайти юзера</h2>
+            <form action="/api/payment/finduser" method="post">
                 <input type="text" name="email" placeholder="Введить email юзера">
-                <input type="number" name="sumpay" placeholder="Введить суму оплати юзера">
-            
-            
-                <button 
-                type="submit" 
-                {{!-- disabled --}}
-                >
-                Вписати оплату</button>
-        </form>
+                <button type="submit">Знайти</button>
+            </form>
+        </div>
+
+        <div class="form-block  form-admin-panel">
+            <h2>Історія оплат юзера</h2>
+            <form action="/api/payment/finduserpayments" method="post">
+                <input type="text" name="email" placeholder="Введить email юзера">
+                <button type="submit">Знайти</button>
+            </form>
+        </div>
+
+        <div class="form-block  form-admin-panel">
+            <h2>Видалити користувача</h2>
+            <form action="/api/payment/deleteuser" method="post">
+                <input type="text" name="email" placeholder="Введить email юзера">
+                <button type="submit" id="delus">Видалити</button>
+            </form>
+        </div>
+
+        <div class="form-block  form-admin-panel">
+            <h2>Лист про оплату</h2>
+            <form action="/api/payment/sendendpay" method="post" id="regform1">
+                <button type="submit">Нагадати про оплату</button>
+            </form>
+        </div>
+
+        <div class="form-block form-admin-panel">
+            <h2>Запис оплати</h2>
+            <form action="/api/payment/writepaying" method="post" id="regform">
+                    <input type="text" name="email" placeholder="Введить email юзера">
+                    <input type="number" name="sumpay" placeholder="Введить суму оплати юзера">
+                    <button type="submit">Вписати оплату</button>
+            </form>
+        </div>
+
+        <div class="form-block  form-admin-panel">
+            <h2>Знайти юзера</h2>
+            <form action="/api/payment/finduser" method="post">
+                <input type="text" name="email" placeholder="Введить email юзера">
+                <button type="submit">Знайти</button>
+            </form>
+        </div>
+
+        <div class="form-block  form-admin-panel">
+            <h2>Історія оплат юзера</h2>
+            <form action="/api/payment/finduserpayments" method="post">
+                <input type="text" name="email" placeholder="Введить email юзера">
+                <button type="submit">Знайти</button>
+            </form>
+        </div>
+
+        <div class="form-block  form-admin-panel">
+            <h2>Видалити користувача</h2>
+            <form action="/api/payment/deleteuser" method="post">
+                <input type="text" name="email" placeholder="Введить email юзера">
+                <button type="submit" id="delus">Видалити</button>
+            </form>
+        </div>
+
+        <div class="form-block  form-admin-panel">
+            <h2>Лист про оплату</h2>
+            <form action="/api/payment/sendendpay" method="post" id="regform1">
+                <button type="submit">Нагадати про оплату</button>
+            </form>
+        </div>
+
     </div>
 
-    <div class="form-block">
-        <h1>Знайти юзера</h1>
-        <form action="/api/payment/finduser" method="post">
-            <input type="text" name="email" placeholder="Введить email юзера">
-            <button type="submit">Знайти</button>
-        </form>
-    </div>
+</div>
 
-    <div class="form-block">
-        <h1>Історія оплат юзера</h1>
-        <form action="/api/payment/finduserpayments" method="post">
-            <input type="text" name="email" placeholder="Введить email юзера">
-            <button type="submit">Знайти</button>
-        </form>
-    </div>
-
-    <div class="form-block">
-        <h1>Видалити користувача</h1>
-        <form action="/api/payment/deleteuser" method="post">
-            <input type="text" name="email" placeholder="Введить email юзера">
-            <button type="submit" id="delus">Видалити</button>
-        </form>
-    </div>
-
-    
-
-    <div class="form-block">
-        <h3>Лист про оплату</h3>
-         <form action="/api/payment/sendendpay" method="post" id="regform1">
-        {{!-- <form action="/api/payment/sendendpay" method="post" id="regform"> --}}
-                {{!-- <input type="text" name="email" placeholder="Введить email юзера">
-                <input type="number" name="sumpay" placeholder="Введить суму оплати юзера"> --}}
-            
-            
-                <button 
-                type="submit" 
-                {{!-- disabled --}}
-                >
-                Нагадати про оплату</button>
-        </form>
-    </div>
     <script>
         const btnUserDel = document.getElementById('delus')
-    btnUserDel.onclick = function (e) {
-   if (!confirm('Ви певні, що бажаєте видалити з бази даних цього користувача? Після натиску кнопки "ok" всі данні користувача будуть видалені.' )){
-    e.preventDefault();
-   }
-}
+        btnUserDel.onclick = function (e) {
+            if (!confirm(`Ви певні, що бажаєте видалити з бази даних цього користувача? 
+                Після натиску кнопки "ok" всі данні користувача будуть видалені.` )
+                ){
+            e.preventDefault()
+            }
+        }
     </script>

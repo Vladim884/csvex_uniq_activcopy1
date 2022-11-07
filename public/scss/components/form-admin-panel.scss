@@ -1,0 +1,51 @@
+.container-form {
+    margin: 0 auto;
+    padding: 0 5px;
+    h1 {
+        margin: 20px 0;
+        text-transform: uppercase;
+        font-weight: 500;
+        color: $darky;
+        text-align: center;
+    }
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 5px -10px;
+    }
+}
+
+
+
+
+.form-admin-panel {
+    width: calc(25% - 10px);
+    font-size: 12px;
+    margin: 5px;
+    h2 {
+        text-transform: none;
+    }
+    button {
+        text-transform: none;
+        font-size: small;
+    }
+    
+}
+
+@media screen and (max-width: 680px){
+    .form-admin-panel {
+      width: calc(33.33% - 10px);
+    }
+}
+
+@media screen and (max-width: 575px){
+    .form-admin-panel {
+      width: calc(50% - 10px);
+    }
+}
+
+@media screen and (max-width: 295px){
+    .form-admin-panel {
+      width: calc(100% - 10px);
+    }
+}
