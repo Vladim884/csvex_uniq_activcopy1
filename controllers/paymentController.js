@@ -145,9 +145,6 @@ class paymentController {
         })
     }
 
-    
-
-
     async finduser (req, res, next) {
         try {
             let token = req.cookies.token
@@ -184,7 +181,7 @@ class paymentController {
             const user = await User.findOne({email})
             if (!user) return res.status(404).render('error', {errorMsg: `юзера з email: "${email}" не знайдено`})
 
-            // console.log(`users-users: ${user}`)
+            console.log(`users-users: ${user}`)
     
             res.json({user})
                 
@@ -193,7 +190,6 @@ class paymentController {
             return res.render('error', {msg: 'err'})
         }
     }
-
 
     async findUserPayments (req, res, next) {
         try {
@@ -246,7 +242,6 @@ class paymentController {
         }
         
     }
-
 
     async deleteUser (req, res, next) {
         try {

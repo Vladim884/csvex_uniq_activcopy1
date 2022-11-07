@@ -35,19 +35,7 @@ router.get('/logout', cookieJwtAuth, authController.logout)
 router.get("/start", cookieJwtAuth, function(req, res){
     res.render('start.hbs')
 })
-router.get('/user', cookieJwtAuth, async function(req, res){
-    const user = await User.findOne({email: 'vov2@gmail.com'})
-    console.log(`users-users: ${user}`)
-    
-    res.json({user: {
-            id: user.id,
-            email: user.email,
-            diskSpace: user.diskSpace,
-            usedSpace: user.usedSpace,
-            avatar: user.avatar
-        }})
-            
-});
+
 
 
 router.get('/usercabinet', cookieJwtAuth, authController.getTokenUserData)
