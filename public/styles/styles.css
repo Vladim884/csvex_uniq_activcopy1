@@ -367,6 +367,36 @@ button.btn-disabled:focus {
   color: lightgray;
 }
 
+.paginator {
+  display: flex;
+  margin: 10px 0;
+}
+
+.paginator li {
+  margin-right: 5px;
+  width: 15px;
+  height: 20px;
+  text-align: center;
+  line-height: 20px;
+  color: #006666;
+  background-color: #CCFFFF;
+  border: 1px solid #006666;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.paginator li:hover {
+  color: #CCFFFF;
+  background-color: #99CCCC;
+  border: 1px solid #006666;
+}
+
+.paginator li:active {
+  color: #006666;
+  background-color: #CCFFFF;
+  border: 1px solid #006666;
+}
+
 .form-block {
   width: 250px;
   margin: 0 auto;

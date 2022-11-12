@@ -20,7 +20,7 @@ router.post('/users', cookieJwtAuth, async function(req, res){
 
 router.get('/users1', cookieJwtAuth, async function(req, res){
     try {
-        let currentPage = 1
+        let currentPage = 0
         let rows = 5
         const userData = await User.find()
         const users = []

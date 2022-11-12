@@ -86,7 +86,7 @@ async function getUser() {
 
 
 async function displayUsersPage1 () {
-    debugger
+    // debugger
     flag = 1
     let currentPage = this.innerText
     console.log(currentPage)
@@ -94,28 +94,51 @@ async function displayUsersPage1 () {
             method: "POST",
             headers: { "Accept": "application/json", "Content-Type": "application/json" },
             body: JSON.stringify({
-                currentPage: currentPage
+                currentPage: +currentPage - 1
             })
         });
         if (response.ok === true) {
             const data = await response.json()
             console.log(data)
+            let usersList = data.paginationData.usersData
+            userList.innerHTML = ""
+
+            //=========
+            for (i=0;i<=usersList.length-1;i++) {
+                //создаем элемент
+                var elem = document.createElement("li");
+                //создаем для него текст
+                var elemText = document.createTextNode(`
+                    ${usersList[i].nicname}
+    
+                        `)
+                //добавляем текст в элемент в качестве дочернего элемента
+                elem.appendChild(elemText);
+                //добавляем элемент в блок div
+                userList.appendChild(elem)
             }
-
-    
+            // function displayPaginationBtn(){
+            //     // debugger
+            //     //создаем элемент
+                
+            //     for (i=0;i<pages;i++) {
+            //         console.log(pages)
+            //         const el = document.createElement("li")
+            //         var elText = document.createTextNode(`${i + 1}`)
+                    
+            //         //добавляем текст в элемент в качестве дочернего элемента
+            //         el.appendChild(elText);
+            //         //добавляем элемент в блок ul
+            //         paginator.appendChild(el)
+            //         elems.push(el)
+            //     }
+            //     console.log(Object.values(elems))
+            //     for(i=0; i< elems.length; i++){
+                
+            //         elems[i].addEventListener('click', displayUsersPage1)
+            //     }
+            // }
+            //============
+        }
 }
-
-    
-
-        // const displayUsersPage = async () => {
-        
-
-        
-        
-        
-        // for(i=0; i<arLi.length; i++){
-        //     arLi[i].addEventListener('click', displayUsersPage1)
-        // }
-
-    // }
 

@@ -1,0 +1,30 @@
+.paginator{
+    display: flex;
+    margin: 10px 0;
+    // Justify-content: center;
+}
+
+.paginator li {
+    margin-right: 5px;
+    width: 15px;
+    height: 20px;
+    text-align: center;
+    line-height: 20px;
+    color: $darky;
+    background-color: $lighty;
+    border: 1px solid $darky;
+    border-radius: 2px;
+    cursor: pointer;
+}
+
+.paginator li:hover {
+    color: $lighty;
+    background-color: $medy;
+    border: 1px solid $darky;
+}
+
+.paginator li:active {
+    color: $darky;
+    background-color: $lighty;
+    border: 1px solid $darky;
+}
