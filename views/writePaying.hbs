@@ -2,7 +2,6 @@
     <h1>Панель управління</h1>
 
     <div class="row">
-
         <div class="form-block form-admin-panel">
             <h2>Запис оплати</h2>
             <form action="/api/payment/writepaying" method="post" id="regform">
@@ -45,23 +44,20 @@
 
         <div class="form-block  form-admin-panel">
             <h2>Вивести список користувачів</h2>
-            <form action="/api/payment/users" method="get">
+            <form action="/api/payment/users" method="post">
                 <button type="submit">Вивести</button>
             </form>
         </div>
-
-
     </div>
-
 </div>
 
-    <script>
-        const btnUserDel = document.getElementById('delus')
-        btnUserDel.onclick = function (e) {
-            if (!confirm(`Ви певні, що бажаєте видалити з бази даних цього користувача? 
-                Після натиску кнопки "ok" всі данні користувача будуть видалені.` )
-                ){
-            e.preventDefault()
-            }
+<script>
+    const btnUserDel = document.getElementById('delus')
+    btnUserDel.onclick = function (e) {
+        if (!confirm(`Ви певні, що бажаєте видалити з бази даних цього користувача? 
+            Після натиску кнопки "ok" всі данні користувача будуть видалені.` )
+            ){
+        e.preventDefault()
         }
-    </script>
+    }
+</script>

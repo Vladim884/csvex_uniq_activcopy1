@@ -35,6 +35,10 @@ router.get('/logout', cookieJwtAuth, authController.logout)
 router.get("/start", cookieJwtAuth, function(req, res){
     res.render('start.hbs')
 })
+router.put('/users', cookieJwtAuth, async function(req, res){
+    let num = req.body.num
+    console.log(num)
+})
 
 
 
