@@ -1,6 +1,19 @@
+.users-list li {
+    margin-bottom: 5px;
+    color: rgb(58, 58, 58);
+    background-color: $medy;
+}
+
+.users-list li:nth-child(even){
+    background-color: white;
+    color: $darky;
+}
+
+
 .paginator{
     display: flex;
     margin: 10px 0;
+    
     // Justify-content: center;
 }
 
@@ -11,7 +24,7 @@
     text-align: center;
     line-height: 20px;
     color: $darky;
-    background-color: $lighty;
+    // background-color: $medy;
     border: 1px solid $darky;
     border-radius: 2px;
     cursor: pointer;
@@ -26,5 +39,11 @@
 .paginator li:active {
     color: $darky;
     background-color: $lighty;
+    border: 1px solid $darky;
+}
+
+.paginator .active {
+    color: $lighty;
+    background-color: $medy;
     border: 1px solid $darky;
 }

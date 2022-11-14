@@ -111,8 +111,8 @@ app.use("/finduser", function(req, res){
 app.use("/paying", function(req, res){
     res.render('paying.hbs')
 })
-app.use("/writepaying", function(req, res){
-    res.render('writePaying.hbs')
+app.use("/adminPanel", function(req, res){
+    res.render('adminPanel.hbs')
 })
 app.use("/payhistory", function(req, res){
     res.render('payhistory.hbs')

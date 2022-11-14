@@ -367,6 +367,17 @@ button.btn-disabled:focus {
   color: lightgray;
 }
 
+.users-list li {
+  margin-bottom: 5px;
+  color: rgb(58, 58, 58);
+  background-color: #99CCCC;
+}
+
+.users-list li:nth-child(even) {
+  background-color: white;
+  color: #006666;
+}
+
 .paginator {
   display: flex;
   margin: 10px 0;
@@ -379,7 +390,6 @@ button.btn-disabled:focus {
   text-align: center;
   line-height: 20px;
   color: #006666;
-  background-color: #CCFFFF;
   border: 1px solid #006666;
   border-radius: 2px;
   cursor: pointer;
@@ -394,6 +404,12 @@ button.btn-disabled:focus {
 .paginator li:active {
   color: #006666;
   background-color: #CCFFFF;
+  border: 1px solid #006666;
+}
+
+.paginator .active {
+  color: #CCFFFF;
+  background-color: #99CCCC;
   border: 1px solid #006666;
 }
 
@@ -1019,8 +1035,7 @@ body {
   text-align: center;
 }
 
-.red {
-  background-color: red;
+body .red {
   color: red;
 }
 

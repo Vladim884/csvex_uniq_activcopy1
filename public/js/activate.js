@@ -1,3 +1,6 @@
+window.addEventListener('load', function(){
+
+
 const active_button = document.getElementById('act')
 const active_input = document.getElementById('myt')
 
@@ -22,4 +25,5 @@ async function sendUser() {
 // })
 
 
-console.log(result)
+// console.log(result)
+})

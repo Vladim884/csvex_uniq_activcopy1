@@ -23,6 +23,8 @@ class systemController {
     
     async getAccessToStart(req, res, next) {
         try {
+            const testuser = req.user
+            console.log(testuser)
             const user = await User.findOne({_id: req.user.id})
             if(+user.daysLeft === 0){
 

@@ -15,35 +15,38 @@ router.post('/deleteuser', cookieJwtAuth, paymentController.deleteUser)
 
 router.get('/payhistory', cookieJwtAuth, paymentController.getTokenPaymentsData)
 router.post('/users', cookieJwtAuth, async function(req, res){
-    return res.render('service/users1')
+    return res.render('service/usersList')
 })
 
-router.get('/users1', cookieJwtAuth, async function(req, res){
+router.get('/usersList', cookieJwtAuth, async function(req, res){
     try {
         let currentPage = 0
-        let rows = 10
-        const userData = await User.find()
+        let rows = 4
+        const allUsersData = await User.find()
+
+        const pages = Math.ceil(allUsersData.length / rows)
+
+        const start = rows * currentPage
+        const end = start + rows;
+        const usersData = allUsersData.slice(start, end)
+
         const users = []
-        for (let i = 0; i < userData.length; i++) {
+        for (let i = 0; i < usersData.length; i++) {
             let user = {
-                nicname: userData[i].nicname,
-                registrDate: userData[i].registrDate,
-                email: userData[i].email,
-                role: userData[i].status,
-                balance: userData[i].balance,
-                endDay: userData[i].endDay
+                nicname: usersData[i].nicname,
+                registrDate: usersData[i].registrDate,
+                email: usersData[i].email,
+                role: usersData[i].status,
+                balance: usersData[i].balance,
+                endDay: usersData[i].endDay
             }
             users.push(user)
         }
         // console.log(users)
 
-        const pages = Math.ceil(userData.length / rows)
+        
 
-        const start = rows * (currentPage)
-        const end = start + rows;
-        const usersData = users.slice(start, end)
-
-        const paginationData = {usersData, currentPage, rows, pages}
+        const paginationData = {users, currentPage, rows, pages}
         return res.json({paginationData})
         // return res.render('service/users', {nicname1: 'vladim1', pagenumber3: 3})
     } catch (error) {
@@ -51,11 +54,11 @@ router.get('/users1', cookieJwtAuth, async function(req, res){
     }
             
 })
-router.post('/users1', cookieJwtAuth, async function(req, res, next){
+router.post('/usersList', cookieJwtAuth, async function(req, res, next){
     try {
         if(!req.body) return res.sendStatus(400)
         let currentPage = req.body.currentPage
-        let rows = 10
+        let rows = 4
         const allUsersData = await User.find()
 
         const pages = Math.ceil(allUsersData.length / rows)
