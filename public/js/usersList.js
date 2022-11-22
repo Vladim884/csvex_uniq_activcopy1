@@ -18,15 +18,17 @@ window.addEventListener('load', function(){
         console.log(data)
 
         const usersList = data.paginationData.users
-        let pages = data.paginationData.pages
+
         // console.log(usersList)
         if(!usersList) {
             pageTitle.textContent = `Ви не авторизовані! Виповніть вхід`
         } else {
             pageTitle.textContent = `Перелік користувачів сайту`
         }
+        let pages = data.paginationData.pages
+        let portions = Math.ceil(pages / 4)
         
-        //start display user-list
+        //start display users-list
         displayUserList()
         function displayUserList(){
             for (i=0;i<=usersList.length-1;i++) {
@@ -45,9 +47,16 @@ window.addEventListener('load', function(){
                 //добавляем элемент в блок div
                 userList.appendChild(elem)
             }
+            
             function displayPaginationBtn(){
+                const elPrev = document.createElement("button")
+                elPrev.setAttribute('type', 'button')
+                var elPrevText = document.createTextNode(`prev`)
+                elPrev.appendChild(elPrevText)
+                paginator.appendChild(elPrev)
+
                 // debugger
-            for (i=0;i<pages;i++) {
+                for (i=0;i<pages;i++) {
                     console.log(pages)
 
                     //create element
@@ -65,6 +74,12 @@ window.addEventListener('load', function(){
                     elems[0].classList.add('active')
                     elems[i].addEventListener('click', displayUsersPage1)
                 }
+
+                const elNext = document.createElement("button")
+                elNext.setAttribute('type', 'button')
+                var elNextText = document.createTextNode(`next`)
+                elNext.appendChild(elNextText)
+                paginator.appendChild(elNext)
             }
             displayPaginationBtn()
         }

@@ -21,7 +21,7 @@ router.post('/users', cookieJwtAuth, async function(req, res){
 router.get('/usersList', cookieJwtAuth, async function(req, res){
     try {
         let currentPage = 0
-        let rows = 4
+        let rows = 3
         const allUsersData = await User.find()
 
         const pages = Math.ceil(allUsersData.length / rows)
@@ -58,7 +58,7 @@ router.post('/usersList', cookieJwtAuth, async function(req, res, next){
     try {
         if(!req.body) return res.sendStatus(400)
         let currentPage = req.body.currentPage
-        let rows = 4
+        let rows = 3
         const allUsersData = await User.find()
 
         const pages = Math.ceil(allUsersData.length / rows)
