@@ -3,6 +3,8 @@ window.addEventListener('load', function(){
     const pageTitle = document.querySelector("h1.users-page-title")
     const userList = document.querySelector("ul.users-list")
     const paginator = document.querySelector("ul.paginator")
+
+    let arrPaginBtn = []
     
 
     let elems = []
@@ -12,13 +14,11 @@ window.addEventListener('load', function(){
             method: "GET", 
             headers: { "Content-Type": "application/json" }
         })
-        // if (response.ok === true) {
         const data = await response.json()
         console.log(data)
 
         const usersList = data.paginationData.users
 
-        // console.log(usersList)
         if(!usersList) {
             pageTitle.textContent = `Ви не авторизовані! Виповніть вхід`
         } else {
@@ -27,12 +27,9 @@ window.addEventListener('load', function(){
         let pages = data.paginationData.pages
         let currentPortion = data.paginationData.currentPortion
         let portionSize = data.paginationData.portionSize
-        let start = data.paginationData.start
+        let btnValueNum = data.paginationData.start
         let portions = data.paginationData.portions
 
-        // let portions = Math.ceil(pages / 4)
-        
-        //start display users-list
         displayUserList()
         function displayUserList(){
             for (i=0;i<=usersList.length-1;i++) {
@@ -61,29 +58,28 @@ window.addEventListener('load', function(){
 
                 // debugger
                 for (i=0;i<portionSize;i++) {
-                    console.log(portionSize)
+                    // console.log(portionSize)
 
                     //create element
                     const el = document.createElement("li")
                     // 
-                    var elText = document.createTextNode(`${++start}`)
-                    // console.log(`start: ${start}`)
+                    var elText = document.createTextNode(`${++btnValueNum}`)
+                    console.log(typeof(btnValueNum))
                     
                     //добавляем текст в элемент в качестве дочернего элемента
                     el.appendChild(elText);
                     //добавляем элемент в блок ul
                     paginator.appendChild(el)
                     elems.push(el)
-                    console.log(`elems: ${elems}`)
-                    if(elems.length === pages) break
-                    // if(elems.length === pages) break
-                    // if(i === 0) el[i].classList.add('active')
-                    //
+                    console.log(`for pag-elems: ${elems.length}`)
+                    console.log(`for pages: ${pages}`)
+                    if(btnValueNum === pages) break
+                   
                 }
 
-                const arrPaginBtn = paginator.querySelectorAll('li')
+                arrPaginBtn = paginator.querySelectorAll('li')
                 arrPaginBtn[0].classList.add('active')
-                console.log(`arLi: ${Object.values(arrPaginBtn)}`)
+                console.log(`arrPaginBtn: ${Object.values(arrPaginBtn)}`)
                 // console.log(elems)
                 console.log(Object.values(elems))
                 for(i=0; i< elems.length; i++){
@@ -111,6 +107,7 @@ window.addEventListener('load', function(){
                 
                 elNext.addEventListener('click', async function () {
                     currentPortion = currentPortion + 1
+                    console.log(`1next elems: ${elems.length}`)
                     
                     const response = await fetch("http://localhost:5000/api/payment/usersList1", {
                         method: "POST",
@@ -147,14 +144,20 @@ window.addEventListener('load', function(){
                         }
                         
                         paginator.innerHTML = ''
-                        displayPaginationBtn()
+                        arrPaginBtn = []
                         
+                        displayPaginationBtn()
+                        console.log(`2next elems: ${elems.length}`)
                     }
 
                 })
 
                 elPrev.addEventListener('click', async function () {
                     currentPortion = currentPortion - 1
+                    for (let i = 0; i < (portionSize * 2); i++) {
+                        elems.pop()
+                    }
+                    console.log(`1prev elems: ${elems.length}`)
                     
                     
                     console.log(`elPrev currentPortion: ${currentPortion}`)
@@ -193,17 +196,15 @@ window.addEventListener('load', function(){
                         }
                         
                         paginator.innerHTML = ''
-                        elems = []
-                        start = currentPortion * portionSize - portionSize
-                        console.log(`elPrev elems: ${elems}`)
-                        displayPaginationBtn()
-
-                        //1 - 1
-                        //2 - 4
-                        //3 - 7
-                        //4 - 10
-                        //5 - 13
                         
+                        
+                        // elems.splice(-+portionSize)
+                        console.log(`prev onclick elems: ${elems.length}`)
+
+                        btnValueNum = currentPortion * portionSize - portionSize
+                        // console.log(`elPrev elems: ${elems}`)
+                        displayPaginationBtn()
+                        console.log(`2prev elems: ${elems.length}`)
                     }
 
                 })
@@ -216,7 +217,6 @@ window.addEventListener('load', function(){
 
     //display user-list after click on paginator-btns
     async function displayUsersPage1 () {
-        // debugger
 
         //currentPage must be a number
         let currentPage = +this.innerText-1 
@@ -260,6 +260,5 @@ window.addEventListener('load', function(){
             }
         }
     }
-
 })
 

@@ -22,19 +22,19 @@ router.get('/usersList', cookieJwtAuth, async function(req, res){
     try {
         const currentPortion = 1
         let currentPage = 0
-        let rows = 5
+        let rows = 3
         const allUsersData = await User.find()
 
         const pages = Math.ceil(allUsersData.length / rows)
 
         //portion - count pagination button on 1 page
-        let portionSize = 2
+        let portionSize = 4
         //portions - count all pagination button
         const portions = Math.ceil(pages / portionSize)
 
         
         let start = (currentPortion - 1) * portionSize
-        console.log(start)
+        console.log(`start: ${start}`)
         // const end = currentPortion * portionSize
 
         
@@ -71,7 +71,7 @@ router.post('/usersList', cookieJwtAuth, async function(req, res, next){
     try {
         if(!req.body) return res.sendStatus(400)
         let currentPage = req.body.currentPage
-        let rows = 5
+        let rows = 3
         const allUsersData = await User.find()
 
         const pages = Math.ceil(allUsersData.length / rows)
@@ -112,20 +112,20 @@ router.post('/usersList1', cookieJwtAuth, async function(req, res, next){
         let currentPortion = req.body.currentPortion
         
             let currentPage = 0
-            let rows = 5
+            let rows = 3
             const allUsersData = await User.find()
     
             const pages = Math.ceil(allUsersData.length / rows)
             console.log(`pages: ${pages}`)
     
             //portion - count pagination button on 1 page
-            let portionSize = 2
+            let portionSize = 4
             //portions - count all pagination button
             const portions = Math.ceil(pages / portionSize)
     
             
             let start = (currentPortion - 1) * portionSize * rows
-            console.log(start)
+            console.log(`start: ${start}`)
             // const end = currentPortion * portionSize
             const end = start + rows
     
