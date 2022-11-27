@@ -154,9 +154,12 @@ window.addEventListener('load', function(){
 
                 elPrev.addEventListener('click', async function () {
                     currentPortion = currentPortion - 1
-                    for (let i = 0; i < (portionSize * 2); i++) {
-                        elems.pop()
-                    }
+                    // for (let i = 0; i < (portionSize * 2); i++) {
+                    //     elems.pop()
+                    // }
+
+                    elems.splice(elems[-portionSize*2])
+
                     console.log(`1prev elems: ${elems.length}`)
                     
                     
