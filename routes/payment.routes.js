@@ -60,6 +60,7 @@ router.get('/usersList', cookieJwtAuth, async function(req, res){
         
 
         const paginationData = {users, currentPage, rows, pages, currentPortion, portionSize, start, portions}
+        // const paginationData = {users, currentPage, pages}
         return res.json({paginationData})
         // return res.render('service/users', {nicname1: 'vladim1', pagenumber3: 3})
     } catch (error) {
@@ -67,74 +68,70 @@ router.get('/usersList', cookieJwtAuth, async function(req, res){
     }
             
 })
+
+
 router.post('/usersList', cookieJwtAuth, async function(req, res, next){
+    if(!req.body) return res.sendStatus(400)
     try {
-        if(!req.body) return res.sendStatus(400)
-        let currentPage = req.body.currentPage
-        let rows = 4
-        const allUsersData = await User.find()
-
-        const pages = Math.ceil(allUsersData.length / rows)
-
-        const start = rows * currentPage
-        const end = start + rows
-        const usersData = allUsersData.slice(start, end)
-
-        const users = []
-        for (let i = 0; i < usersData.length; i++) {
-            let user = {
-                nicname: usersData[i].nicname,
-                registrDate: usersData[i].registrDate,
-                email: usersData[i].email,
-                role: usersData[i].status,
-                balance: usersData[i].balance,
-                endDay: usersData[i].endDay
-            }
-            users.push(user)
-        }
-        // console.log(users)
-
-        
-
-        const paginationData = {users, currentPage, rows, pages}
-        return res.json({paginationData})
-        // return res.render('service/users', {nicname1: 'vladim1', pagenumber3: 3})
-    } catch (error) {
-            console.log(error)
-            next(error)
-    }
+        if (req.body.currentPage){
             
-})
-
-router.post('/usersList1', cookieJwtAuth, async function(req, res, next){
-    try {
-        if(!req.body) return res.sendStatus(400)
-        let currentPortion = req.body.currentPortion
+                let currentPage = req.body.currentPage
+                let rows = 4
+                const allUsersData = await User.find()
         
+                const pages = Math.ceil(allUsersData.length / rows)
+        
+                const start = rows * currentPage
+                const end = start + rows
+                const usersData = allUsersData.slice(start, end)
+        
+                const users = []
+                for (let i = 0; i < usersData.length; i++) {
+                    let user = {
+                        nicname: usersData[i].nicname,
+                        registrDate: usersData[i].registrDate,
+                        email: usersData[i].email,
+                        role: usersData[i].status,
+                        balance: usersData[i].balance,
+                        endDay: usersData[i].endDay
+                    }
+                    users.push(user)
+                }
+                // console.log(users)
+                const paginationData = {users}
+                return res.json({paginationData})
+            // } catch (error) {
+            //         console.log(error)
+            //         next(error)
+            // }
+        } else {
+
+            let currentPortion = req.body.currentPortion
+                
             let currentPage = 0
             let rows = 4
             const allUsersData = await User.find()
-    
+
             const pages = Math.ceil(allUsersData.length / rows)
             console.log(`pages: ${pages}`)
-    
-            //portion - count pagination button on 1 page
+
+            //portionSize - count pagination button on 1 page
             let portionSize = 5
             //portions - count all pagination button
-            const portions = Math.ceil(pages / portionSize)
-    
+            // const portions = Math.ceil(pages / portionSize)
+
             
             let start = (currentPortion - 1) * portionSize * rows
-            console.log(`start: ${start}`)
+            // console.log(`start: ${start}`)
             // const end = currentPortion * portionSize
             const end = start + rows
-    
+
             
-    
+
             // const start = rows * currentPage
             // const end = start + rows;
             const usersData = allUsersData.slice(start, end)
-    
+
             const users = []
             for (let i = 0; i < usersData.length; i++) {
                 let user = {
@@ -148,16 +145,15 @@ router.post('/usersList1', cookieJwtAuth, async function(req, res, next){
                 users.push(user)
             }
             // console.log(users)
-    
-            
-    
-            const paginationData = {users, currentPage, rows, pages, currentPortion, portionSize, portions}
+
+            const paginationData = {users}
             return res.json({paginationData})
             // return res.render('service/users', {nicname1: 'vladim1', pagenumber3: 3})
-        } catch (error) {
-                console.log(error)
-        }
-            
+        } 
+
+    }catch (error) {
+        console.log(error)
+    }
 })
 
 
