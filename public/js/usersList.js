@@ -87,8 +87,9 @@ window.addEventListener('load', function(){
             function displayPaginationBtn(){
 
                 const elPrev = document.createElement("button")
+                elPrev.classList.add('users-page-btn')
                 elPrev.setAttribute('type', 'button')
-                var elPrevText = document.createTextNode(`prev`)
+                var elPrevText = document.createTextNode(`< prev`)
                 elPrev.appendChild(elPrevText)
                 paginator.appendChild(elPrev)
 
@@ -121,8 +122,9 @@ window.addEventListener('load', function(){
                 }
 
                 const elNext = document.createElement("button")
+                elNext.classList.add('users-page-btn')
                 elNext.setAttribute('type', 'button')
-                const elNextText = document.createTextNode(`next`)
+                const elNextText = document.createTextNode(`next >`)
                 elNext.appendChild(elNextText)
                 paginator.appendChild(elNext)
 

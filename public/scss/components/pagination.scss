@@ -1,3 +1,10 @@
+.users-page-title {
+    text-align: center;
+    margin: 20px 0;
+    font-weight: 500;
+    color: $darky;
+}
+
 .users-list li {
     margin-bottom: 5px;
     color: rgb(58, 58, 58);
@@ -18,8 +25,9 @@
 }
 
 .paginator li {
+    align-self:center;
     margin-right: 5px;
-    width: 15px;
+    width: 25px;
     height: 20px;
     text-align: center;
     line-height: 20px;
@@ -28,6 +36,17 @@
     border: 1px solid $darky;
     border-radius: 2px;
     cursor: pointer;
+    
+}
+
+.users-page-btn {
+    align-self:center;
+    height: 25px;
+    margin: 0 10px 0 5px;
+    text-align: center;
+    line-height: 25px;
+    padding: 0 1%;
+    // width: 40px
 }
 
 .paginator li:hover {
@@ -47,3 +66,6 @@
     background-color: $medy;
     border: 1px solid $darky;
 }
+// .paginator li:last-child {
+//     margin-right: 10px;
+// }
