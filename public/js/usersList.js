@@ -10,7 +10,7 @@ window.addEventListener('load', function(){
     let elems = []
     getUser()
     async function getUser() {
-        const response = await fetch("http://localhost:5000/api/payment/usersList", { 
+        const response = await fetch("http://localhost:5000/api/admin/usersList", { 
             method: "GET", 
             headers: { "Content-Type": "application/json" }
         })
@@ -67,7 +67,7 @@ window.addEventListener('load', function(){
                 this.classList.add('active')
                 
                 // console.log(currentPage)
-                const response = await fetch("http://localhost:5000/api/payment/usersList", {
+                const response = await fetch("http://localhost:5000/api/admin/usersList", {
                     method: "POST",
                     headers: { "Accept": "application/json", "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -136,7 +136,7 @@ window.addEventListener('load', function(){
                 }
 
                 async function getNewPortion () {
-                    const response = await fetch("http://localhost:5000/api/payment/usersList", {
+                    const response = await fetch("http://localhost:5000/api/admin/usersList", {
                         method: "POST",
                         headers: { "Accept": "application/json", "Content-Type": "application/json" },
                         body: JSON.stringify({

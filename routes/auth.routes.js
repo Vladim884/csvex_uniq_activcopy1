@@ -6,7 +6,7 @@ const {check, validationResult} = require("express-validator")
 const router = new Router()
 const {cookieJwtAuth} = require('../middleware/cookieJwtAuth')
 const authController = require("../controllers/authController")
-const paymentController = require("../controllers/paymentController")
+const paymentController = require("../controllers/adminController")
 const tokenService = require("../services/tokenService")
 // const { 
 //         signup, 
