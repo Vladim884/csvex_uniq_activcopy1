@@ -37,11 +37,12 @@ window.addEventListener('load', function(){
             getUserList(usersList)
 
             function getUserList(usersList) {
+                
                 for (i=0;i<=usersList.length-1;i++) {
                     //создаем элемент
-                    var elem = document.createElement("li");
+                    const elem = document.createElement("li");
                     //создаем для него текст
-                    var elemText = document.createTextNode(`
+                    const elemText = document.createTextNode(`
                     ${usersList[i].role}: ${usersList[i].nicname} 
                     з ${moment(usersList[i].registrDate).format('DD.MM.YY')}
                     email: ${usersList[i].email} 
@@ -50,8 +51,16 @@ window.addEventListener('load', function(){
                     `)
                     //добавляем текст в элемент в качестве дочернего элемента
                     elem.appendChild(elemText);
+
+                    const paymentsLink = document.createElement("a")
+                    paymentsLink.href = 'http://localhost:5000/api/admin/finduserpayments'
+                    const paymentsLinkText = document.createTextNode(`оплати`)
+                    paymentsLink.appendChild(paymentsLinkText)
+                    elem.appendChild(paymentsLink)
                     //добавляем элемент в блок div
                     userList.appendChild(elem)
+
+
                 }
             }
 
