@@ -14,6 +14,7 @@ router.post('/finduserpayments', cookieJwtAuth, adminController.findUserPayments
 router.post('/deleteuser', cookieJwtAuth, adminController.deleteUser)
 
 router.get('/payhistory', cookieJwtAuth, adminController.getTokenPaymentsData)
+// router.get('/payhistory/:email', cookieJwtAuth, adminController.getEmailPaymentsData)
 router.post('/users', cookieJwtAuth, async function(req, res){
     return res.render('service/usersList')
 })

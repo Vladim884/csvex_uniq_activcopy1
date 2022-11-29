@@ -53,7 +53,7 @@ window.addEventListener('load', function(){
                     elem.appendChild(elemText);
 
                     const paymentsLink = document.createElement("a")
-                    paymentsLink.href = 'http://localhost:5000/api/admin/finduserpayments'
+                    paymentsLink.href = `http://localhost:5000/payhistory?email=${usersList[i].email}`
                     const paymentsLinkText = document.createTextNode(`оплати`)
                     paymentsLink.appendChild(paymentsLinkText)
                     elem.appendChild(paymentsLink)

@@ -7,34 +7,31 @@
 
 
 <script>
+
+    const searchStringEm = new URLSearchParams(window.location.search)
+
+    const em = searchStringEm.get('email')
     const pageTitle = document.querySelector("h1.history-page-title")
     const paymentList = document.querySelector("ul.payment-list")
     const user = getUser()
     async function getUser() {
-        const response = await fetch("http://localhost:5000/api/payment/payhistory", { 
+        const response = await fetch(`http://localhost:5000/api/admin/payhistory?email=${em}`, { 
             method: "GET", 
             headers: { "Content-Type": "application/json" }
         })
         const data = await response.json()
-        const payments = data.userData.payments
-        const nicname = data.userData.nicname
-        console.log(payments)
-        console.log(nicname)
+        const payments = data.userPayments.payments
+        const nicname = data.userPayments.nicname
+        //console.log(payments)
+        //console.log(nicname)
         if(!user) {
             pageTitle.textContent = `Ви не авторизовані! Виповніть вхід`
         } else {
             pageTitle.textContent = `Історія платежів ${nicname}`
-       // }
-
-        //console.log(`${user.nicname} ${user.payments[1].number}`)
-        //{{!-- console.log(user) --}}
+       
             for (i=payments.length-1;i>=0;i--) {
-                //console.log(user.payments[i].number)
-                //console.log(d)
-                //document.write('<div>user.payments[i].number</div>')
-                //d = new Date(user.payments[i].date)
+                
                 const d = moment(payments[i].date).format()
-                //console.log(`d: ${d}`)
                 // создаем элемент
                 var elem = document.createElement("li");
                 // создаем для него текст
@@ -47,7 +44,6 @@
                 elem.appendChild(elemText);
                 // добавляем элемент в блок div
                 paymentList.appendChild(elem)
-                
             }
         }
     }

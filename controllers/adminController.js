@@ -19,6 +19,7 @@ const {
     decryptToken} = require('../myFunctions/myFunctions')
 const mailer = require("../nodemailer/nodemailer")
 const userService = require("../services/userService")
+const { findOne } = require("../models/User")
 
 class adminController {
     async writePaying (req, res, next) {
@@ -466,50 +467,55 @@ class adminController {
             console.log(error)
         }
     }
-
+    
+    // async getEmailPaymentsData(req, res, next){
+    //     const email = req.query.email
+    //     console.log(email)
+    // }
 
     async getTokenPaymentsData(req, res, next){
         console.log('getTokenPaymentsData')
+        const oneemail = req.query.email
         try {
-        
 
         let token = req.cookies.token
             if(token){
                 const user = await getUserfromToken(token)
+                if(req.query.email && user && user.status === 'admin'){
+                    const oneuser = await User.findOne({email: oneemail})
+                    const userPayments = new PaymentsDto(oneuser)
+                    return res.json({ userPayments })
+                }
                 if (!user) {
                     return res.status(404).render('msg', {message: "User not found"})
                 }
-                // console.log(`usertoken: ${user}`)
                 const userPayments = new PaymentsDto(user)
-                // console.log(userPayments)
-                
                 return res.json({ userPayments })
-            } 
-                else {
-
+            } else {
                 const {refreshToken} = req.cookies
-                    if(!refreshToken){
-                        return res.status(403).render('msg', {msg: "authContr-getTokenUserData Ви не авторизувались(!token)"})
-                    } else {
-                        const refData = await userService.refresh(refreshToken)
-                        // console.log(`paymentContr-getTokenUserData-refData ${Object.values(refData)}`)
-                        res.cookie('refreshToken', refData.refreshToken, {
-                            maxAge: 24*30*60*60*1000,
-                            httpOnly: true
-                        })
-                        token = refData.token
-                        const user = await getUserfromToken(token)
-                        if (!user) {
-                            return res.status(404).json({message: "User not found"})
-                        }
-                        // console.log(`user2: ${user}`)
-                        const userData = new PaymentsDto(user)
-
-                        // console.log(userData)
-                    
-                        return res.json({ userData })
+                if(!refreshToken){
+                    return res.status(403).render('msg', {msg: "authContr-getTokenUserData Ви не авторизувались(!token)"})
+                } else {
+                    const refData = await userService.refresh(refreshToken)
+                    // console.log(`paymentContr-getTokenUserData-refData ${Object.values(refData)}`)
+                    res.cookie('refreshToken', refData.refreshToken, {
+                        maxAge: 24*30*60*60*1000,
+                        httpOnly: true
+                    })
+                    token = refData.token
+                    const user = await getUserfromToken(token)
+                    if(req.query.email && user && user.status === 'admin'){
                         
+                        const oneuser = await User.findOne({email: oneemail})
+                        const userPayments = new PaymentsDto(oneuser)
+                        return res.json({ userPayments })
                     }
+                    if (!user) {
+                        return res.status(404).json({message: "User not found"})
+                    }
+                    const userPayments = new PaymentsDto(user)
+                    return res.json({ userPayments })
+                }
             }
 
         } catch (err) {
