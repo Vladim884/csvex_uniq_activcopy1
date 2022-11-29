@@ -10,18 +10,18 @@
 
     const searchStringEm = new URLSearchParams(window.location.search)
 
-    const em = searchStringEm.get('email')
+    const idpay = searchStringEm.get('id')
     const pageTitle = document.querySelector("h1.history-page-title")
     const paymentList = document.querySelector("ul.payment-list")
     const user = getUser()
     async function getUser() {
-        const response = await fetch(`http://localhost:5000/api/admin/payhistory?email=${em}`, { 
+        const response = await fetch(`http://localhost:5000/api/admin/payhistory?id=${idpay}`, { 
             method: "GET", 
             headers: { "Content-Type": "application/json" }
         })
         const data = await response.json()
-        const payments = data.userPayments.payments
-        const nicname = data.userPayments.nicname
+        const payments = data.userPaymentsData.payments
+        const nicname = data.userPaymentsData.nicname
         //console.log(payments)
         //console.log(nicname)
         if(!user) {

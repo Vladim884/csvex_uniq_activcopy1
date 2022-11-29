@@ -364,7 +364,8 @@ class adminController {
                     email: usersData[i].email,
                     role: usersData[i].status,
                     balance: usersData[i].balance,
-                    endDay: usersData[i].endDay
+                    endDay: usersData[i].endDay,
+                    id: usersData[i]._id
                 }
                 users.push(user)
             }
@@ -384,6 +385,7 @@ class adminController {
 
     async getAnyUsersList(req, res, next){
         if(!req.body) return res.sendStatus(400)
+        // for currentPage or currentPortion ?
         try {
             if (req.body.currentPage){
                 
@@ -405,11 +407,12 @@ class adminController {
                             email: usersData[i].email,
                             role: usersData[i].status,
                             balance: usersData[i].balance,
-                            endDay: usersData[i].endDay
+                            endDay: usersData[i].endDay,
+                            id: usersData[i]._id
                         }
                         users.push(user)
                     }
-                    // console.log(users)
+                    // console.log(Object.values(users))
                     const paginationData = {users}
                     return res.json({paginationData})
                 // } catch (error) {
@@ -425,7 +428,7 @@ class adminController {
                 const allUsersData = await User.find()
     
                 const pages = Math.ceil(allUsersData.length / rows)
-                console.log(`pages: ${pages}`)
+                // console.log(`pages: ${pages}`)
     
                 //portionSize - count pagination button on 1 page
                 let portionSize = 5
@@ -452,11 +455,12 @@ class adminController {
                         email: usersData[i].email,
                         role: usersData[i].status,
                         balance: usersData[i].balance,
-                        endDay: usersData[i].endDay
+                        endDay: usersData[i].endDay,
+                        id: usersData[i]._id
                     }
                     users.push(user)
                 }
-                // console.log(users)
+                console.log(users)
     
                 const paginationData = {users}
                 return res.json({paginationData})
@@ -475,22 +479,23 @@ class adminController {
 
     async getTokenPaymentsData(req, res, next){
         console.log('getTokenPaymentsData')
-        const oneemail = req.query.email
+        const oneid = req.query.id
+        console.log(`oneid: ${oneid}`)
         try {
 
         let token = req.cookies.token
             if(token){
                 const user = await getUserfromToken(token)
-                if(req.query.email && user && user.status === 'admin'){
-                    const oneuser = await User.findOne({email: oneemail})
-                    const userPayments = new PaymentsDto(oneuser)
-                    return res.json({ userPayments })
+                if(req.query.id && user && user.status === 'admin'){
+                    const oneuser = await User.findById({_id: oneid})
+                    const userPaymentsData = new PaymentsDto(oneuser)
+                    return res.json({ userPaymentsData })
                 }
                 if (!user) {
                     return res.status(404).render('msg', {message: "User not found"})
                 }
-                const userPayments = new PaymentsDto(user)
-                return res.json({ userPayments })
+                const userPaymentsData = new PaymentsDto(user)
+                return res.json({ userPaymentsData })
             } else {
                 const {refreshToken} = req.cookies
                 if(!refreshToken){
@@ -503,24 +508,26 @@ class adminController {
                         httpOnly: true
                     })
                     token = refData.token
+                    console.log('refData.token')
                     const user = await getUserfromToken(token)
-                    if(req.query.email && user && user.status === 'admin'){
-                        
-                        const oneuser = await User.findOne({email: oneemail})
-                        const userPayments = new PaymentsDto(oneuser)
-                        return res.json({ userPayments })
+                    if(req.query.id && user && user.status === 'admin'){
+                        console.log('if')
+                        const oneuser = await User.findById({_id: oneid})
+                        console.log(`oneuser: ${Object.values(oneuser)}`)
+                        const userPaymentsData = new PaymentsDto(oneuser)
+                        return res.json({ userPaymentsData })
                     }
                     if (!user) {
                         return res.status(404).json({message: "User not found"})
                     }
-                    const userPayments = new PaymentsDto(user)
-                    return res.json({ userPayments })
+                    const userPaymentsData = new PaymentsDto(user)
+                    return res.json({ userPaymentsData })
                 }
             }
 
         } catch (err) {
-            console.log(`getTokenUserRole err: ${err}`)
-            res.status(401).render('error', {message: 'Помилка встановлення ролі юзера'})
+            console.log(`getTokenPaymentsData err: ${err}`)
+            res.status(401).render('error', {message: 'Помилка встановлення ісещзії платежів'})
         }
     }
 }

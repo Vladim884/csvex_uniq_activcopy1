@@ -17,6 +17,7 @@ window.addEventListener('load', function(){
         const data = await response.json()
 
         const usersList = data.paginationData.users
+        console.log(Object.values(usersList[0]))
 
         if(!usersList) {
             pageTitle.textContent = `Ви не авторизовані! Виповніть вхід`
@@ -53,7 +54,7 @@ window.addEventListener('load', function(){
                     elem.appendChild(elemText);
 
                     const paymentsLink = document.createElement("a")
-                    paymentsLink.href = `http://localhost:5000/payhistory?email=${usersList[i].email}`
+                    paymentsLink.href = `http://localhost:5000/payhistory?id=${usersList[i].id}`
                     const paymentsLinkText = document.createTextNode(`оплати`)
                     paymentsLink.appendChild(paymentsLinkText)
                     elem.appendChild(paymentsLink)
