@@ -16,25 +16,29 @@ const {
     emailOptionsSend,
     getNumberOfDays, 
     getUserfromToken,
-    decryptToken} = require('../myFunctions/myFunctions')
+    decryptToken
+} = require('../myFunctions/myFunctions')
 const mailer = require("../nodemailer/nodemailer")
 const userService = require("../services/userService")
 const { findOne } = require("../models/User")
 
+
+
 class adminController {
+    
+    
+
     async writePaying (req, res, next) {
         let token = req.cookies.token
         let admin
             if(token){
                 admin = await getUserfromToken(token)
-                
             } else {
                 const {refreshToken} = req.cookies
                     if(!refreshToken){
                         return res.status(403).json({"message": "systemContr/upload Ви не авторизувались(!token)"})
                     } else {
                         const refData = await userService.refresh(refreshToken)
-                        // console.log(`paymentController/writePaying-refData: ${refData.token}`)
                         res.cookie('refreshToken', refData.refreshToken, {
                             maxAge: 24*30*60*60*1000,
                             httpOnly: true
@@ -72,19 +76,13 @@ class adminController {
         //=====================
         //Кол-во новіх оплаченных минут: 
         let minutessPaying = daysPayingLast*24*60
-        console.log(`minutessPaying: ${minutessPaying}`)
-        //=====================
-        // console.log(lastPayment.date)
-        // console.log(user.endDay)
+        // console.log(`minutessPaying: ${minutessPaying}`)
+
+        //сколько минут остлось с предыдущей оплаты
         var a = moment(today);
         var b = moment(user.endDay);
-        console.log(a)
-        console.log(b)
-        //сколько минут остлось с предыдущей оплаты
         let diffMinutes = b.diff(a, 'minutes')
-        // let diffMinutes = -5
         if (diffMinutes < 0) diffMinutes = 0
-        console.log(`diffMinutes: ${diffMinutes}`)
 
         // сколько теперь осталось оплаченных минут sumpay???
         let sumMinutesLast = diffMinutes + minutessPaying
@@ -97,7 +95,7 @@ class adminController {
 
         
         const balance = (100/30/24/60) * sumMinutesLast
-        console.log(`balance: ${balance}`)
+        // console.log(`balance: ${balance}`)
 
 
         
@@ -108,14 +106,9 @@ class adminController {
     
         //оплачено за все время:
         user.sumpay = +user.sumpay + +lastPayment.sum
-        console.log(`user.sumpay: ${user.sumpay}`)
+        // console.log(`user.sumpay: ${user.sumpay}`)
         //===========================
         user.balance = balance
-
-
-
-        console.log(`user.balance: ${user.balance}`)
-
         //итоговое количество оставшихся дней
         user.daysLeft = sumMinutesLast /60/24
             
@@ -127,7 +120,7 @@ class adminController {
             if(err){
                 return res.status(400).render('msg', {msg: `Помилка зміни оплати користувача з email: "${email}"`})
             } else {
-                console.log(`7 lastPayment.date: ${lastPayment.date}`)
+                // console.log(`7 lastPayment.date: ${lastPayment.date}`)
                 let payingDateForPeople = formatNowDate(lastPayment.date)
                 const message = {
                     to: 'ivladim95@gmail.com',
@@ -140,37 +133,61 @@ class adminController {
                         `
                 }
                 mailer(message)
-                
                 return res.status(200).render('msg', {msg: `Оплату користувача з email: "${email}" успішно змінено`})
             }
         })
     }
 
     async finduser (req, res, next) {
+        // async function userRoleDefer(req, res) {
+        //     let token = req.cookies.token
+        //     let refreshToken = req.cookies.refreshToken
+        //     let admin
+        
+        //     if(token){
+        //         admin = await getUserfromToken(token)
+        //     } else {
+        //         if(!refreshToken){
+        //             return res.status(403).json({"message": "systemContr/upload Ви не авторизувались(!token)"})
+        //         } else {
+        //             const refData = await userService.refresh(refreshToken)
+        //             res.cookie('refreshToken', refData.refreshToken, {
+        //                 maxAge: 24*30*60*60*1000,
+        //                 httpOnly: true
+        //             })
+        //             token = refData.token
+        //             admin = await getUserfromToken(token)
+        //             return admin
+        //         }
+        //     }
+        // }
+        
         try {
+            // userRoleDefer(req, res)
+            
             let token = req.cookies.token
+            let refreshToken = req.cookies.refreshToken
             let admin
+
             if(token){
                 admin = await getUserfromToken(token)
             } else {
-                const {refreshToken} = req.cookies
-                    if(!refreshToken){
-                        return res.status(403).json({"message": "systemContr/upload Ви не авторизувались(!token)"})
-                    } else {
-                        const refData = await userService.refresh(refreshToken)
-                        // console.log(`paymentController/writePaying-refData: ${refData.token}`)
-                        res.cookie('refreshToken', refData.refreshToken, {
-                            maxAge: 24*30*60*60*1000,
-                            httpOnly: true
-                        })
-                        token = refData.token
-                        admin = await getUserfromToken(token)
-                    }
+                if(!refreshToken){
+                    return res.status(403).json({"message": "systemContr/upload Ви не авторизувались(!token)"})
+                } else {
+                    const refData = await userService.refresh(refreshToken)
+                    res.cookie('refreshToken', refData.refreshToken, {
+                        maxAge: 24*30*60*60*1000,
+                        httpOnly: true
+                    })
+                    token = refData.token
+                    admin = await getUserfromToken(token)
+                }
             }
-            // console.log(`admin: ${admin}`)
-            // const datatoken = jwt.verify(token, config.get('JWT_ACC_ACTIVATE'))
-            let userRole = admin.status
-            // console.log(`userRole: ${userRole}`)
+            
+            const userRole = admin.status
+            // const userRole = await userRoleDefer()
+            console.log(`userRole: ${userRole}`)
             if(userRole !== 'admin') return res.render('msg', {msg: 'У Вас не має права доступу!'})
 
             const errors = validationResult(req)
@@ -182,8 +199,6 @@ class adminController {
             const user = await User.findOne({email})
             if (!user) return res.status(404).render('error', {errorMsg: `юзера з email: "${email}" не знайдено`})
 
-            console.log(`users-users: ${user}`)
-    
             res.json({user})
                 
         } catch (err) {

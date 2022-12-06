@@ -22,6 +22,27 @@ const { deleterOldFile } = require("../services/fileService")
 const Token = require("../models/Token")
 
 class authController {
+    async renderEnterPage (req, res, next){
+        try {
+            await res.render('auth/enter.hbs',{msg: ``,
+            email: `vov1@gmail.com`,
+            password: `1111`})
+        } catch (err) {
+            console.log(err)
+            next(err)
+        }
+    
+    }
+    async renderStartPage (req, res, next){
+        try {
+            await res.render('start.hbs')
+        } catch (err) {
+            console.log(err)
+            next(err)
+        }
+    
+    }
+    
     async signup (req, res, next) {
         try {
             const errors = validationResult(req)
@@ -61,6 +82,7 @@ class authController {
             next(err)
         }
     }
+    
     async activateAccount(req, res, next) {
         try {
             let token1 = req.body.name
@@ -256,7 +278,7 @@ class authController {
             }
 
             return res.render(
-                './cabinet.hbs')
+                './service/cabinet.hbs')
             
             // return res.render(
             //     './cabinet1.hbs', 
@@ -285,7 +307,7 @@ class authController {
                 .clearCookie("refreshToken")
             return res
                         .status(302)
-                        .redirect('/enter')
+                        .redirect('/api/auth/enter')
                         //   .json({ message: "Successfully logged out 😏 🍀" })
         
         } catch (err) {

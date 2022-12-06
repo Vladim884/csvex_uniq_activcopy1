@@ -29,7 +29,7 @@ class systemController {
             if(+user.daysLeft === 0){
 
                 // rimraf.sync(dirpath)
-                res.render('./cabinet', {
+                res.render('./service/cabinet', {
                     user : req.user, // get the user out of session and pass to template
                     msg: 'Немає коштів для отримання послуги'
                 })

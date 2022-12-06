@@ -13,7 +13,7 @@ router.get('/contacts',  function(req, res){
     })
 })
 router.get("/cabinet", function(req, res){
-    res.render('cabinet.hbs')
+    res.render('./service/cabinet.hbs')
 })
     
 
