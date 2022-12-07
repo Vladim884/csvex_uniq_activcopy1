@@ -1,0 +1,79 @@
+<div class="cabinet-block">
+    <h1 class="cabinet-title">Кабінет</h1>
+    <h2  class="msg">{{msg}}</h2>
+    <div class="data-block">
+        <ul class="data-fields">
+            <li class="field"><span>Вітаємо,</li>
+            <li class="field"><span>Email:</span></li>
+            <li class="field">userID:</li>
+            <li class="field">Дата реєстрації:</li>
+            <li class="field">Статус: </li>
+            <li class="field">Генератор тегів: </li>
+            <li class="field">Баланс коштів: </li>
+            <li class="field">Остання оплата: </li>
+            <li class="field">Історія оплат </li>
+            <li class="field">ОПЛАТА ПОСЛУГИ </li>
+        </ul>
+        <ul class="users-data">
+            <li class="field field-user">1</li>
+            <li class="field field-email">1</li>
+            <li class="field field-userid">1</li>
+            <li class="field field-registrDate">1</li>
+            <li class="field field-status">1</li>
+            <li class="field field-active-generator">1</li>
+            <li class="field field-balance">1</li>
+            <li class="field field-lastPaying">1</li>
+            <li class="field field-history"><a href="/payhistory" class="linkhistory">1</a><i class="fa-regular fa-hand"></i></li>
+            <li class="field field-pay"><a href="/payhistory" class="linkpay">1</a><i class="fa-regular fa-hand"></i></li>
+        </ul>
+    </div>
+</div>
+
+<script>
+    getUser();
+    async function getUser() {
+        const fieldUser = document.querySelector('.field-user')
+        const fieldEmail = document.querySelector('.field-email')
+        const fieldUserId = document.querySelector('.field-userid')
+        const registrDate = document.querySelector('.field-registrDate')
+        const lastPayingDate = document.querySelector('.field-lastPaying')
+        const fieldStatusData = document.querySelector('.field-status')
+        const fieldActiveGenerator = document.querySelector('.field-active-generator')
+        const fieldBalance = document.querySelector('.field-balance')
+        const linkHistory = document.querySelector('.linkhistory')
+        const linkPay = document.querySelector('.linkpay')
+        const response = await fetch("http://localhost:5000/api/auth/usercabinet", { 
+                method: "GET", 
+                headers: { "Content-Type": "application/json" },
+        });
+        const data = await response.json()
+
+        const user = data.user
+        const role = user.status
+        console.log(user)
+        
+        fieldUser.textContent = user.nicname
+        fieldEmail.textContent = user.email
+        fieldUserId.textContent = user.id
+        fieldStatusData.textContent = user.status
+        //fieldBalance.textContent = (100/30 * user.daysLeft).toFixed(2) + '(грн)'
+        fieldBalance.textContent = user.balance.toFixed(2) + '(грн)'
+        fieldActiveGenerator.textContent = `Активовано на ${user.daysLeft} днів`
+        //const registrDate = document.querySelector('.field-registrDate')
+        //registrDate.textContent = formatNowDate(user.registrDate)
+        registrDate.textContent = moment(user.registrDate).format("DD.MM.YYYY")
+        //let lastPayments = user.payments[user.payments.length - 1];
+        let lastPayment = user.lastPayment
+        if(!lastPayment) {lastPayingDate.textContent = 'Оплат ще не було'}
+        else {
+            lastPayingDate.textContent = ` 
+                №${lastPayment.number} /
+                ${moment(lastPayment.date).format("DD.MM.YY")} /
+                ${lastPayment.sum}.00(грн)`
+            }
+        linkHistory.textContent = `Переглянути`
+        linkPay.textContent = `Сплатити`
+        //return data
+        
+    }
+</script>

@@ -346,6 +346,40 @@ class adminController {
         }
     }
 
+    async dysplayUsersList (req, res, next){
+        try {
+            let token = req.cookies.token
+        let refreshToken = req.cookies.refreshToken
+        let admin
+    
+        if(token){
+            admin = await getUserfromToken(token)
+        } else {
+            if(!refreshToken){
+                return res.status(403).json({"message": "systemContr/upload Ви не авторизувались(!token)"})
+            } else {
+                const refData = await userService.refresh(refreshToken)
+                res.cookie('refreshToken', refData.refreshToken, {
+                    maxAge: 24*30*60*60*1000,
+                    httpOnly: true
+                })
+                token = refData.token
+                admin = await getUserfromToken(token)
+            }
+        }
+        
+        const userRole = admin.status
+        // const userRole = await userRoleDefer()
+        console.log(`userRole: ${userRole}`)
+        if(userRole !== 'admin') return res.render('msg', {msg: 'У Вас не має права доступу!'})
+        return res.render('service/usersList')
+        } catch (err) {
+            console.log(err)
+            next(err)
+        }
+        
+    }
+
     async getStartUsersList(req, res, next){
         try {
             const currentPortion = 1

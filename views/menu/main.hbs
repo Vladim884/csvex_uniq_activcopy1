@@ -1,0 +1,36 @@
+<h1 class="title-tv" id="titletv">Подивиться відео-інструкцію</h1>
+<section class="tv" id="tv">
+    <div class="player">
+        <img src="/img/smart-tv-1280-830.png" width="100%" alt="smart-tv">   
+        <video src="/img/shevchenko.mp4" controls></video>
+        <label class="switch light-switch">
+            <input type="checkbox" id="check-blackout">
+            <span class="slider round "></span>
+        </label>
+    </div>
+    
+</section>
+<div class="user-links">
+    <a href="/enter" class="user-link">Вхід</a>
+    <a href="/registration" class="user-link">Реєстрація</a>
+</div>
+    
+        
+<script>
+        let titleTv = document.getElementById('titletv')
+        let checkBlackout = document.getElementById('check-blackout')
+        let bodyEl = document.getElementsByTagName('body')
+        
+        checkBlackout.onclick = () => {
+            if (checkBlackout.checked) {
+                bodyEl[0].classList.add('black')
+                titleTv.classList.add('lighty-color')
+            }
+            else {
+                bodyEl[0].classList.remove('black')
+                titleTv.classList.remove('lighty-color')
+            }
+        }   
+    </script>
+
+{{!-- <script src="/js/index.js"></script> --}}

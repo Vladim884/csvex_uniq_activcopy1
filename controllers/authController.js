@@ -278,7 +278,7 @@ class authController {
             }
 
             return res.render(
-                './service/cabinet.hbs')
+                './menu/cabinet.hbs')
             
             // return res.render(
             //     './cabinet1.hbs', 

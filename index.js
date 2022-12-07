@@ -60,38 +60,9 @@ app.use("/api/admin", adminRouter)
 
 app.use('/menu', menuRouter)
 
-
-
-
-
-
-// app.use("/api/auth/activate", function(req, res){
-//     res.render('activate.hbs')
-// })
-// app.use("/cabinet", function(req, res){
-//     res.render('cabinet.hbs')
-// })
-
-// app.use("service/done", function(req, res){
-//     res.render('done.hbs')
-// })
-
 app.use("/registration", function(req, res){
     res.render('registration.hbs')
 })
-// app.use("/enter", function(req, res){
-//     res.render('enter.hbs',{msg: ``,
-//     email: `vov1@gmail.com`,
-//     password: `1111`
-//     })
-// })
-
-// fields: `<input ${type="text"}  ${name="email"} ${value="vov1@.gmail"}>`
-
-
-// app.use("/api/auth/start", function(req, res){
-//     res.render('start.hbs')
-// })
 
 
 app.use("/forgpass", function(req, res){
@@ -101,9 +72,7 @@ app.use("/forgpass", function(req, res){
 app.use("/resetpass", function(req, res){
     res.render('resetpass.hbs')
 })
-app.use("/about", function(req, res){
-    res.render('about.hbs')
-})
+
 
 app.use("/finduser", function(req, res){
     res.render('finduser.hbs')
