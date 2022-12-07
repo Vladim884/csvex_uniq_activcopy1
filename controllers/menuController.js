@@ -5,7 +5,7 @@ class menuController {
 
     async mainPageRender(req, res, next){
         try {
-            return await res.render('main')
+            return await res.render('menu/main')
         } catch (err) {
             console.log(err)
             next(err)
