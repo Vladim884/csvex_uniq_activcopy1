@@ -1,0 +1,19 @@
+    <h1  class="msg">{{msg}}</h1>
+    <div class="form-block">
+        <h2>Вхід</h2>
+        <form action="/api/auth/login" method="post" id="regform">
+            <input type="hidden" name="csrf-token" value="CIwNZNlR4XbisJF39I8yWnWX9wX4WFoz" />
+            <input type="text" name="email" value={{email}} placeholder="Введіть ваш email">
+            <input type="password" name="password" value={{password}} placeholder="Введіть пароль">
+            <div>
+                <button 
+                type="submit">Вхід</button>
+            </div>
+        </form>
+        <div class="quest">
+            <a href="/forgpass">Забули пароль?</a> 
+        </div>
+        <div class="quest">
+            <a href="/registration">Немає реєстрації? Зареєструватись</a> 
+        </div>
+    </div>

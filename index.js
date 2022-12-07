@@ -58,7 +58,7 @@ app.use("/api/files", fileRouter)
 app.use("/api/system", systemRouter)
 app.use("/api/admin", adminRouter)
 
-app.use('/menu', menuRouter)
+app.use('/', menuRouter)
 
 app.use("/registration", function(req, res){
     res.render('registration.hbs')
@@ -85,10 +85,7 @@ app.use("/payhistory", function(req, res){
     res.render('payhistory.hbs')
 })
 
-app.use("/main", function(req, res, next){
-    res.render('main.hbs')
-    next()
-})
+
 
 
 // Error handling
@@ -96,10 +93,10 @@ app.use((err, req, res, next) => {
     console.error('Error:', err.stack);
     res.status(502)
     if(Object.values(err)[1] === 'jwt expired'){
-        res.render('error', {msg: `Срок активації скінчився`, er: 'hhh'})
+        res.render('error', {msg: `Ви не авторизовані`, er: ''})
     }
 
-    res.render('error', {msg: `Server Error`, er: 'hhh'});
+    res.render('error', {msg: `Server Error`, er: ''});
 });
 
 

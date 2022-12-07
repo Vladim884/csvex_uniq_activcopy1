@@ -28,15 +28,15 @@ router.post('/registration',
     authController.signup)
    
 router.post('/email-activate', authController.activateAccount)
-router.get("/enter", authController.renderEnterPage)
-router.get("/staert", authController.renderStartPage)
+// router.get("/enter", authController.renderEnterPage)
+// router.get("/staert", authController.renderStartPage)
 router.post('/forgot-password', authController.forgotPassword)
 router.post('/resset-pass', authController.resetPassword)
 router.post('/login', authController.login)
 router.get("/activate", function(req, res){
     res.render('auth/activate.hbs')
 })
-router.get('/logout', cookieJwtAuth, authController.logout)
+// router.get('/logout', cookieJwtAuth, authController.logout)
 // router.get("/start", cookieJwtAuth, function(req, res){
 //     res.render('start.hbs')
 // })

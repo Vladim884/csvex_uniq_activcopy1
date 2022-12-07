@@ -22,26 +22,6 @@ const { deleterOldFile } = require("../services/fileService")
 const Token = require("../models/Token")
 
 class authController {
-    async renderEnterPage (req, res, next){
-        try {
-            await res.render('auth/enter.hbs',{msg: ``,
-            email: `vov1@gmail.com`,
-            password: `1111`})
-        } catch (err) {
-            console.log(err)
-            next(err)
-        }
-    
-    }
-    async renderStartPage (req, res, next){
-        try {
-            await res.render('start.hbs')
-        } catch (err) {
-            console.log(err)
-            next(err)
-        }
-    
-    }
     
     async signup (req, res, next) {
         try {
@@ -290,29 +270,29 @@ class authController {
         }
     }
 
-    async logout (req, res, next) {
-        try {
-            const {refreshToken} = req.cookies
-            // console.log(`authContr-logout-req.coocies.refreshToken: ${refreshToken}`)
-            const userData = await userService.logout(refreshToken)
-            console.log(`auuthContr-logout-token: ${userData}`)
-            // deleterOldFile(user)
-            // await userService.logout(refreshToken)
-            // await Token.deleteOne({refreshToken})
-            // await Token.deleteOne({user: '630e574ccba3eb09782eee65'})
-            res 
-                .clearCookie("xtext")
-                .clearCookie("token")
-                .clearCookie("refreshToken")
-            return res
-                        .status(302)
-                        .redirect('/api/auth/enter')
-                        //   .json({ message: "Successfully logged out 😏 🍀" })
+    // async logout (req, res, next) {
+    //     try {
+    //         const {refreshToken} = req.cookies
+    //         // console.log(`authContr-logout-req.coocies.refreshToken: ${refreshToken}`)
+    //         const userData = await userService.logout(refreshToken)
+    //         console.log(`auuthContr-logout-token: ${userData}`)
+    //         // deleterOldFile(user)
+    //         // await userService.logout(refreshToken)
+    //         // await Token.deleteOne({refreshToken})
+    //         // await Token.deleteOne({user: '630e574ccba3eb09782eee65'})
+    //         res 
+    //             .clearCookie("xtext")
+    //             .clearCookie("token")
+    //             .clearCookie("refreshToken")
+    //         return res
+    //                     .status(302)
+    //                     .redirect('/enter')
+    //                     //   .json({ message: "Successfully logged out 😏 🍀" })
         
-        } catch (err) {
-            next(err)
-        }
-    }
+    //     } catch (err) {
+    //         next(err)
+    //     }
+    // }
 
     async reresh(req, res, next){
         try {

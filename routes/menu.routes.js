@@ -1,26 +1,19 @@
 const Router = require("express")
 const router = new Router()
+const menuController = require("../controllers/menuController")
+const systemController = require("../controllers/systemController")
 
 
+router.get("/main", menuController.mainPageRender)
+router.get("/about", menuController.aboutPageRender)
+router.get("/contacts", menuController.contactsPageRender)
+router.get("/adminPanel", menuController.adminPanelPageRender)
+router.get("/cabinet", menuController.cabinetPageRender)
+router.get("/enter", menuController.renderEnterPage)
+router.get("/start", menuController.renderStartPage)
+// router.get("/start", systemController.getAccessToStart)
 
-router.get("/about", function(req, res){
-    res.render('menu/about.hbs')
-})
-
-router.get('/contacts',  function(req, res){
-    res.render("menu/contacts", {
-        title: "Мои контакты",
-        email: "gavgav@mycorp.com",
-        phone: "+1234567890"
-    })
-})
-router.get("/adminPanel", function(req, res){
-    res.render('menu/adminPanel.hbs')
-})
-router.get("/cabinet", function(req, res){
-    res.render('menu/cabinet.hbs')
-})
-    
+router.get('/logout', menuController.logout)
 
 
 module.exports = router
