@@ -1,11 +1,8 @@
 const Router = require("express")
 const router = new Router()
-// const paymentController = require("../controllers/paymentController")
-// const { cookieJwtAuth } = require("../middleware/cookieJwtAuth")
 
-router.get("/main", function(req, res){
-    res.render('menu/main.hbs')
-})
+
+
 router.get("/about", function(req, res){
     res.render('menu/about.hbs')
 })
@@ -17,8 +14,11 @@ router.get('/contacts',  function(req, res){
         phone: "+1234567890"
     })
 })
+router.get("/adminPanel", function(req, res){
+    res.render('menu/adminPanel.hbs')
+})
 router.get("/cabinet", function(req, res){
-    res.render('./menu/cabinet.hbs')
+    res.render('menu/cabinet.hbs')
 })
     
 

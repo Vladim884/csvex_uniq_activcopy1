@@ -80,35 +80,32 @@ app.use("/finduser", function(req, res){
 app.use("/paying", function(req, res){
     res.render('paying.hbs')
 })
-app.use("/adminPanel", function(req, res){
-    res.render('adminPanel.hbs')
-})
+
 app.use("/payhistory", function(req, res){
     res.render('payhistory.hbs')
 })
 
-// app.use("/", function(req, res){
-//     res.render('main.hbs')
-// })
-app.use("/main", function(req, res, ){
+app.use("/main", function(req, res, next){
     res.render('main.hbs')
+    next()
 })
+
 
 // Error handling
 app.use((err, req, res, next) => {
     console.error('Error:', err.stack);
     res.status(502)
     if(Object.values(err)[1] === 'jwt expired'){
-        res.render('error', {errorMsg: `Срок активації скінчився`, er: ''})
+        res.render('error', {msg: `Срок активації скінчився`, er: 'hhh'})
     }
 
-    res.render('error', {errorMsg: `Server Error`});
+    res.render('error', {msg: `Server Error`, er: 'hhh'});
 });
 
 
 app.use((req, res) => {
     res.status(404);
-    res.render('error', {errorMsg: 'Not Found'})
+    res.render('error', {msg: 'Not Found'})
 })
 
 

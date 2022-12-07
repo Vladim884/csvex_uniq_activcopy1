@@ -277,8 +277,7 @@ class authController {
                 console.log('Data has not changed')
             }
 
-            return res.render(
-                './menu/cabinet.hbs')
+            return await res.render('menu/cabinet')
             
             // return res.render(
             //     './cabinet1.hbs', 
