@@ -22,6 +22,42 @@ const { deleterOldFile } = require("../services/fileService")
 const Token = require("../models/Token")
 
 class authController {
+
+    async registrationPageRender(req, res, next) {
+        try {
+            return await res.render('auth/registration')
+        } catch (err) {
+            console.log(err)
+            next(err)
+        }
+    }
+
+    async forgpassPageRender(req, res, next) {
+        try {
+            return await res.render('auth/forgpass')
+        } catch (err) {
+            console.log(err)
+            next(err)
+        }
+    }
+
+    async resetpassPageRender(req, res, next) {
+        try {
+            return await res.render('auth/resetpass')
+        } catch (err) {
+            console.log(err)
+            next(err)
+        }
+    }
+
+    async activatePageRender(req, res, next) {
+        try {
+            return await res.render('auth/activate')
+        } catch (err) {
+            console.log(err)
+            next(err)
+        }
+    }
     
     async signup (req, res, next) {
         try {
@@ -30,7 +66,7 @@ class authController {
                 return res.status(400).json({message: "Uncorrect request", errors})
             }
             if (!req.body.flag) {
-                return res.render('registration', {
+                return res.render('auth/registration', {
                     msg: `Щоб  зареєструватися на сайті 
                           треба подтвердження Вашеої згоди 
                           з умовами вмкористання сайту та 
@@ -132,7 +168,7 @@ class authController {
                     // })
                     //=========
                 }
-                return res.render('enter', {
+                return await res.render('menu/enter', {
                     msg: `Активація пройшла з усвіхом! 
                             Введіть Ваші данні.`,
                             password,
@@ -159,7 +195,7 @@ class authController {
             subject: 'RESET YOUR PASSWORD',
             html: `
                 <h4>Кликните на ссылку для сброса Вашего пароля</h4>
-                <p>${config.get('CLIENT_URL')}/resetpass?resetlink=${token1}</p>
+                <p>${config.get('CLIENT_URL')}/api/auth/resetpass?resetlink=${token1}</p>
                 `
         }
         mailer(message)

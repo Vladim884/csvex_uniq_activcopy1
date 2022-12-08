@@ -1,17 +1,20 @@
 const Router = require("express")
-const _ = require("lodash")
-const User = require("../models/User")
-const jwt = require("jsonwebtoken")
+// const _ = require("lodash")
+// const User = require("../models/User")
+// const jwt = require("jsonwebtoken")
 const {check, validationResult} = require("express-validator")
 const router = new Router()
 const {cookieJwtAuth} = require('../middleware/cookieJwtAuth')
 const authController = require("../controllers/authController")
-const paymentController = require("../controllers/adminController")
-const tokenService = require("../services/tokenService")
 
-router.get("/registration", function(req, res){
-    res.render('auth/registration.hbs')
-})
+router.get("/registration", authController.registrationPageRender)
+router.get("/forgpass", authController.forgpassPageRender)
+router.get("/resetpass", authController.resetpassPageRender)
+router.get("/activate", authController.activatePageRender)
+
+router.get('/usercabinet', cookieJwtAuth, authController.getTokenUserData)
+router.get('/userstatus', cookieJwtAuth, authController.getTokenUserRole)
+
 router.post('/registration',
     [
         check('email', "Uncorrect email").isEmail(),
@@ -19,26 +22,10 @@ router.post('/registration',
     ],
     authController.signup
 )
-
-router.get("/forgpass", function(req, res){
-    res.render('auth/forgpass.hbs')
-})
    
 router.post('/email-activate', authController.activateAccount)
 router.post('/forgot-password', authController.forgotPassword)
 router.post('/resset-pass', authController.resetPassword)
 router.post('/login', authController.login)
-router.get("/activate", function(req, res){
-    res.render('auth/activate.hbs')
-})
-router.put('/users', cookieJwtAuth, async function(req, res){
-    let num = req.body.num
-    console.log(num)
-})
-
-
-
-router.get('/usercabinet', cookieJwtAuth, authController.getTokenUserData)
-router.get('/userstatus', cookieJwtAuth, authController.getTokenUserRole)
 
 module.exports = router

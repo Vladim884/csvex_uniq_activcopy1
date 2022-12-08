@@ -60,20 +60,6 @@ app.use("/api/admin", adminRouter)
 
 app.use('/', menuRouter)
 
-// app.use("/registration", function(req, res){
-//     res.render('registration.hbs')
-// })
-
-
-// app.use("/forgpass", function(req, res){
-//     res.render('forgpass.hbs')
-// })
-
-app.use("/resetpass", function(req, res){
-    res.render('resetpass.hbs')
-})
-
-
 app.use("/finduser", function(req, res){
     res.render('finduser.hbs')
 })
