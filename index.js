@@ -60,9 +60,9 @@ app.use("/api/admin", adminRouter)
 
 app.use('/', menuRouter)
 
-app.use("/registration", function(req, res){
-    res.render('registration.hbs')
-})
+// app.use("/registration", function(req, res){
+//     res.render('registration.hbs')
+// })
 
 
 app.use("/forgpass", function(req, res){
@@ -84,9 +84,6 @@ app.use("/paying", function(req, res){
 app.use("/payhistory", function(req, res){
     res.render('payhistory.hbs')
 })
-
-
-
 
 // Error handling
 app.use((err, req, res, next) => {

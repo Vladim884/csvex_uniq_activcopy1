@@ -69,7 +69,7 @@ class menuController {
                 user = await getUserfromToken(token)
             } else {
                 if(!refreshToken){
-                    return res.status(403).json({"message": "systemContr/upload Ви не авторизувались(!token)"})
+                    return res.status(403).render("error", {msg: "Ви не авторизовані"})
                 } else {
                     const refData = await userService.refresh(refreshToken)
                     res.cookie('refreshToken', refData.refreshToken, {
