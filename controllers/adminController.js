@@ -138,6 +138,11 @@ class adminController {
         })
     }
 
+    async finduserPageRender (req, res, next) {
+        const {email} = req.body
+        return res.render('service/adminserv/userdata', {inputEmVal: email})
+    }
+
     async finduser (req, res, next) {
         // async function userRoleDefer(req, res) {
         //     let token = req.cookies.token
@@ -196,6 +201,7 @@ class adminController {
             }
             console.log('start finduser')
             const {email} = req.body
+            console.log(email)
             const user = await User.findOne({email})
             if (!user) return res.status(404).render('error', {errorMsg: `юзера з email: "${email}" не знайдено`})
 

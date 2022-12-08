@@ -12,6 +12,8 @@ const { getUserfromToken } = require("../myFunctions/myFunctions")
 router.post('/writepaying', cookieJwtAuth, adminController.writePaying)
 router.post('/sendendpay', cookieJwtAuth, adminController.sendEndPay)
 router.post('/finduser', cookieJwtAuth, adminController.finduser)
+router.post('/finduserpage', cookieJwtAuth, adminController.finduserPageRender)
+
 router.post('/finduserpayments', cookieJwtAuth, adminController.findUserPayments)
 router.post('/deleteuser', cookieJwtAuth, adminController.deleteUser)
 
