@@ -65,9 +65,9 @@ app.use('/', menuRouter)
 // })
 
 
-app.use("/forgpass", function(req, res){
-    res.render('forgpass.hbs')
-})
+// app.use("/forgpass", function(req, res){
+//     res.render('forgpass.hbs')
+// })
 
 app.use("/resetpass", function(req, res){
     res.render('resetpass.hbs')

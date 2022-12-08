@@ -17,7 +17,12 @@ router.post('/registration',
         check('email', "Uncorrect email").isEmail(),
         check('password', 'Password must be longer than 3 and shorter than 12').isLength({min:3, max:12})
     ],
-    authController.signup)
+    authController.signup
+)
+
+router.get("/forgpass", function(req, res){
+    res.render('auth/forgpass.hbs')
+})
    
 router.post('/email-activate', authController.activateAccount)
 router.post('/forgot-password', authController.forgotPassword)
