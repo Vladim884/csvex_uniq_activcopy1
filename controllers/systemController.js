@@ -109,7 +109,7 @@ class systemController {
                     }
                 }
             }
-            res.render("upload01.hbs")
+            res.render("service/userserv/upload01.hbs")
         } catch (error) {
             console.log(error)
             next(error)
@@ -155,13 +155,14 @@ class systemController {
                 let req_name = resname
                 let req_group = resgroup;
                 let req_find = resfind;
-                res.render("upload1.hbs", {
-                    req_name: req_name,
-                    req_group: req_group,
-                    req_find: req_find,
-                    resfind: resfind,
-                    resname: resname,
-                    resgroup: resgroup
+                
+                res.render("service/userserv/upload1.hbs", {
+                    req_name,
+                    req_group,
+                    req_find,
+                    resfind,
+                    resname,
+                    resgroup
                 })
             }) 
         } catch (e) {

@@ -60,16 +60,12 @@ app.use("/api/admin", adminRouter)
 
 app.use('/', menuRouter)
 
-app.use("/finduser", function(req, res){
-    res.render('finduser.hbs')
-})
-app.use("/paying", function(req, res){
-    res.render('paying.hbs')
-})
-
-app.use("/payhistory", function(req, res){
-    res.render('payhistory.hbs')
-})
+// app.use("/finduser", function(req, res){
+//     res.render('finduser.hbs')
+// })
+// app.use("/paying", function(req, res){
+//     res.render('paying.hbs')
+// })
 
 // Error handling
 app.use((err, req, res, next) => {

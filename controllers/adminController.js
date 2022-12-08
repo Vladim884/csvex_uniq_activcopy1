@@ -346,6 +346,15 @@ class adminController {
         }
     }
 
+    async dysplayPayHistoryPage (req, res, next){
+        try {
+            return res.render('service/userserv/payhistory')
+        } catch (err) {
+            console.log(err)
+            next(err)
+        }
+    }
+
     async dysplayUsersList (req, res, next){
         try {
             let token = req.cookies.token
@@ -372,7 +381,7 @@ class adminController {
         // const userRole = await userRoleDefer()
         console.log(`userRole: ${userRole}`)
         if(userRole !== 'admin') return res.render('msg', {msg: 'У Вас не має права доступу!'})
-        return res.render('service/usersList')
+        return res.render('service/adminserv/usersList')
         } catch (err) {
             console.log(err)
             next(err)
