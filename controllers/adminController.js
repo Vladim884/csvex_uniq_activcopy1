@@ -463,7 +463,7 @@ class adminController {
             let currentPage = +req.body.currentPage
             // if (!currentPage) currentPage = 0
             // let currentPage = 0
-            let rows = 4
+            let rows = 5
             const pages = Math.ceil(paimentsArr.length / rows)
             const nicname = userPaymentsData.nicname
 

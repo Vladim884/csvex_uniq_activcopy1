@@ -192,14 +192,15 @@
                 elNext.addEventListener('click', async function () {
                     // debugger
                     currentPortion = currentPortion + 1
-                    currentPage = currentPortion * portionSize
+                    currentPage = (currentPortion - 1) * portionSize
                     arrPaginBtn = []
                     getNewPortion()
                 })
 
                 elPrev.addEventListener('click', async function () {
                     currentPortion = currentPortion - 1
-                    currentPage = (currentPortion ) * rows 
+                    currentPage = (currentPortion - 1) * portionSize 
+                    //???
                     elems.splice(elems[-portionSize*2])
                     btnValueNum = currentPortion * portionSize - portionSize
 
