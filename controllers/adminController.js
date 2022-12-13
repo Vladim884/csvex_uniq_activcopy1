@@ -431,30 +431,37 @@ class adminController {
     }
     
     
-    async getStartUserPaymentsData(req, res, next){
+    async getUserPaymentsData(req, res, next){
         try {
-            let user
-            let token = req.cookies.token
-            if(token){
-                user = await getUserfromToken(token)
-             } else{
-                let refreshToken = req.cookies.refreshToken
-                if(!refreshToken) return res.status(403).render('error', {msg: 'Помилка авторизації!'})
-                const refData = await userService.refresh(refreshToken)
-                    res.cookie('refreshToken', refData.refreshToken, {
-                        maxAge: 24*30*60*60*1000,
-                        httpOnly: true
-                    })
-                    token = refData.token
-                    console.log('refData.token')
-                    user = await getUserfromToken(token)
-            }
+            // let user
+
+            const oneid = req.body.idpay
+            console.log(oneid)
+            if(!oneid) return res.status(400).render('error', {msg: 'Помилка запиту!'})
+            const oneuser = await User.findById({_id: oneid})
+            if(!oneuser) return res.status(404).render('error', {msg: 'Користувача не знайдено!'})
+            // const userPaymentsData = new PaymentsDto(oneuser)
+            // let token = req.cookies.token
+            // if(token){
+            //     user = await getUserfromToken(token)
+            //  } else{
+            //     let refreshToken = req.cookies.refreshToken
+            //     if(!refreshToken) return res.status(403).render('error', {msg: 'Помилка авторизації!'})
+            //     const refData = await userService.refresh(refreshToken)
+            //         res.cookie('refreshToken', refData.refreshToken, {
+            //             maxAge: 24*30*60*60*1000,
+            //             httpOnly: true
+            //         })
+            //         token = refData.token
+            //         console.log('refData.token')
+            //         user = await getUserfromToken(token)
+            // }
             
             //all pagination data:
-            const userPaymentsData = new PaymentsDto(user)
+            const userPaymentsData = new PaymentsDto(oneuser)
             // console.log(`all pagination data: ${Object.values(userPaymentsData.payments)}`)
             let paimentsArr = []
-            for (var i = userPaymentsData.payments.length - 1; i >= 0; i--) {
+            for (let i = userPaymentsData.payments.length - 1; i >= 0; i--) {
                 paimentsArr.push(userPaymentsData.payments[i])
             }
             

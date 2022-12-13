@@ -23,7 +23,8 @@
             <li class="field field-active-generator">1</li>
             <li class="field field-balance">1</li>
             <li class="field field-lastPaying">1</li>
-            <li class="field field-history"><a href="/api/admin/payhistorypage" class="linkhistory">1</a><i class="fa-regular fa-hand"></i></li>
+            <li class="field field-history"><a class="linkhistory">1</a><i class="fa-regular fa-hand"></i></li>
+            <li class="field field-history">1</li>
             <li class="field field-pay"><a href="/payhistory" class="linkpay">1</a><i class="fa-regular fa-hand"></i></li>
         </ul>
     </div>
@@ -72,6 +73,7 @@
                 ${lastPayment.sum}.00(грн)`
             }
         linkHistory.textContent = `Переглянути`
+        linkHistory.href = `/api/admin/payhistorypage?id=${user.id}`
         linkPay.textContent = `Сплатити`
         //return data
         
