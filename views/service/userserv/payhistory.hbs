@@ -3,50 +3,197 @@
     
 </ul>
 
-
-
-
+<ul class="paginator">
+    
+</ul>
 <script>
-
-    const searchStringEm = new URLSearchParams(window.location.search)
-
-    const idpay = searchStringEm.get('id')
+    
+    //const searchStringEm = new URLSearchParams(window.location.search)
+    //const idpay = searchStringEm.get('id')
     const pageTitle = document.querySelector("h1.history-page-title")
     const paymentList = document.querySelector("ul.payment-list")
+    const paginator = document.querySelector("ul.paginator")
+    let arrPaginBtn = []
+    let elems = []
     const user = getUser()
     async function getUser() {
-        const response = await fetch(`http://localhost:5000/api/admin/payhistory?id=${idpay}`, { 
+        const response = await fetch(`http://localhost:5000/api/admin/payhistory`, { 
             method: "GET", 
             headers: { "Content-Type": "application/json" }
         })
         const data = await response.json()
-        const payments = data.userPaymentsData.payments
-        const nicname = data.userPaymentsData.nicname
-        //console.log(payments)
-        //console.log(nicname)
-        if(!user) {
+        const nicname = data.paginationData.nicname
+        console.log(nicname)
+        
+
+        //const payments = data.userPaymentsData.payments
+        const currPaymentsData = data.paginationData.currPaymentsData
+        console.log(currPaymentsData)
+        
+        if(!currPaymentsData) {
             pageTitle.textContent = `Ви не авторизовані! Виповніть вхід`
         } else {
             pageTitle.textContent = `Історія платежів ${nicname}`
-       
-            for (i=payments.length-1;i>=0;i--) {
-                
-                const d = moment(payments[i].date).format()
-                // создаем элемент
-                var elem = document.createElement("li");
-                // создаем для него текст
-                var elemText = document.createTextNode(`
-                     Плата за послугу "Генератор тегів"
-                    №${payments[i].number}
-                    дата: ${moment(d).format('DD.MM.YY')} /
-                    сума: ${payments[i].sum}.00(грн)`)
-                // добавляем текст в элемент в качестве дочернего элемента
-                elem.appendChild(elemText);
-                // добавляем элемент в блок div
-                paymentList.appendChild(elem)
+
+        }
+
+        let pages = data.paginationData.pages
+        let currentPortion = data.paginationData.currentPortion
+        let portionSize = data.paginationData.portionSize
+        // let btnValueNum = data.paginationData.start
+        let btnValueNum = 0
+        let portions = data.paginationData.portions
+            
+        displayPaymentsList()
+
+        function displayPaymentsList(){
+
+            getPaymentsList(currPaymentsData)
+
+            function getPaymentsList(currPaymentsData) {
+        
+                for (i=0; i<currPaymentsData.length; i++) {
+                    const d = moment(currPaymentsData[i].date).format()
+                    // создаем элемент
+                    var elem = document.createElement("li");
+                    // создаем для него текст
+                    var elemText = document.createTextNode(`
+                        Плата за послугу "Генератор тегів"
+                        №${currPaymentsData[i].number}
+                        дата: ${moment(d).format('DD.MM.YY')} /
+                        сума: ${currPaymentsData[i].sum}.00(грн)`)
+                    // добавляем текст в элемент в качестве дочернего элемента
+                    elem.appendChild(elemText);
+                    // добавляем элемент в блок div
+                    paymentList.appendChild(elem)
+                }
             }
+
+            //display user-list after click on paginator-btns
+            async function getUsersListForBtnNum () {
+                // let btnNum = true
+
+                //currentPage must be a number
+                let currentPage = +this.innerText-1 
+                for(i=0; i< elems.length; i++){
+                    elems[i].classList.remove('active')
+                }
+                this.classList.add('active')
+                
+                // console.log(currentPage)
+                const response = await fetch("http://localhost:5000/api/admin/payhistory", {
+                    method: "POST",
+                    headers: { "Accept": "application/json", "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        currentPage
+                    })
+                });
+                if (response.ok === true) {
+                    const data = await response.json()
+                    let usersList = data.paginationData.users
+                    userList.innerHTML = ""
+
+                    getPaymentsList(currPaymentsData)
+                }
+            }
+
+            function displayPaginationBtn(){
+
+                const elPrev = document.createElement("button")
+                elPrev.classList.add('users-page-btn')
+                elPrev.setAttribute('type', 'button')
+                var elPrevText = document.createTextNode(`< prev`)
+                elPrev.appendChild(elPrevText)
+                paginator.appendChild(elPrev)
+
+                // debugger
+                for (i=0;i<portionSize;i++) {
+                    // console.log(portionSize)
+
+                    //create element
+                    const el = document.createElement("li")
+                    // 
+                    var elText = document.createTextNode( ++btnValueNum )
+                    
+                    //добавляем текст в элемент в качестве дочернего элемента
+                    el.appendChild(elText);
+                    //добавляем элемент в блок ul
+                    paginator.appendChild(el)
+                    elems.push(el)
+                    console.log(`for pag-elems: ${elems.length}`)
+                    console.log(`for pages: ${pages}`)
+                    if(btnValueNum === pages) break
+                   
+                }
+
+                arrPaginBtn = paginator.querySelectorAll('li')
+                arrPaginBtn[0].classList.add('active')
+                console.log(`arrPaginBtn: ${Object.values(arrPaginBtn)}`)
+                
+                for(i=0; i< elems.length; i++){
+                    elems[i].addEventListener('click', getUsersListForBtnNum)
+                }
+
+                const elNext = document.createElement("button")
+                elNext.classList.add('users-page-btn')
+                elNext.setAttribute('type', 'button')
+                const elNextText = document.createTextNode(`next >`)
+                elNext.appendChild(elNextText)
+                paginator.appendChild(elNext)
+
+                //hidden next-button
+                if(currentPortion === portions) {
+                    elNext.classList.add('hidden')
+                }
+
+                if(currentPortion < 2) {
+                    elPrev.classList.add('hidden')
+                }
+
+                async function getNewPortion () {
+                    const response = await fetch("http://localhost:5000/api/admin/usersListPag", {
+                        method: "POST",
+                        headers: { "Accept": "application/json", "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            currentPortion
+                        })
+                    });
+                    if (response.ok === true) {
+                        const data = await response.json()
+                        let usersList = data.paginationData.users
+
+                        paginator.innerHTML = ''
+                        userList.innerHTML = ''
+
+                        getUserList(usersList)
+                        displayPaginationBtn()
+                    } else {
+                        paginator.innerHTML = ''
+                        userList.innerHTML = ''
+                        pageTitle.textContent = '404 Not Found '
+
+                    }
+                }
+                
+                elNext.addEventListener('click', async function () {
+                    // debugger
+                    currentPortion = currentPortion + 1
+                    arrPaginBtn = []
+                    getNewPortion()
+                })
+
+                elPrev.addEventListener('click', async function () {
+                    currentPortion = currentPortion - 1
+                    elems.splice(elems[-portionSize*2])
+                    btnValueNum = currentPortion * portionSize - portionSize
+
+                    getNewPortion()
+                })
+            }
+            displayPaginationBtn()
         }
     }
+    
 
     
 

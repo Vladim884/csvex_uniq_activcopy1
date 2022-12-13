@@ -8,8 +8,8 @@ window.addEventListener('load', function(){
     
 
     let elems = []
-    getUser()
-    async function getUser() {
+    getUsers()
+    async function getUsers() {
         const response = await fetch("http://localhost:5000/api/admin/usersListPag", { 
             method: "GET", 
             headers: { "Content-Type": "application/json" }
@@ -54,14 +54,12 @@ window.addEventListener('load', function(){
                     elem.appendChild(elemText);
 
                     const paymentsLink = document.createElement("a")
-                    paymentsLink.href = `http://localhost:5000/api/admin/payhistorypage?id=${usersList[i].id}`
+                    paymentsLink.href = `http://localhost:5000/api/admin/payhistforadmin?id=${usersList[i].id}`
                     const paymentsLinkText = document.createTextNode(`оплати`)
                     paymentsLink.appendChild(paymentsLinkText)
                     elem.appendChild(paymentsLink)
                     //добавляем элемент в блок div
                     userList.appendChild(elem)
-
-
                 }
             }
 

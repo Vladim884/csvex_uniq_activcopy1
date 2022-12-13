@@ -51,42 +51,33 @@ exports.cookieJwtAdminAuth = {
       try {
          console.log('middlware-adminauth')
          let token = req.cookies.token
-            let refreshToken = req.cookies.refreshToken
-            let admin
+         let refreshToken = req.cookies.refreshToken
+         let admin
 
             if(token){
                 admin = await getUserfromToken(token)
             } else {
-                if(!refreshToken){
-                    return res.status(403).json({"message": "systemContr/upload Ви не авторизувались(!token)"})
-                } else {
-                    const refData = await userService.refresh(refreshToken)
-                    res.cookie('refreshToken', refData.refreshToken, {
-                        maxAge: 24*30*60*60*1000,
-                        httpOnly: true
-                    })
-                    token = refData.token
-                    admin = await getUserfromToken(token)
-                    const userRole = admin.status
-            // const userRole = await userRoleDefer()
-            console.log(`userRole: ${userRole}`)
-            if(userRole !== 'admin') {
-               console.log('userRole !admin')
-               return res.status(401).render('msg', {msg: "Ви не иаєте доступ"})
+               if(!refreshToken){
+                  return res.status(403).json({"message": "systemContr/upload Ви не авторизувались(!token)"})
+               } else {
+                  const refData = await userService.refresh(refreshToken)
+                  res.cookie('refreshToken', refData.refreshToken, {
+                     maxAge: 24*30*60*60*1000,
+                     httpOnly: true
+                  })
+                  token = refData.token
+                  admin = await getUserfromToken(token)
             }
-            next()
-            }
-            
-             
-               
-            }
-            
+         }
+         const userRole = admin.status
+            // console.log(`userRole: ${userRole}`)
+         if(userRole !== 'admin') return res.status(401).render('error', {msg: "Поомилка доступу"})
+         next()
       } catch (error) {
          console.log(error)
          next(error)
       }
    }
-
 }
 
 

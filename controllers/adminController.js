@@ -29,30 +29,7 @@ class adminController {
     
 
     async writePaying (req, res, next) {
-        let token = req.cookies.token
-        let admin
-            if(token){
-                admin = await getUserfromToken(token)
-            } else {
-                const {refreshToken} = req.cookies
-                    if(!refreshToken){
-                        return res.status(403).json({"message": "systemContr/upload Ви не авторизувались(!token)"})
-                    } else {
-                        const refData = await userService.refresh(refreshToken)
-                        res.cookie('refreshToken', refData.refreshToken, {
-                            maxAge: 24*30*60*60*1000,
-                            httpOnly: true
-                        })
-                        token = refData.token
-                        admin = await getUserfromToken(token)
-                        
-                    }
-            }
-        console.log(`admin: ${admin}`)
-        const datatoken = jwt.verify(token, config.get('JWT_ACC_ACTIVATE'))
-        let userRole = admin.status
-        console.log(`userRole: ${userRole}`)
-        if(userRole !== 'admin') return res.render('msg', {msg: 'У Вас не має права доступу!'})
+        
         let {email, sumpay} = req.body
         console.log(email)
         let user = await User.findOne({email})
@@ -215,37 +192,6 @@ class adminController {
 
     async findUserPayments (req, res, next) {
         try {
-            let token = req.cookies.token
-        let admin
-            if(token){
-                admin = await getUserfromToken(token)
-                // console.log(`findUserPayments-token-admin`)
-                
-            } else {
-                const {refreshToken} = req.cookies
-                    if(!refreshToken){
-                        return res.status(403).render('error', {msg: "systemContr/upload Ви не авторизувались(!token)"})
-                    } else {
-                        const refData = await userService.refresh(refreshToken)
-                        // console.log(`paymentController/writePaying-refData: ${refData.token}`)
-                        res.cookie('refreshToken', refData.refreshToken, {
-                            maxAge: 24*30*60*60*1000,
-                            httpOnly: true
-                        })
-                        token = refData.token
-                        admin = await getUserfromToken(token)
-                        // console.log(`findUserPayments-ref-token-admin`)
-                        
-                    }
-            }
-
-            // console.log(`admin: ${admin}`)
-            // const datatoken = jwt.verify(token, config.get('JWT_ACC_ACTIVATE'))
-            let userRole = admin.status
-            // console.log(`userRole: ${userRole}`)
-            if(userRole !== 'admin') return res.status(403).render('error', {msg: 'У Вас не має права доступу!'})
-
-
             const errors = validationResult(req)
             if (!errors.isEmpty()) {
                 return res.status(400).json({message: "Uncorrect request", errors})
@@ -266,35 +212,7 @@ class adminController {
     }
 
     async deleteUser (req, res, next) {
-        try {
-            let token = req.cookies.token
-            let admin
-            if(token){
-                admin = await getUserfromToken(token)
-                
-            } else {
-                const {refreshToken} = req.cookies
-                    if(!refreshToken){
-                        return res.status(403).render('error', {msg: "systemContr/upload Ви не авторизувались(!token)"})
-                    } else {
-                        const refData = await userService.refresh(refreshToken)
-                        // console.log(`paymentController/writePaying-refData: ${refData.token}`)
-                        res.cookie('refreshToken', refData.refreshToken, {
-                            maxAge: 24*30*60*60*1000,
-                            httpOnly: true
-                        })
-                        token = refData.token
-                        admin = await getUserfromToken(token)
-                    }
-            }
-            // console.log(`admin: ${admin}`)
-            // const datatoken = jwt.verify(token, config.get('JWT_ACC_ACTIVATE'))
-            let userRole = admin.status
-            console.log(`userRole: ${userRole}`)
-            if(userRole !== 'admin') return res.status(405).render('error', {msg: 'У Вас не має права доступу!'})
-
-
-            const errors = validationResult(req)
+        try {const errors = validationResult(req)
             if (!errors.isEmpty()) {
                 return res.status(400).render('error', {msg: "Некоректеий запрос", er: errors})
             }
@@ -363,30 +281,6 @@ class adminController {
 
     async dysplayUsersList (req, res, next){
         try {
-            let token = req.cookies.token
-        let refreshToken = req.cookies.refreshToken
-        let admin
-    
-        if(token){
-            admin = await getUserfromToken(token)
-        } else {
-            if(!refreshToken){
-                return res.status(403).json({"message": "systemContr/upload Ви не авторизувались(!token)"})
-            } else {
-                const refData = await userService.refresh(refreshToken)
-                res.cookie('refreshToken', refData.refreshToken, {
-                    maxAge: 24*30*60*60*1000,
-                    httpOnly: true
-                })
-                token = refData.token
-                admin = await getUserfromToken(token)
-            }
-        }
-        
-        const userRole = admin.status
-        // const userRole = await userRoleDefer()
-        console.log(`userRole: ${userRole}`)
-        if(userRole !== 'admin') return res.render('msg', {msg: 'У Вас не має права доступу!'})
         return res.render('service/adminserv/usersList')
         } catch (err) {
             console.log(err)
@@ -536,64 +430,154 @@ class adminController {
         }
     }
     
-    // async getEmailPaymentsData(req, res, next){
-    //     const email = req.query.email
-    //     console.log(email)
-    // }
-
-    async getTokenPaymentsData(req, res, next){
-        console.log('getTokenPaymentsData')
-        const oneid = req.query.id
-        console.log(`oneid: ${oneid}`)
+    
+    async getStartUserPaymentsData(req, res, next){
         try {
-
-        let token = req.cookies.token
+            let user
+            let token = req.cookies.token
             if(token){
-                const user = await getUserfromToken(token)
-                if(req.query.id && user && user.status === 'admin'){
-                    const oneuser = await User.findById({_id: oneid})
-                    const userPaymentsData = new PaymentsDto(oneuser)
-                    return res.json({ userPaymentsData })
-                }
-                if (!user) {
-                    return res.status(404).render('msg', {message: "User not found"})
-                }
-                const userPaymentsData = new PaymentsDto(user)
-                return res.json({ userPaymentsData })
-            } else {
-                const {refreshToken} = req.cookies
-                if(!refreshToken){
-                    return res.status(403).render('msg', {msg: "authContr-getTokenUserData Ви не авторизувались(!token)"})
-                } else {
-                    const refData = await userService.refresh(refreshToken)
-                    // console.log(`paymentContr-getTokenUserData-refData ${Object.values(refData)}`)
+                user = await getUserfromToken(token)
+             } else{
+                let refreshToken = req.cookies.refreshToken
+                if(!refreshToken) return res.status(403).render('error', {msg: 'Помилка авторизації!'})
+                const refData = await userService.refresh(refreshToken)
                     res.cookie('refreshToken', refData.refreshToken, {
                         maxAge: 24*30*60*60*1000,
                         httpOnly: true
                     })
                     token = refData.token
                     console.log('refData.token')
-                    const user = await getUserfromToken(token)
-                    if(req.query.id && user && user.status === 'admin'){
-                        console.log('if')
-                        const oneuser = await User.findById({_id: oneid})
-                        console.log(`oneuser: ${Object.values(oneuser)}`)
-                        const userPaymentsData = new PaymentsDto(oneuser)
-                        return res.json({ userPaymentsData })
-                    }
-                    if (!user) {
-                        return res.status(404).json({message: "User not found"})
-                    }
-                    const userPaymentsData = new PaymentsDto(user)
-                    return res.json({ userPaymentsData })
-                }
+                    user = await getUserfromToken(token)
             }
+            
+            //all pagination data:
+            const userPaymentsData = new PaymentsDto(user)
+            // console.log(`all pagination data: ${Object.values(userPaymentsData.payments)}`)
+            let paimentsArr = []
+            for (var i = userPaymentsData.payments.length - 1; i >= 0; i--) {
+                paimentsArr.push(userPaymentsData.payments[i])
+            }
+            
+            // const currentPortion = req.body.currentportion
+            const currentPortion = 1
+            // let currentPage = req.body.currentPage
+            // if (!currentPage) currentPage = 0
+            let currentPage = 0
+            let rows = 4
+            const pages = Math.ceil(paimentsArr.length / rows)
+            const nicname = userPaymentsData.nicname
 
-        } catch (err) {
-            console.log(`getTokenPaymentsData err: ${err}`)
-            res.status(401).render('error', {message: 'Помилка встановлення ісещзії платежів'})
+            //portion - count pagination button on 1 page
+            let portionSize = 5
+            //portions - count all pagination button
+            const portions = Math.ceil(pages / portionSize)
+    
+            
+            // let start = currentPage * portionSize
+            let start = (currentPortion - 1) * portionSize
+            console.log(`start: ${start}`)
+            // const end = currentPortion * portionSize
+    
+            
+    
+            // const start = rows * currentPage
+            const end = start + rows
+            
+            const currPaymentsData = paimentsArr.slice(start, end)
+
+            const paginationData = {currPaymentsData, nicname, currentPage, rows, pages, currentPortion, portionSize, start, portions}
+            // const paginationData = {users, currentPage, pages}
+            return res.json({paginationData})
+
+            // return res.json({ userPaymentsData })
+
+        } catch (error) {
+            console.log(error)
+            next(error)
         }
     }
+
+    async payHistPageForAdmRender (req, res, next) {
+        try {
+            return await res.render('service/adminserv/payhistory-foradmin')
+        } catch (error) {
+            console.log(error)
+            next(error)
+        }
+    }
+
+    async getForAdminPaymentsData (req, res, next){
+        try {
+            const oneid = req.query.id
+            if(!oneid) return res.status(400).render('error', {msg: 'Помилка запиту!'})
+            const oneuser = await User.findById({_id: oneid})
+            if(!oneuser) return res.status(404).render('error', {msg: 'Користувача не знайдено!'})
+            const userPaymentsData = new PaymentsDto(oneuser)
+            return res.json({ userPaymentsData })
+        } catch (error) {
+            console.log(error)
+            next(error)
+        }
+    }
+
+    // async getTokenPaymentsData(req, res, next){
+    //     try {
+    //         console.log('getTokenPaymentsData')
+    //         const oneid = req.query.id
+    //         console.log(`oneid: ${oneid}`)
+    //         let user
+        
+
+    //         let token = req.cookies.token
+    //         if(token){
+    //             user = await getUserfromToken(token)
+    //             if (!user) {
+    //                 return res.status(404).render('msg', {message: "User not found"})
+    //             }
+    //             if(req.query.id && user && user.status === 'admin'){
+    //                 const oneuser = await User.findById({_id: oneid})
+    //                 const userPaymentsData = new PaymentsDto(oneuser)
+    //                 return res.json({ userPaymentsData })
+    //             } else {
+    //                 return res.status(401).render('error', {msg: 'Помилка '})
+    //             }
+                
+    //             // const userPaymentsData = new PaymentsDto(user)
+    //             // return res.json({ userPaymentsData })
+    //         } else {
+    //             const {refreshToken} = req.cookies
+    //             if(!refreshToken){
+    //                 return res.status(403).render('msg', {msg: "authContr-getTokenUserData Ви не авторизувались(!token)"})
+    //             } else {
+    //                 const refData = await userService.refresh(refreshToken)
+    //                 // console.log(`paymentContr-getTokenUserData-refData ${Object.values(refData)}`)
+    //                 res.cookie('refreshToken', refData.refreshToken, {
+    //                     maxAge: 24*30*60*60*1000,
+    //                     httpOnly: true
+    //                 })
+    //                 token = refData.token
+    //                 console.log('refData.token')
+    //                 user = await getUserfromToken(token)
+    //                 if(req.query.id && user && user.status === 'admin'){
+    //                     console.log('if')
+    //                     const oneuser = await User.findById({_id: oneid})
+    //                     console.log(`oneuser: ${Object.values(oneuser)}`)
+    //                     const userPaymentsData = new PaymentsDto(oneuser)
+    //                     return res.json({ userPaymentsData })
+    //                 }
+    //                 if (!user) {
+    //                     return res.status(404).json({message: "User not found"})
+    //                 }
+    //                 const userPaymentsData = new PaymentsDto(user)
+    //                 return res.json({ userPaymentsData })
+    //             }
+    //         }
+
+    //     } catch (err) {
+    //         console.log(`getTokenPaymentsData err: ${err}`)
+    //         res.status(401).render('error', {message: 'Помилка встановлення ісещзії платежів'})
+    //     }
+    // }
 }
 
 module.exports = new adminController()
