@@ -11,19 +11,30 @@
     //const searchStringEm = new URLSearchParams(window.location.search)
     //const idpay = searchStringEm.get('id')
     const pageTitle = document.querySelector("h1.history-page-title")
-    const paymentList = document.querySelector("ul.payment-list")
+    const paymentsList = document.querySelector("ul.payment-list")
     const paginator = document.querySelector("ul.paginator")
     let arrPaginBtn = []
     let elems = []
     const user = getUser()
     async function getUser() {
+        let currentPage = 0
+        let currentPortion = 1
         const response = await fetch(`http://localhost:5000/api/admin/payhistory`, { 
-            method: "GET", 
-            headers: { "Content-Type": "application/json" }
-        })
-        const data = await response.json()
-        const nicname = data.paginationData.nicname
-        console.log(nicname)
+            method: "POST", 
+            headers: { "Accept": "application/json", "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        currentPage,
+                        currentPortion
+                    })
+                });
+                if (response.ok === true) {
+                    console.log('all ok!')
+                } else {
+                    console.log('server send bad response')
+                }
+                const data = await response.json()
+                const nicname = data.paginationData.nicname
+                console.log(nicname)
         
 
         //const payments = data.userPaymentsData.payments
@@ -38,11 +49,12 @@
         }
 
         let pages = data.paginationData.pages
-        let currentPortion = data.paginationData.currentPortion
+        //let currentPortion = data.paginationData.currentPortion
         let portionSize = data.paginationData.portionSize
         // let btnValueNum = data.paginationData.start
-        let btnValueNum = 0
+        let btnValueNum = currentPortion * portionSize - portionSize
         let portions = data.paginationData.portions
+        let rows = data.paginationData.rows
             
         displayPaymentsList()
 
@@ -65,12 +77,12 @@
                     // добавляем текст в элемент в качестве дочернего элемента
                     elem.appendChild(elemText);
                     // добавляем элемент в блок div
-                    paymentList.appendChild(elem)
+                    paymentsList.appendChild(elem)
                 }
             }
 
             //display user-list after click on paginator-btns
-            async function getUsersListForBtnNum () {
+            async function getPaymentsListForBtnNum () {
                 // let btnNum = true
 
                 //currentPage must be a number
@@ -85,13 +97,14 @@
                     method: "POST",
                     headers: { "Accept": "application/json", "Content-Type": "application/json" },
                     body: JSON.stringify({
-                        currentPage
+                        currentPage,
+                        currentPortion
                     })
                 });
                 if (response.ok === true) {
                     const data = await response.json()
-                    let usersList = data.paginationData.users
-                    userList.innerHTML = ""
+                    let currPaymentsData = data.paginationData.currPaymentsData
+                    paymentsList.innerHTML = ""
 
                     getPaymentsList(currPaymentsData)
                 }
@@ -131,7 +144,7 @@
                 console.log(`arrPaginBtn: ${Object.values(arrPaginBtn)}`)
                 
                 for(i=0; i< elems.length; i++){
-                    elems[i].addEventListener('click', getUsersListForBtnNum)
+                    elems[i].addEventListener('click', getPaymentsListForBtnNum)
                 }
 
                 const elNext = document.createElement("button")
@@ -151,21 +164,22 @@
                 }
 
                 async function getNewPortion () {
-                    const response = await fetch("http://localhost:5000/api/admin/usersListPag", {
+                    const response = await fetch("http://localhost:5000/api/admin/payhistory", {
                         method: "POST",
                         headers: { "Accept": "application/json", "Content-Type": "application/json" },
                         body: JSON.stringify({
+                            currentPage,
                             currentPortion
                         })
                     });
                     if (response.ok === true) {
                         const data = await response.json()
-                        let usersList = data.paginationData.users
+                        let currPaymentsData = data.paginationData.currPaymentsData
 
                         paginator.innerHTML = ''
-                        userList.innerHTML = ''
+                        paymentsList.innerHTML = ''
 
-                        getUserList(usersList)
+                        getPaymentsList(currPaymentsData)
                         displayPaginationBtn()
                     } else {
                         paginator.innerHTML = ''
@@ -178,12 +192,14 @@
                 elNext.addEventListener('click', async function () {
                     // debugger
                     currentPortion = currentPortion + 1
+                    currentPage = currentPortion * portionSize
                     arrPaginBtn = []
                     getNewPortion()
                 })
 
                 elPrev.addEventListener('click', async function () {
                     currentPortion = currentPortion - 1
+                    currentPage = (currentPortion ) * rows 
                     elems.splice(elems[-portionSize*2])
                     btnValueNum = currentPortion * portionSize - portionSize
 

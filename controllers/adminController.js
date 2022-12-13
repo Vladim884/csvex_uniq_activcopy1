@@ -458,11 +458,11 @@ class adminController {
                 paimentsArr.push(userPaymentsData.payments[i])
             }
             
-            // const currentPortion = req.body.currentportion
-            const currentPortion = 1
-            // let currentPage = req.body.currentPage
+            const currentPortion = +req.body.currentPortion
+            // const currentPortion = 1
+            let currentPage = +req.body.currentPage
             // if (!currentPage) currentPage = 0
-            let currentPage = 0
+            // let currentPage = 0
             let rows = 4
             const pages = Math.ceil(paimentsArr.length / rows)
             const nicname = userPaymentsData.nicname
@@ -473,8 +473,8 @@ class adminController {
             const portions = Math.ceil(pages / portionSize)
     
             
-            // let start = currentPage * portionSize
-            let start = (currentPortion - 1) * portionSize
+            let start = currentPage * rows
+            // let start = (currentPortion - 1) * rows
             console.log(`start: ${start}`)
             // const end = currentPortion * portionSize
     
@@ -485,7 +485,7 @@ class adminController {
             
             const currPaymentsData = paimentsArr.slice(start, end)
 
-            const paginationData = {currPaymentsData, nicname, currentPage, rows, pages, currentPortion, portionSize, start, portions}
+            const paginationData = {currPaymentsData, nicname, currentPage, currentPortion, rows, pages, portionSize, start, portions}
             // const paginationData = {users, currentPage, pages}
             return res.json({paginationData})
 

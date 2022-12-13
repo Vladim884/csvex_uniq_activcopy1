@@ -19,7 +19,7 @@ router.post('/finduserpage', [cookieJwtAdminAuth.cookAuth, cookieJwtAdminAuth.ad
 router.post('/finduserpayments', [cookieJwtAdminAuth.cookAuth, cookieJwtAdminAuth.adminAuth], adminController.findUserPayments)
 router.post('/deleteuser', [cookieJwtAdminAuth.cookAuth, cookieJwtAdminAuth.adminAuth], adminController.deleteUser)
 
-router.get('/payhistory', cookieJwtAdminAuth.cookAuth, adminController.getStartUserPaymentsData)
+router.post('/payhistory', cookieJwtAdminAuth.cookAuth, adminController.getStartUserPaymentsData)
 // router.post('/payhistory', cookieJwtAdminAuth.cookAuth, adminController.getStartUserPaymentsData)
 router.get('/payhistorypage', cookieJwtAuth, adminController.dysplayPayHistoryPage)
 
