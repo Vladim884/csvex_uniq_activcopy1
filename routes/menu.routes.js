@@ -13,6 +13,12 @@ router
       .get("/enter", menuController.renderEnterPage)
       .get("/start", menuController.renderStartPage)
       .get('/chat', cookieJwtAdminAuth.cookAuth, menuController.renderChatPage)
+      .get('/chats/executive', cookieJwtAdminAuth.cookAuth, async (req, res) => {
+            return await res.render('chats/executive')
+      })
+      .get('/chats/engenier', cookieJwtAdminAuth.cookAuth, async (req, res) => {
+            return await res.render('chats/engenier')
+      })
 // router.get("/start", systemController.getAccessToStart)
 
       .get('/logout', menuController.logout)

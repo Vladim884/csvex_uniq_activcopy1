@@ -99,12 +99,12 @@ io_adminNameSpace.on('connect', (socket) => {
         io_adminNameSpace.in(data.room).emit('chat message', `New Person joined ${data.room} room`)
     })
 
-    socket.on('disconnect', () => {
+    socket.on('disconnect', (data) => {
+        io_adminNameSpace.in(data.room).emit('chat message', 'user is disconnect')
         console.log('user is disconnect')
+
     })
 
-    
-    
     socket.on('chat message', (data) => {
       console.log('message: ' + data.msg)
       io_adminNameSpace.in(data.room).emit('chat message', `data.msg: ${data.msg}`)
