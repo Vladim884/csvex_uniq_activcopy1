@@ -4,17 +4,18 @@ const menuController = require("../controllers/menuController")
 const systemController = require("../controllers/systemController")
 const { cookieJwtAdminAuth } = require("../middleware/cookieJwtAdminAuth")
 
-
-router.get("/main", menuController.mainPageRender)
-router.get("/about", menuController.aboutPageRender)
-router.get("/contacts", menuController.contactsPageRender)
-router.get("/adminPanel", [cookieJwtAdminAuth.cookAuth, cookieJwtAdminAuth.adminAuth], menuController.adminPanelPageRender)
-router.get("/cabinet", cookieJwtAdminAuth.cookAuth, menuController.cabinetPageRender)
-router.get("/enter", menuController.renderEnterPage)
-router.get("/start", menuController.renderStartPage)
+router
+      .get("/main", menuController.mainPageRender)
+      .get("/about", menuController.aboutPageRender)
+      .get("/contacts", menuController.contactsPageRender)
+      .get("/adminPanel", [cookieJwtAdminAuth.cookAuth, cookieJwtAdminAuth.adminAuth], menuController.adminPanelPageRender)
+      .get("/cabinet", cookieJwtAdminAuth.cookAuth, menuController.cabinetPageRender)
+      .get("/enter", menuController.renderEnterPage)
+      .get("/start", menuController.renderStartPage)
+      .get('/chat', cookieJwtAdminAuth.cookAuth, menuController.renderChatPage)
 // router.get("/start", systemController.getAccessToStart)
 
-router.get('/logout', menuController.logout)
+      .get('/logout', menuController.logout)
 
 
 module.exports = router

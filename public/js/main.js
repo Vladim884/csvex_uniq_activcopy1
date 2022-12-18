@@ -8,6 +8,8 @@ const linkEnter = document.getElementById('enter')
 const linkLogout = document.getElementById('logout')
 const linkLogout1 = document.getElementById('logout1')
 const linkCabinet = document.getElementById('cabinet')
+const linkChat = document.getElementById('chat')
+
 const linkWritePaying = document.getElementById('writepaying')
 const iconBtn = document.getElementById('icon')
 const navMenu = document.getElementById('nav-menu')
@@ -53,6 +55,7 @@ console.log(`user.status: ${user.role}`)
         linkEnter.classList.add('hidden')
         linkLogout.classList.remove('hidden')
         linkCabinet.classList.remove('hidden')
+        linkChat.classList.remove('hidden')
     }
     if (user.role === 'admin'){
         console.log('admin')

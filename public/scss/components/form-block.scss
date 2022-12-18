@@ -23,8 +23,9 @@
     input[type="password"],
     input[type="number"] {
       width: 100%;
-      margin-bottom: 5px;
       height: 30px;
+      margin-bottom: 5px;
+      padding-left: 10px;
       border-radius: 3px;
       border: 2px solid transparent;
       background-color: $lighty;

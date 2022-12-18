@@ -1,4 +1,8 @@
 const express = require("express")
+const app = express()
+const http = require('http')
+const server = http.createServer(app)
+
 const mongoose = require("mongoose")
 const bodyParser = require("body-parser")
 const multer  = require("multer")
@@ -13,8 +17,12 @@ const fileRouter = require("./routes/file.routes")
 const systemRouter = require("./routes/system.routes")
 const adminRouter = require("./routes/admin.routes")
 const menuRouter = require("./routes/menu.routes")
-const app = express()
-// app.use(express.static(__dirname))
+
+
+
+
+
+
 const PORT = config.get('serverPort')
 const coocieParser = require('cookie-parser')
 const corsMiddleware = require('./middleware/cors.middleware')
@@ -77,6 +85,33 @@ app.use((req, res) => {
     res.render('error', {msg: 'Not Found'})
 })
 
+const { Server } = require("socket.io")
+const io = new Server(server)
+
+const io_adminNameSpace = io.of('/admin')
+
+io_adminNameSpace.on('connect', (socket) => {
+    // console.log('new client is conectiom')
+
+    socket.on('join', (data) => {
+        // console.log(`${data.room}`)
+        socket.join(data.room)
+        io_adminNameSpace.in(data.room).emit('chat message', `New Person joined ${data.room} room`)
+    })
+
+    socket.on('disconnect', () => {
+        console.log('user is disconnect')
+    })
+
+    
+    
+    socket.on('chat message', (data) => {
+      console.log('message: ' + data.msg)
+      io_adminNameSpace.in(data.room).emit('chat message', `data.msg: ${data.msg}`)
+    })
+  })
+
+
 
 
 const start = async () => {
@@ -87,12 +122,23 @@ const start = async () => {
             useCreateIndex: true
         })
 
-        app.listen(PORT, () => {
+        server.listen(PORT, () => {
             console.log('Server started on port ', PORT)
         })
+        // app.listen(PORT, () => {
+        //     console.log('Server started on port ', PORT)
+        // })
+
+        
     } catch (e) {
         console.log(e)
     }
 }
 
 start()
+
+
+
+
+
+

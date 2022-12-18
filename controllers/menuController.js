@@ -92,6 +92,16 @@ class menuController {
     
     }
 
+    async renderChatPage (req, res, next) {
+        try {
+            // res.sendFile(__dirname + '/index.html')
+            return await res.render('menu/chat')
+        } catch (error) {
+            console.log(error)
+            next(error)
+        }
+    }
+
     async logout (req, res, next) {
         try {
             const {refreshToken} = req.cookies

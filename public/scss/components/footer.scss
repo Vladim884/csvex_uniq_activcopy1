@@ -1,7 +1,11 @@
 
 footer {
   background-color: $darky;
-  margin-top: 10vh;
+  // position: fixed; 
+  // bottom: 0; 
+  // left: 0; 
+  // right: 0; 
+  margin-top: auto;
   .item .vizibly#navcontact,
   .item .vizibly#navmenu {
     display: block;

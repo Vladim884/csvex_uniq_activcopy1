@@ -162,7 +162,7 @@ header .icon {
 }
 footer {
   background-color: #006666;
-  margin-top: 10vh;
+  margin-top: auto;
 }
 footer .item .vizibly#navcontact,
 footer .item .vizibly#navmenu {
@@ -456,8 +456,9 @@ button.btn-disabled:focus {
 .form-block input[type=password],
 .form-block input[type=number] {
   width: 100%;
-  margin-bottom: 5px;
   height: 30px;
+  margin-bottom: 5px;
+  padding-left: 10px;
   border-radius: 3px;
   border: 2px solid transparent;
   background-color: #CCFFFF;
@@ -664,6 +665,7 @@ button.btn-disabled:focus {
 }
 
 .tv {
+  margin-top: 10px;
   height: 100vh;
   display: flex;
   align-items: center;
@@ -1029,6 +1031,75 @@ button.btn-disabled:focus {
   -webkit-appearance: checkbox;
 }
 
+.wrapper-chat {
+  margin: 0;
+  padding-bottom: 3rem;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+.wrapper-chat #messages-chat {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+.wrapper-chat #messages-chat li {
+  padding: 0.5rem 1rem;
+}
+.wrapper-chat #messages-chat li:nth-child(odd) {
+  background: #efefef;
+}
+.wrapper-chat #form-chat {
+  background: rgba(0, 0, 0, 0.15);
+  padding: 0.25rem;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  height: 3rem;
+  box-sizing: border-box;
+  backdrop-filter: blur(10px);
+}
+.wrapper-chat #form-chat #input-chat {
+  border: none;
+  padding: 0 1rem;
+  flex-grow: 1;
+  border-radius: 2rem;
+  margin: 0.25rem;
+}
+.wrapper-chat #form-chat #input-chat:focus {
+  outline: none;
+}
+.wrapper-chat #form-chat button {
+  background-color: #fff;
+  color: #006666;
+  border: none;
+  padding: 0 1rem;
+  margin: 0.25rem;
+  border-radius: 3px;
+  outline: none;
+}
+.wrapper-chat #form-chat button:hover {
+  background-color: #006666;
+  color: #fff;
+}
+
+#input {
+  border: none;
+  padding: 0 1rem;
+  flex-grow: 1;
+  border-radius: 2rem;
+  margin: 0.25rem;
+}
+
+#input #form > button {
+  background: #333;
+  border: none;
+  padding: 0 1rem;
+  margin: 0.25rem;
+  border-radius: 3px;
+  outline: none;
+  color: #fff;
+}
+
 html {
   height: 100%;
 }
@@ -1072,19 +1143,12 @@ header .menu-links.vizibly {
   display: block;
 }
 
-.wrapper {
+.wrapp {
   display: flex;
   min-height: 100%;
   overflow: hidden;
   flex-direction: column;
-}
-
-.wrap {
-  padding-bottom: 100px;
-}
-
-.wrapp {
-  min-height: calc(100vh - 176px - 36px);
+  min-height: 100vh;
 }
 
 .container {
