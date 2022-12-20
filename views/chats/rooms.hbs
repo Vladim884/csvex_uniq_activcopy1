@@ -1,9 +1,11 @@
 <div class="wrapper-chat">
-    <ul id="messages-chat">
+    <h1>{{rooms}}</h1>
+    <button onclick="sendMSGToAll()">Send Message To All</button>
+    <ul id="messages-chat" class="messages-room">
 
     </ul>
     <form id="form-chat" action="">
-      <input id="input-chat" autocomplete="off" /><button>Send</button>
+    <input id="input-chat" autocomplete="off" /><button>Send</button>
     </form>
 </div>
 
@@ -13,13 +15,17 @@
 <script>
    //(function() {
       const socket = io('/admin')
-      //const socket = io()
 
-      var messages = document.getElementById('messages-chat');
+
+      var messages = document.getElementById('messages-chat')
+
+
       var form = document.getElementById('form-chat');
       var input = document.getElementById('input-chat');
 
-      const room = 'engenier'
+
+      const room = `{{rooms}}`
+      console.log(room)
 
       form.addEventListener('submit', function(e) {
         e.preventDefault()
@@ -39,6 +45,10 @@
       socket.on('connect', () => {
         socket.emit('join', {room})
       })
+
+      function sendMSGToAll(){
+        socket.emit('send msg to all', {msg: input.value, room})
+      }
 
     //})()
 </script>

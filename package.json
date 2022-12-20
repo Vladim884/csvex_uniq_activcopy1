@@ -11,7 +11,9 @@
   "license": "ISC",
   "dependencies": {
     "@aternus/csv-to-xlsx": "^1.0.19",
+    "@socket.io/admin-ui": "^0.5.1",
     "alert": "^5.0.10",
+    "bcrypt": "^5.1.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.1",
     "config": "^3.3.1",

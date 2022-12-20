@@ -1,7 +1,9 @@
 const { getUserfromToken } = require("../myFunctions/myFunctions")
 const userService = require("../services/userService")
+const roomList = []
 
 class menuController {
+    
 
     async mainPageRender(req, res, next){
         try {
@@ -94,13 +96,21 @@ class menuController {
 
     async renderChatPage (req, res, next) {
         try {
-            // res.sendFile(__dirname + '/index.html')
-            return await res.render('menu/chat')
+            return res.render('menu/chat', {rooms: roomList})
+            // return await res.render('menu/chat')
         } catch (error) {
             console.log(error)
             next(error)
         }
     }
+
+    addRoom(req, res) {
+        const name = req.query.name
+        roomList.push(name)
+        console.log(JSON.stringify(roomList))
+        res.send(200)
+        // return res.render(`chats/rooms`, {rooms: name})
+  }
 
     async logout (req, res, next) {
         try {

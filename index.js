@@ -18,10 +18,23 @@ const systemRouter = require("./routes/system.routes")
 const adminRouter = require("./routes/admin.routes")
 const menuRouter = require("./routes/menu.routes")
 
+const { Server } = require("socket.io")
+// const io = new Server(server)
+const { instrument } = require("@socket.io/admin-ui")
+const io = new Server(server, {
+    cors: {
+      origin: ["https://admin.socket.io"],
+      credentials: true
+    }
+  })
 
-
-
-
+  instrument(io, {
+    auth: {
+      type: "basic",
+      username: "admin",
+      password: require('bcrypt').hashSync('fgtfdefghk', 8) // "changeit" encrypted with bcrypt
+    },
+  })
 
 const PORT = config.get('serverPort')
 const coocieParser = require('cookie-parser')
@@ -61,6 +74,9 @@ app.use(express.json())
 app.use(multer({dest : 'dest'}).single("filedata"))
 
 app.use(express.static(__dirname + '/public'))
+
+
+
 app.use("/api/auth", authRouter)
 app.use("/api/files", fileRouter)
 app.use("/api/system", systemRouter)
@@ -85,8 +101,8 @@ app.use((req, res) => {
     res.render('error', {msg: 'Not Found'})
 })
 
-const { Server } = require("socket.io")
-const io = new Server(server)
+
+
 
 const io_adminNameSpace = io.of('/admin')
 
@@ -109,6 +125,21 @@ io_adminNameSpace.on('connect', (socket) => {
       console.log('message: ' + data.msg)
       io_adminNameSpace.in(data.room).emit('chat message', `data.msg: ${data.msg}`)
     })
+
+    // socket.on('send msg to all', (data) => { //to all rooms
+    //   console.log('message: ' + data.msg)
+    //   io_adminNameSpace.emit('chat message', `data.msg: ${data.msg}`)
+    // })
+
+    socket.on('send msg to all', (data) => { //to all rooms
+        console.log('message: ' + data.msg)
+        io_adminNameSpace.in('executive').emit('chat message', `data.msg: ${data.msg}`)
+      })
+
+    // socket.on('send msg to all', (data) => {// to speciffic rooms
+    //   console.log('message: ' + data.msg)
+    //   io_adminNameSpace.in('executive').in('engineer').emit('chat message', `data.msg: ${data.msg}`)
+    // })
   })
 
 
