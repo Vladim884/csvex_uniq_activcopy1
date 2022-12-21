@@ -107,8 +107,8 @@ class menuController {
     addRoom(req, res) {
         const name = req.query.name
         roomList.push(name)
-        console.log(JSON.stringify(roomList))
-        res.send(200)
+        console.log(`roomList: ${JSON.stringify(roomList)}`)
+        res.status(200)
         // return res.render(`chats/rooms`, {rooms: name})
   }
 

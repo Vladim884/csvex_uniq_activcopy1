@@ -19,22 +19,8 @@ const adminRouter = require("./routes/admin.routes")
 const menuRouter = require("./routes/menu.routes")
 
 const { Server } = require("socket.io")
-// const io = new Server(server)
 const { instrument } = require("@socket.io/admin-ui")
-const io = new Server(server, {
-    cors: {
-      origin: ["https://admin.socket.io"],
-      credentials: true
-    }
-  })
 
-  instrument(io, {
-    auth: {
-      type: "basic",
-      username: "admin",
-      password: require('bcrypt').hashSync('fgtfdefghk', 8) // "changeit" encrypted with bcrypt
-    },
-  })
 
 const PORT = config.get('serverPort')
 const coocieParser = require('cookie-parser')
@@ -103,6 +89,21 @@ app.use((req, res) => {
 
 
 
+const io = new Server(server)
+
+// const io = new Server(server, {
+//     cors: {
+//       origin: ["https://admin.socket.io"],
+//     }
+// })
+
+// instrument(io, {
+// auth: {
+//     type: "basic",
+//     username: "admin",
+//     password: require('bcrypt').hashSync('fgtfdefghk', 8) // "changeit" encrypted with bcrypt
+// },
+// })
 
 const io_adminNameSpace = io.of('/admin')
 
@@ -110,7 +111,7 @@ io_adminNameSpace.on('connect', (socket) => {
     // console.log('new client is conectiom')
 
     socket.on('join', (data) => {
-        // console.log(`${data.room}`)
+        console.log(`data.room: ${data.room}`)
         socket.join(data.room)
         io_adminNameSpace.in(data.room).emit('chat message', `New Person joined ${data.room} room`)
     })
@@ -126,15 +127,15 @@ io_adminNameSpace.on('connect', (socket) => {
       io_adminNameSpace.in(data.room).emit('chat message', `data.msg: ${data.msg}`)
     })
 
-    // socket.on('send msg to all', (data) => { //to all rooms
-    //   console.log('message: ' + data.msg)
-    //   io_adminNameSpace.emit('chat message', `data.msg: ${data.msg}`)
-    // })
-
     socket.on('send msg to all', (data) => { //to all rooms
-        console.log('message: ' + data.msg)
-        io_adminNameSpace.in('executive').emit('chat message', `data.msg: ${data.msg}`)
-      })
+      console.log('message: ' + data.msg)
+      io_adminNameSpace.emit('chat message', `data.msg: ${data.msg}`)
+    })
+
+    // socket.on('send msg to all', (data) => { //to x rooms
+    //     console.log('message: ' + data.msg)
+    //     io_adminNameSpace.in('executive').emit('chat message', `data.msg: ${data.msg}`)
+    //   })
 
     // socket.on('send msg to all', (data) => {// to speciffic rooms
     //   console.log('message: ' + data.msg)

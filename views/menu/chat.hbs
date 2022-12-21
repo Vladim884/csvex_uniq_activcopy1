@@ -20,6 +20,7 @@
     const inner = document.getElementById('inner')
     inner.innerHTML += `<a href="/chats/rooms?name=${name}">${name}</a><br /><br />`
     httpGet(name)
+    //saveChatLink(name)
   }
 
   function httpGet(name){

@@ -1,6 +1,6 @@
 <div class="wrapper-chat">
     <h1>{{rooms}}</h1>
-    <button onclick="sendMSGToAll()">Send Message To All</button>
+    {{!-- <button onclick="sendMSGToAll()">Send Message To All</button> --}}
     <ul id="messages-chat" class="messages-room">
 
     </ul>
@@ -25,12 +25,13 @@
 
 
       const room = `{{rooms}}`
-      console.log(room)
+      const nicname = `{{nicname}}`
+      console.log(`room: ${room}`)
 
       form.addEventListener('submit', function(e) {
         e.preventDefault()
         if (input.value) {
-          socket.emit('chat message', {msg: input.value, room})
+          socket.emit('chat message', {msg: `{{nicname}}: ${input.value}`, room})
           input.value = ''
         }
       })
@@ -46,9 +47,9 @@
         socket.emit('join', {room})
       })
 
-      function sendMSGToAll(){
-        socket.emit('send msg to all', {msg: input.value, room})
-      }
+      //function sendMSGToAll(){
+        //socket.emit('send msg to all', {msg: input.value, room})
+      //}
 
     //})()
 </script>
