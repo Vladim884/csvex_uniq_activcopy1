@@ -19,7 +19,7 @@
       var messages = document.getElementById('messages-chat');
       var form = document.getElementById('form-chat');
       var input = document.getElementById('input-chat');
-
+      
       const room = 'engineer'
 
       form.addEventListener('submit', function(e) {
@@ -34,7 +34,7 @@
         var item = document.createElement('li')
         item.textContent = msg
         messages.appendChild(item)
-        window.scrollTo(0, document.body.scrollHeight)
+        //window.scrollTo(0, document.body.scrollHeight)
       })
 
       socket.on('connect', () => {

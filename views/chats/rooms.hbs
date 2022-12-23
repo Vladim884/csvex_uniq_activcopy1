@@ -23,18 +23,44 @@
       var form = document.getElementById('form-chat');
       var input = document.getElementById('input-chat');
 
-
+      
+      
       const room = `{{rooms}}`
       const nicname = `{{nicname}}`
       console.log(`room: ${room}`)
+      console.log(`nicname: ${nicname}`)
 
       form.addEventListener('submit', function(e) {
         e.preventDefault()
+        
+        async function saveChatData(name) {
+          const response = await fetch(`/saveChatData`, { 
+              method: "POST", 
+              headers: { "Accept": "application/json", "Content-Type": "application/json" },
+              body: JSON.stringify({
+                  room: `${room}`,
+                  message: `${nicname}: ${input.value}`
+              })
+          })
+          if (response.ok === true) return console.log('data was send')
+          return console.log('server send bad response')
+        }
+        saveChatData()
         if (input.value) {
-          socket.emit('chat message', {msg: `{{nicname}}: ${input.value}`, room})
+          socket.emit('chat message', {msg: `{{nicname}}: ${input.value}`, room: '{{rooms}}'})
           input.value = ''
         }
+        
       })
+    
+
+      ////form.addEventListener('submit', function(e) {
+        //e.preventDefault()
+        //if (input.value) {
+        //  socket.emit('chat message', {msg: `{{nicname}}: ${input.value}`, room})
+        //  input.value = ''
+        //}
+      //})
 
       socket.on('chat message', function(msg) {
         var item = document.createElement('li')
@@ -44,7 +70,7 @@
       })
 
       socket.on('connect', () => {
-        socket.emit('join', {room})
+        socket.emit('join', {room, nicname})
       })
 
       //function sendMSGToAll(){

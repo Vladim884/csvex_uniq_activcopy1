@@ -1,7 +1,7 @@
 window.addEventListener('load', function(){ 
     const searchStringEm = new URLSearchParams(window.location.search)
     const idpay = searchStringEm.get('id')
-    console.log(idpay)
+    // console.log(idpay)
     const pageTitle = document.querySelector("h1.history-page-title")
     const paymentsList = document.querySelector("ul.payment-list")
     const paginator = document.querySelector("ul.paginator")
@@ -27,7 +27,7 @@ window.addEventListener('load', function(){
                 }
                 const data = await response.json()
                 const nicname = data.paginationData.nicname
-                console.log(nicname)
+                // console.log(nicname)
         
 
         //const payments = data.userPaymentsData.payments

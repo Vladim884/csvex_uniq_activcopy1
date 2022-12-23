@@ -74,13 +74,6 @@ class adminController {
         const balance = (100/30/24/60) * sumMinutesLast
         // console.log(`balance: ${balance}`)
 
-
-        
-        
-
-
-       
-    
         //оплачено за все время:
         user.sumpay = +user.sumpay + +lastPayment.sum
         // console.log(`user.sumpay: ${user.sumpay}`)

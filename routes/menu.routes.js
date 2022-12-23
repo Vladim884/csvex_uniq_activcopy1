@@ -7,6 +7,8 @@ const { cookieJwtAdminAuth } = require("../middleware/cookieJwtAdminAuth")
 const { getUserfromToken } = require("../myFunctions/myFunctions")
 const userService = require("../services/userService")
 const moment = require("moment")
+const ChatData = require("../models/chatData/ChatData")
+const _ = require("lodash")
 // const roomList = []
 router
       .get("/main", menuController.mainPageRender)
@@ -19,16 +21,6 @@ router
 
 
       .get('/chat', cookieJwtAdminAuth.cookAuth, menuController.renderChatPage)
-      // (req, res, next) => {
-      //       try {
-      //           return res.render('menu/chat', {rooms: roomList})
-      //           // return await res.render('menu/chat')
-      //       } catch (error) {
-      //           console.log(error)
-      //           next(error)
-      //       }
-      //   }
-      //   )
       .get('/chats/executive', cookieJwtAdminAuth.cookAuth, async (req, res) => {
             return await res.render('chats/executive')
       })
@@ -68,21 +60,60 @@ router
             }
             const userPaymentsData = new PaymentsDto(user)
             // console.log(`Object.values()`)
-            const userId = userPaymentsData.id
-            const nicname = userPaymentsData.nicname
-            const createData = moment().format()
-            console.log(`${userId} ${nicname} ${createData}`)
-            // const chatData = await chatDataModel.create({user: userId, nicname, createData})
-
-
-            //--------
-            return res.render(`chats/rooms`, {rooms: name, nicname})
+            function saveChatData(userPaymentsData) {
+                  const userId = userPaymentsData.id
+                  const nicname = userPaymentsData.nicname
+                  const linkStr = `/chats/rooms?name=${name}`
+                  const createDate = moment().format()
+                  console.log(`${userId} ${nicname} ${createDate} ${linkStr}`)
+                  //const chatData = await chatDataModel.create({user: userId, nicname, createData})
+            }
+            
+            return res.render(`chats/rooms`, {rooms: name, nicname: userPaymentsData.nicname})
       })
 
       .get('/chats/addRoom', cookieJwtAdminAuth.cookAuth,  menuController.addRoom)
       // router.get("/start", systemController.getAccessToStart)
 
       .get('/logout', menuController.logout)
+
+      .post('/saveStartChatData', cookieJwtAdminAuth.cookAuth, async (req, res, next) => {
+            try {
+                  const {userId, nicname, linkHref} = req.body
+                  const chatData = new ChatData({user:userId, nicname, linkHref})
+                  //chatData.messages.push({date: moment().format(), message})
+                  chatData.save()
+                  // const saveData = {userId, nicname, linkHref}
+                  // console.log(`linkHref: ${linkHref}`)
+                  res.status(200).end()
+            } catch (error) {
+                  console.log(error)
+                  next(error)
+            }
+      })
+      .post('/saveChatData', cookieJwtAdminAuth.cookAuth, async (req, res, next) => {
+            // const name = req.query.name
+            const name = req.body.room
+            console.log(`name: ${name}`)
+            const message = req.body.message
+            console.log(message)
+            let chatData = await ChatData.findOne({'linkHref': `/chats/rooms?name=${name}`})
+            chatData.messages.push({date: moment().format(), message})
+
+            // let obj = {
+            //   messages
+            // }
+            // chatData = _.extend(chatData, obj)
+            chatData.save()
+            // const foundUser = await User.findOne ({ "email" : req.body.email });
+            // console.log(chatData)
+            // const filter = { linkHref: `/chats/rooms?name=${name}` }
+            // const update = { messages: chatData.messages.push({date: moment().format(), message}) }
+            //let doc = await ChatData.updateOne({messages: chatData.messages.push({date: moment().format(), message}) })
+            res.status(200).end()
+            //chatData.messages.push({date: moment().format(), message})
+            // chatData.save()
+      })
 
 
 module.exports = router

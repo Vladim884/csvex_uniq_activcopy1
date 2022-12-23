@@ -1,3 +1,4 @@
+const PaymentsDto = require("../dtos/payments-dto")
 const { getUserfromToken } = require("../myFunctions/myFunctions")
 const userService = require("../services/userService")
 const roomList = []
@@ -96,7 +97,37 @@ class menuController {
 
     async renderChatPage (req, res, next) {
         try {
-            return res.render('menu/chat', {rooms: roomList})
+            let user
+            let token = req.cookies.token
+            if(token){
+                  user = await getUserfromToken(token)
+                  if (!user) {
+                        return res.status(404).render('msg', {message: "User not found"})
+                  }
+            } else {
+                const {refreshToken} = req.cookies
+                if(!refreshToken){
+                    return res.status(403).render('msg', {msg: "authContr-getTokenUserData Ви не авторизувались(!token)"})
+                } else {
+                        const refData = await userService.refresh(refreshToken)
+                        // console.log(`paymentContr-getTokenUserData-refData ${Object.values(refData)}`)
+                        res.cookie('refreshToken', refData.refreshToken, {
+                        maxAge: 24*30*60*60*1000,
+                        httpOnly: true
+                        })
+                        token = refData.token
+                        console.log('refData.token')
+                        user = await getUserfromToken(token)
+                    
+                        if (!user) {
+                              return res.status(404).json({message: "User not found"})
+                        }
+                  }
+            }
+            const userPaymentsData = new PaymentsDto(user)
+            const userId = userPaymentsData.id
+            const nicname = userPaymentsData.nicname
+            return res.render('menu/chat', {rooms: roomList, userId, nicname})
             // return await res.render('menu/chat')
         } catch (error) {
             console.log(error)

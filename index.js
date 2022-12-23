@@ -25,7 +25,7 @@ const { instrument } = require("@socket.io/admin-ui")
 const PORT = config.get('serverPort')
 const coocieParser = require('cookie-parser')
 const corsMiddleware = require('./middleware/cors.middleware')
-const fetch = require('node-fetch')
+//const fetch = require('node-fetch')
 // let dirpath = '/'
 // app.use(multer({dest : 'files/' + `${fileEndDir}`}).single("filedata"))
 app.engine("hbs", expressHbs.engine(
@@ -106,6 +106,7 @@ const io = new Server(server)
 // })
 
 const io_adminNameSpace = io.of('/admin')
+const io_adminNameSpace1 = io.of('/admin1')
 
 io_adminNameSpace.on('connect', (socket) => {
     // console.log('new client is conectiom')
@@ -113,23 +114,30 @@ io_adminNameSpace.on('connect', (socket) => {
     socket.on('join', (data) => {
         console.log(`data.room: ${data.room}`)
         socket.join(data.room)
-        io_adminNameSpace.in(data.room).emit('chat message', `New Person joined ${data.room} room`)
+        io_adminNameSpace.in('engineer').emit('chat message', `${data.nicname} joined ${data.room} room to link: ${config.get("CLIENT_URL")}/chats/rooms?name=${data.room}`)
+        const userN = data.nicname
+        const userL = `${config.get("CLIENT_URL")}/chats/rooms?name=${data.room}`
+        socket.on('disconnect', () => {
+            
+            io_adminNameSpace.in('engineer').emit('chat message', `${userN} is disconnect, link: ${userL}`)
+            console.log(`user ${data.nicname} is disconnect, link: ${userL}`)
+
+        })
     })
 
-    socket.on('disconnect', (data) => {
-        io_adminNameSpace.in(data.room).emit('chat message', 'user is disconnect')
-        console.log('user is disconnect')
-
-    })
+    // socket.on('disconnect', (data) => {
+    //     io_adminNameSpace.in('engineer').emit('chat message', `${data.nicname} is disconnect`)
+    //     console.log(`user ${data.nicname} is disconnect`)
+    // })
 
     socket.on('chat message', (data) => {
-      console.log('message: ' + data.msg)
-      io_adminNameSpace.in(data.room).emit('chat message', `data.msg: ${data.msg}`)
+      console.log(`${data.nicname}: ` + data.msg)
+      io_adminNameSpace.in(data.room).emit('chat message', `${data.msg}`)
     })
 
     socket.on('send msg to all', (data) => { //to all rooms
       console.log('message: ' + data.msg)
-      io_adminNameSpace.emit('chat message', `data.msg: ${data.msg}`)
+      io_adminNameSpace.emit('chat message', `${data.nicname}: ${data.msg}`)
     })
 
     // socket.on('send msg to all', (data) => { //to x rooms
