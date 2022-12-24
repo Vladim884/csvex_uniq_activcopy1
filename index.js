@@ -110,18 +110,15 @@ const io_adminNameSpace1 = io.of('/admin1')
 
 io_adminNameSpace.on('connect', (socket) => {
     // console.log('new client is conectiom')
-
     socket.on('join', (data) => {
-        console.log(`data.room: ${data.room}`)
+        //console.log(`data.room: ${data.room}`)
         socket.join(data.room)
-        io_adminNameSpace.in('engineer').emit('chat message', `${data.nicname} joined ${data.room} room to link: ${config.get("CLIENT_URL")}/chats/rooms?name=${data.room}`)
         const userN = data.nicname
         const userL = `${config.get("CLIENT_URL")}/chats/rooms?name=${data.room}`
+        io_adminNameSpace.in('adminchat').emit('chat message', `joined ${userN} ${data.room} ${userL}`)
+        
         socket.on('disconnect', () => {
-            
-            io_adminNameSpace.in('engineer').emit('chat message', `${userN} is disconnect, link: ${userL}`)
-            console.log(`user ${data.nicname} is disconnect, link: ${userL}`)
-
+            io_adminNameSpace.in('adminchat').emit('chat message', `disconnect ${userN} ${data.room} ${userL}`)
         })
     })
 

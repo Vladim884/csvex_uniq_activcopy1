@@ -1,6 +1,5 @@
 <div class="wrapper-chat">
     <button onclick="sendMSGToAll()">Send Message To All</button>
-
     <ul id="messages-chat">
 
     </ul>
@@ -9,19 +8,19 @@
     </form>
 </div>
 
-    <!-- <script src="/socket.io/socket.io.js"></script> -->
     <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
 <script>
-   //(function() {
+
+   (function() {
       const socket = io('/admin')
       //const socket = io()
 
       var messages = document.getElementById('messages-chat');
       var form = document.getElementById('form-chat');
       var input = document.getElementById('input-chat');
-
-      const room = 'executive'
+      
+      const room = 'adminchat'
 
       form.addEventListener('submit', function(e) {
         e.preventDefault()
@@ -34,6 +33,7 @@
       socket.on('chat message', function(msg) {
         var item = document.createElement('li')
         item.textContent = msg
+        //console.log(msg)
         messages.appendChild(item)
         window.scrollTo(0, document.body.scrollHeight)
       })
@@ -45,6 +45,6 @@
       function sendMSGToAll(){
         socket.emit('send msg to all', {msg: input.value, room})
       }
-
-    //})()
+    })()
+    
 </script>

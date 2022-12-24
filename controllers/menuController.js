@@ -127,7 +127,9 @@ class menuController {
             const userPaymentsData = new PaymentsDto(user)
             const userId = userPaymentsData.id
             const nicname = userPaymentsData.nicname
-            return res.render('menu/chat', {rooms: roomList, userId, nicname})
+            console.log(`roomList: ${JSON.stringify(roomList)}`)
+            return res.render('menu/chat', {userId, nicname})
+            // return res.render('menu/chat', {rooms: roomList, userId, nicname})
             // return await res.render('menu/chat')
         } catch (error) {
             console.log(error)
@@ -135,13 +137,13 @@ class menuController {
         }
     }
 
-    addRoom(req, res) {
-        const name = req.query.name
-        roomList.push(name)
-        console.log(`roomList: ${JSON.stringify(roomList)}`)
-        res.status(200)
-        // return res.render(`chats/rooms`, {rooms: name})
-  }
+//     addRoom(req, res) {
+//         const name = req.query.name
+//         roomList.push(name)
+//         console.log(`roomList: ${JSON.stringify(roomList)}`)
+//         res.status(200)
+//         // return res.render(`chats/rooms`, {rooms: name})
+//   }
 
     async logout (req, res, next) {
         try {

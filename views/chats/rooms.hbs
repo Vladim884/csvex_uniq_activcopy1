@@ -5,26 +5,19 @@
 
     </ul>
     <form id="form-chat" action="">
-    <input id="input-chat" autocomplete="off" /><button>Send</button>
+      <input id="input-chat" autocomplete="off" /><button>Send</button>
     </form>
 </div>
 
-    <!-- <script src="/socket.io/socket.io.js"></script> -->
     <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
 <script>
-   //(function() {
+   (function() {
       const socket = io('/admin')
-
-
-      var messages = document.getElementById('messages-chat')
-
-
+      const messages = document.getElementById('messages-chat')
       var form = document.getElementById('form-chat');
       var input = document.getElementById('input-chat');
 
-      
-      
       const room = `{{rooms}}`
       const nicname = `{{nicname}}`
       console.log(`room: ${room}`)
@@ -32,39 +25,30 @@
 
       form.addEventListener('submit', function(e) {
         e.preventDefault()
-        
-        async function saveChatData(name) {
-          const response = await fetch(`/saveChatData`, { 
-              method: "POST", 
-              headers: { "Accept": "application/json", "Content-Type": "application/json" },
-              body: JSON.stringify({
-                  room: `${room}`,
-                  message: `${nicname}: ${input.value}`
-              })
-          })
-          if (response.ok === true) return console.log('data was send')
-          return console.log('server send bad response')
-        }
-        saveChatData()
         if (input.value) {
           socket.emit('chat message', {msg: `{{nicname}}: ${input.value}`, room: '{{rooms}}'})
           input.value = ''
         }
-        
+        //async function saveChatData(name) {
+        //  const response = await fetch(`/saveChatData`, { 
+        //      method: "POST", 
+        //      headers: { "Accept": "application/json", "Content-Type": "application/json" },
+        //      body: JSON.stringify({
+        //          room: `${room}`,
+        //          message: `${nicname}: ${input.value}`
+        //      })
+        //  })
+        //  if (response.ok === true) return console.log('data was send')
+        //  return console.log('server send bad response')
+        //}
+        //saveChatData()
       })
     
-
-      ////form.addEventListener('submit', function(e) {
-        //e.preventDefault()
-        //if (input.value) {
-        //  socket.emit('chat message', {msg: `{{nicname}}: ${input.value}`, room})
-        //  input.value = ''
-        //}
-      //})
 
       socket.on('chat message', function(msg) {
         var item = document.createElement('li')
         item.textContent = msg
+        //console.log(msg)
         messages.appendChild(item)
         window.scrollTo(0, document.body.scrollHeight)
       })
@@ -77,5 +61,5 @@
         //socket.emit('send msg to all', {msg: input.value, room})
       //}
 
-    //})()
+    })()
 </script>

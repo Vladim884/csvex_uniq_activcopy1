@@ -38,7 +38,7 @@ exports.cookieJwtAdminAuth = {
       
          
       } catch (err) {
-         console.log(`jsonwebtoken err: ${err}`)
+         console.log(`jwt err: ${err}`)
          res 
             .clearCookie("token")
             .clearCookie("refreshToken")
@@ -49,7 +49,7 @@ exports.cookieJwtAdminAuth = {
 
    adminAuth: async (req, res, next) => {
       try {
-         console.log('middlware-adminauth')
+         // console.log('middlware-adminauth')
          let token = req.cookies.token
          let refreshToken = req.cookies.refreshToken
          let admin

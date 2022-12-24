@@ -1,55 +1,77 @@
 <h1>Вибрати чат</h1>
 
-<div><a href="/chats/executive">Executive</a></div>
-<div><a href="/chats/engineer">Engineer</a></div>
+{{!-- <div><a href="/chats/executive">Executive</a></div> --}}
+<div><a href="/chats/adminchat">Admin Chat</a></div>
 
 <p>Create Rooms</p>
 <div>
-  <input id="input-room-name" style="width: 130px">
+  {{!-- <input id="input-room-name" style="width: 130px"> --}}
   <button onclick="createRoom()" style="font-size: 12px; width: 105px; padding: 5px">Create room</button>
   <div id="inner"></div>
 </div>
 
 
 <script>
-  const rooms = '{{rooms}}'
+  //const rooms = '{{rooms}}'
   const userId = '{{userId}}'
   const nicname = '{{nicname}}'
-  console.log(`rooms: ${rooms} userId: ${userId} nicname: ${nicname}`)
-  const roomList = rooms.split(',')
+  //console.log(`rooms: ${rooms} userId: ${userId} nicname: ${nicname}`)
+  console.log(`userId: ${userId} nicname: ${nicname}`)
+  //const roomList = rooms.split(',')
   function createRoom(){
-    const name = document.getElementById('input-room-name').value
-    const inner = document.getElementById('inner')
-    inner.innerHTML += `<a href="/chats/rooms?name=${name}">${name}</a><br /><br />`
-    saveStartChatData(name)
-    httpGet(name)
+  //const name = document.getElementById('input-room-name').value
+  const name = gen_password(10)
+  //console.log(name)
+
+    //const inner = document.getElementById('inner')
+    //inner.innerHTML += `<a href="/chats/rooms?name=${name}">перейти ${name}</a><br /><br />`
+    const adres = `/chats/rooms?name=${name}`
+    //saveStartChatData(name)
+    //httpGet(name)
+    hrefto(adres)
   }
 
-  function httpGet(name){
-    const xmlHttp = new XMLHttpRequest()
-    xmlHttp.open('GET', `/chats/addRoom?name=${name}`)
-    xmlHttp.send(null)
-    return xmlHttp.responseText
-  }
+  
 
-  for(const name of roomList){
-    if(name != '')
-      inner.innerHTML += `<a href="/chats/rooms?name=${name}">${name}</a><br /><br />`
+  //function httpGet(name){
+  //  const xmlHttp = new XMLHttpRequest()
+  //  xmlHttp.open('GET', `/chats/addRoom?name=${name}`)
+  //  xmlHttp.send(null)
+  //  return xmlHttp.responseText
+  //}
+  const hrefto = (adres) => {
+      window.location.href = adres;
   }
+    
+
+  //for(const name of roomList){
+  //  if(name != '')
+  //    inner.innerHTML += `<a href="/chats/rooms?name=${name}">Перейти до чату: ${name}</a><br /><br />`
+  //}
 
   //========
+// save start-chat-data
+  //async function saveStartChatData(name) {
+  //  const response = await fetch(`/saveStartChatData`, { 
+  //      method: "POST", 
+  //      headers: { "Accept": "application/json", "Content-Type": "application/json" },
+  //      body: JSON.stringify({
+  //           userId,
+  //          nicname,
+  //          linkHref: `/chats/rooms?name=${name}`
+  //      })
+  //  });
+  //  if (response.ok === true) return console.log('data was send')
+  //  return console.log('server send bad response')
+  //}
 
-  async function saveStartChatData(name) {
-    const response = await fetch(`/saveStartChatData`, { 
-        method: "POST", 
-        headers: { "Accept": "application/json", "Content-Type": "application/json" },
-        body: JSON.stringify({
-            userId,
-            nicname,
-            linkHref: `/chats/rooms?name=${name}`
-        })
-    });
-    if (response.ok === true) return console.log('data was send')
-    return console.log('server send bad response')
+  gen_password = (len) => {
+    var str = "";
+    var symbols = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!№;%:?*()_+=";
+    for (var i = 0; i < len; i++){
+        str += symbols.charAt(Math.floor(Math.random() * symbols.length));     
+    }
+    const password = str.split(/\s+/).join('')
+    return password;
   }
 </script>

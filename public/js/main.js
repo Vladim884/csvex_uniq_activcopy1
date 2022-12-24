@@ -9,6 +9,7 @@ const linkLogout = document.getElementById('logout')
 const linkLogout1 = document.getElementById('logout1')
 const linkCabinet = document.getElementById('cabinet')
 const linkChat = document.getElementById('chat')
+const linkCloseChat = document.getElementById('close-chat')
 
 const linkWritePaying = document.getElementById('writepaying')
 const iconBtn = document.getElementById('icon')
@@ -56,6 +57,15 @@ console.log(`user.status: ${user.role}`)
         linkLogout.classList.remove('hidden')
         linkCabinet.classList.remove('hidden')
         linkChat.classList.remove('hidden')
+
+        // linkChat.addEventListener('click', () => {
+        //     linkCloseChat.classList.remove('hidden')
+        //     linkChat.classList.add('hidden')
+        // })
+        // linkCloseChat.addEventListener('click', () => {
+        //     linkChat.classList.remove('hidden')
+        //     linkCloseChat.classList.add('hidden')
+        // })
     }
     if (user.role === 'admin'){
         console.log('admin')
