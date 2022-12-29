@@ -21,6 +21,9 @@ const menuRouter = require("./routes/menu.routes")
 const { Server } = require("socket.io")
 const { instrument } = require("@socket.io/admin-ui")
 
+const permissionsPolicy = require("permissions-policy")
+
+
 
 const PORT = config.get('serverPort')
 const coocieParser = require('cookie-parser')
@@ -52,16 +55,21 @@ hbs.registerPartials(__dirname + "/views/partials");
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 app.use(coocieParser());
 
-// app.use(fileUpload({}))
 app.use(corsMiddleware)
 app.use(express.json())
-// let req
 
 app.use(multer({dest : 'dest'}).single("filedata"))
 
 app.use(express.static(__dirname + '/public'))
 
-
+app.use(
+    permissionsPolicy({
+      features: {
+        fullscreen: ["self"], // fullscreen=()
+        autoplay: ["self", '"http://localhost:5000/public/sound/sound.mp3"']
+      },
+    })
+  )
 
 app.use("/api/auth", authRouter)
 app.use("/api/files", fileRouter)
@@ -69,6 +77,10 @@ app.use("/api/system", systemRouter)
 app.use("/api/admin", adminRouter)
 
 app.use('/', menuRouter)
+
+app.get('/adminchat', (req, res) => {
+    res.sendFile(__dirname + '/adminchat.html')
+})
 
 // Error handling
 app.use((err, req, res, next) => {
@@ -115,15 +127,16 @@ io_adminNameSpace.on('connect', (socket) => {
         socket.join(data.room)
         const userN = data.nicname
         const userL = `${config.get("CLIENT_URL")}/chats/rooms?name=${data.room}`
+
         io_adminNameSpace.in('adminchat').emit('chat message', `joined ${userN} ${data.room} ${userL}`)
         
-        socket.on('disconnect', () => {
+       socket.on('disconnect', () => {
             io_adminNameSpace.in('adminchat').emit('chat message', `disconnect ${userN} ${data.room} ${userL}`)
         })
     })
 
     // socket.on('disconnect', (data) => {
-    //     io_adminNameSpace.in('engineer').emit('chat message', `${data.nicname} is disconnect`)
+    //     io_adminNameSpace.in('adminchat').emit('chat message', `${data.nicname} is disconnect`)
     //     console.log(`user ${data.nicname} is disconnect`)
     // })
 

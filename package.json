@@ -40,9 +40,11 @@
     "node-fetch": "2.0",
     "nodemailer": "^6.7.5",
     "path": "^0.12.7",
+    "permissions-policy": "^0.6.0",
     "rimraf": "^3.0.2",
     "shelljs": "^0.8.4",
     "socket.io": "^4.5.4",
+    "soundmanager2": "^2.97.20170602",
     "uuidv1": "^1.6.14"
   },
   "devDependencies": {

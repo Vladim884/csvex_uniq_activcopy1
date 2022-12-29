@@ -3,6 +3,7 @@
     <ul id="messages-chat">
 
     </ul>
+    <button id="createLink">Create Link</button>
     <form id="form-chat" action="">
       <input id="input-chat" autocomplete="off" /><button>Send</button>
     </form>
@@ -10,41 +11,7 @@
 
     <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
-<script>
-
-   (function() {
-      const socket = io('/admin')
-      //const socket = io()
-
-      var messages = document.getElementById('messages-chat');
-      var form = document.getElementById('form-chat');
-      var input = document.getElementById('input-chat');
-      
-      const room = 'adminchat'
-
-      form.addEventListener('submit', function(e) {
-        e.preventDefault()
-        if (input.value) {
-          socket.emit('chat message', {msg: input.value, room})
-          input.value = ''
-        }
-      })
-
-      socket.on('chat message', function(msg) {
-        var item = document.createElement('li')
-        item.textContent = msg
-        //console.log(msg)
-        messages.appendChild(item)
-        window.scrollTo(0, document.body.scrollHeight)
-      })
-
-      socket.on('connect', () => {
-        socket.emit('join', {room})
-      })
-
-      function sendMSGToAll(){
-        socket.emit('send msg to all', {msg: input.value, room})
-      }
-    })()
-    
-</script>
+    <!-- Autoplay is allowed. -->
+{{!-- <iframe src="/sound/sound.mp3" allow="autoplay"> --}}
+    {{!-- <script src="/js/soundmanager2.js"></script> --}}
+<script src="/js/adminchat.js"></script>

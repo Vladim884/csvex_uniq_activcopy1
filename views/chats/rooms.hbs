@@ -56,6 +56,14 @@
       socket.on('connect', () => {
         socket.emit('join', {room, nicname})
       })
+      document.addEventListener("onunload", function(){
+          const adres = 'http://localhost/chat'
+          const hrefto = (adres) => {
+              window.location.href = adres;
+          }
+          //hrefto(adres)
+
+      })
 
       //function sendMSGToAll(){
         //socket.emit('send msg to all', {msg: input.value, room})

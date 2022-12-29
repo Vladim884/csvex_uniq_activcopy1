@@ -43,7 +43,16 @@
         </div>
 
         <div class="form-block  form-admin-panel">
-            <h2>Вивести список користувачів</h2>
+            <h2>Перейти до чату</h2>
+            <form action="/adminchat" method="get" target="_blank">
+                <button type="submit">Перейти</button>
+                {{!-- <input type="number" name="countuser" placeholder="Введить кількість користувачів"> --}}
+                {{!-- <a href="http://localhost:5000/chats/adminchat">Перейти</a> --}}
+            </form>
+        </div>
+
+        <div class="form-block  form-admin-panel">
+            <h2>Список користувачів</h2>
             <form action="/api/admin/usersList" method="get">
                 {{!-- <input type="number" name="countuser" placeholder="Введить кількість користувачів"> --}}
                 <button type="submit">Вивести</button>
@@ -61,4 +70,26 @@
         e.preventDefault()
         }
     }
+
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault()
+        if (input.value) {
+          socket.emit('chat message', {msg: `{{nicname}}: ${input.value}`, room: '{{rooms}}'})
+          input.value = ''
+        }
+        //async function saveChatData(name) {
+        //  const response = await fetch(`/saveChatData`, { 
+        //      method: "POST", 
+        //      headers: { "Accept": "application/json", "Content-Type": "application/json" },
+        //      body: JSON.stringify({
+        //          room: `${room}`,
+        //          message: `${nicname}: ${input.value}`
+        //      })
+        //  })
+        //  if (response.ok === true) return console.log('data was send')
+        //  return console.log('server send bad response')
+        //}
+        //saveChatData()
+      })
 </script>

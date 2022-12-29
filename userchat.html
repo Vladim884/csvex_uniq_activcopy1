@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Чат с админом</title>
+    <link rel="stylesheet" href="/styles/styles.css">
+    
+  </head>
+  <body>
+    <div class="wrapper-chat">
+      <button onclick="sendMSGToAll()">Send Message To All</button>
+      <ul id="messages-chat">
+  
+      </ul>
+      <!-- <button id="createLink">Create Link</button> -->
+      <form id="form-chat" action="">
+        <input id="input-chat" autocomplete="off" /><button>Send</button>
+      </form>
+  </div>
+  
+      <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+      <script src="/socket.io/socket.io.js"></script>
+
+
+<script>
+    (function() {
+      const socket = io('/admin')
+      const messages = document.getElementById('messages-chat')
+      var form = document.getElementById('form-chat');
+      var input = document.getElementById('input-chat');
+
+      const room = `{{rooms}}`
+      const nicname = `{{nicname}}`
+      console.log(`room: ${room}`)
+      console.log(`nicname: ${nicname}`)
+
+      form.addEventListener('submit', function(e) {
+        e.preventDefault()
+        if (input.value) {
+          socket.emit('chat message', {msg: `{{nicname}}: ${input.value}`, room: '{{rooms}}'})
+          input.value = ''
+        }
+        
+      })
+    
+
+      socket.on('chat message', function(msg) {
+        var item = document.createElement('li')
+        item.textContent = msg
+        //console.log(msg)
+        messages.appendChild(item)
+        window.scrollTo(0, document.body.scrollHeight)
+      })
+
+      socket.on('connect', () => {
+        socket.emit('join', {room, nicname})
+      })
+      document.addEventListener("onunload", function(){
+          const adres = 'http://localhost/chat'
+          const hrefto = (adres) => {
+              window.location.href = adres;
+          }
+          //hrefto(adres)
+
+      })
+
+      //function sendMSGToAll(){
+        //socket.emit('send msg to all', {msg: input.value, room})
+      //}
+
+    })()
+    async function getPaymentsListForBtnNum () {
+                // let btnNum = true
+
+                //currentPage must be a number
+                let currentPage = +this.innerText-1 
+                for(i=0; i< elems.length; i++){
+                    elems[i].classList.remove('active')
+                }
+                this.classList.add('active')
+                
+                // console.log(currentPage)
+                const response = await fetch("http://localhost:5000/api/admin/payhistory", {
+                    method: "POST",
+                    headers: { "Accept": "application/json", "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        currentPage,
+                        currentPortion,
+                        idpay
+                    })
+                });
+                if (response.ok === true) {
+                    const data = await response.json()
+                    let currPaymentsData = data.paginationData.currPaymentsData
+                    paymentsList.innerHTML = ""
+
+                    getPaymentsList(currPaymentsData)
+                }
+            }
+</script>
+  </body>
+</html>

@@ -27,10 +27,16 @@ router
       //       return await res.render('chats/executive')
       // })
       .get('/chats/adminchat', [cookieJwtAdminAuth.cookAuth, cookieJwtAdminAuth.adminAuth], async (req, res) => {
-            return await res.render('chats/adminchat')
+            // return await res.status(200).render('chats/adminchat')
+            return await res.status(200).render('/adminchat')
       })
+      // .get('/chats/adminchat', [cookieJwtAdminAuth.cookAuth, cookieJwtAdminAuth.adminAuth], async (req, res) => {
+      //       // return await res.status(200).render('chats/adminchat')
+      //       return await res.status(200).render('/adminchat.html')
+      // })
 
       .get('/chats/rooms', cookieJwtAdminAuth.cookAuth,  async (req, res) => {
+      // .get('/chats/rooms', cookieJwtAdminAuth.cookAuth,  async (req, res) => {
             const name = req.query.name
             //========
             let user
@@ -72,6 +78,7 @@ router
             }
             
             return res.status(200).render(`chats/rooms`, {rooms: name, nicname: userPaymentsData.nicname})
+            // return res.status(200).render(`__dirname/usercat.html`, {rooms: name, nicname: userPaymentsData.nicname})
       })
 
       //.get('/chats/addRoom', cookieJwtAdminAuth.cookAuth,  menuController.addRoom)

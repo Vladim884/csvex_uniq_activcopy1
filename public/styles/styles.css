@@ -433,7 +433,7 @@ button.btn-disabled:focus {
 .form-block {
   width: 250px;
   margin: 0 auto;
-  margin-top: 10vh;
+  margin-top: 5vh;
   margin-bottom: 50px;
   padding: 15px;
   color: #006666;
@@ -490,6 +490,12 @@ button.btn-disabled:focus {
 .form-block a:hover {
   color: white;
 }
+.form-block p {
+  font-size: 12px;
+  font-weight: 400;
+  color: #006666;
+  margin: 0 auto 20px;
+}
 .form-block input {
   -webkit-appearance: checkbox;
 }
@@ -519,7 +525,7 @@ button.btn-disabled:focus {
 .form-admin-panel h2 {
   text-transform: none;
 }
-.form-admin-panel button {
+.form-admin-panel button, .form-admin-panel a {
   text-transform: none;
   font-size: small;
 }
@@ -1050,6 +1056,7 @@ button.btn-disabled:focus {
 .wrapper-chat #form-chat {
   background: rgba(0, 0, 0, 0.15);
   padding: 0.25rem;
+  position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
@@ -1082,22 +1089,8 @@ button.btn-disabled:focus {
   color: #fff;
 }
 
-#input {
-  border: none;
-  padding: 0 1rem;
-  flex-grow: 1;
-  border-radius: 2rem;
-  margin: 0.25rem;
-}
-
-#input #form > button {
-  background: #333;
-  border: none;
-  padding: 0 1rem;
-  margin: 0.25rem;
-  border-radius: 3px;
-  outline: none;
-  color: #fff;
+.messages-room > li:nth-child(odd) {
+  background: #efefef;
 }
 
 html {
@@ -1116,6 +1109,14 @@ body {
 ::selection {
   color: white;
   background: #006666;
+}
+
+#title-page {
+  margin: 5vh 0;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: #006666;
+  text-align: center;
 }
 
 .msg {

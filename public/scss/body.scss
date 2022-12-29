@@ -14,7 +14,15 @@ body {
   ::selection {
     color: white;
     background: #006666;
-}
+  }
+
+  #title-page {
+    margin: 5vh 0;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: #006666;
+    text-align: center;
+  }
 
 .msg {
   margin: 20px 0;
@@ -32,9 +40,9 @@ body .red {
   color: $lighty;
 }
 
-  .hidden {
-    display: none;
-  }
+.hidden {
+  display: none;
+}
 
   header .menu-links.vizibly{
     display: block;
@@ -69,6 +77,14 @@ body .red {
     margin: 0 auto;
     padding: 0 15px;
   }
+  // p {
+  //   width: 500px;
+  //   font-size: 12px;
+  //   font-weight: 500;
+  //   color: $darky;
+  //   margin: 0 auto 20px;
+  //   text-align: center;
+  // }
   section{
     
     h1 {
@@ -94,7 +110,7 @@ body .red {
     }
   }
 
-
+  
   .two-block,
   .three-block {
     margin: 0 0 30px 0;
