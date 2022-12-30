@@ -28,6 +28,7 @@ const permissionsPolicy = require("permissions-policy")
 const PORT = config.get('serverPort')
 const coocieParser = require('cookie-parser')
 const corsMiddleware = require('./middleware/cors.middleware')
+const { cookieJwtAdminAuth } = require("./middleware/cookieJwtAdminAuth")
 //const fetch = require('node-fetch')
 // let dirpath = '/'
 // app.use(multer({dest : 'files/' + `${fileEndDir}`}).single("filedata"))
@@ -78,7 +79,7 @@ app.use("/api/admin", adminRouter)
 
 app.use('/', menuRouter)
 
-app.get('/adminchat', (req, res) => {
+app.get('/adminchat', [cookieJwtAdminAuth.cookAuth], (req, res) => {
     res.sendFile(__dirname + '/adminchat.html')
 })
 

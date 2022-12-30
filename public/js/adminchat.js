@@ -1,7 +1,7 @@
 (function() {
     
 
-    var audio = new Audio("/sound/sound.mp3")
+    // var audio = new Audio("/sound/sound.mp3")
 
     const socket = io('/admin')
     //const socket = io()
@@ -36,13 +36,9 @@
         }
         if(arr[0] === 'joined' && arr[1] !== 'admin' && arr[2] !== 'adminchat'){
             item.innerHTML = `<a href='${arr[3]}' target='_blank'>${arr[1]}</a> 
+            <iframe src="/sound/sound.mp3" allow="autoplay">
             `
-            if (confirm('sound?')){
-                audio.play();
-            }
-            debugger
-            // audio.play()
-            // <iframe src="/sound/sound.mp3" allow="autoplay">
+            
             messages.appendChild(item)
         } else if (arr[0] === 'disconnect' && arr[2] !== 'adminchat'){
             //debugger
