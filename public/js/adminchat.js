@@ -29,22 +29,23 @@
         if(messages.childNodes){
             let arrmes = messages.childNodes
             for (let i = 0; i < arrmes.length; i++) {
-                if (arr[0] === 'joined'&& arrmes[i].innerText === arr[1]){
+                if (arr[0] === 'joined'&& arrmes[i].innerText === `${arr[1]}_${arr[4]}`){
                     return
                 }
             }
         }
         if(arr[0] === 'joined' && arr[1] !== 'admin' && arr[2] !== 'adminchat'){
-            item.innerHTML = `<a href='${arr[3]}' target='_blank'>${arr[1]}</a> 
-            `
-            iframe.innerHTML = `<iframe src="/sound/sound.mp3" allow="autoplay" style="width: 130px;height:55px;">`
+            item.innerHTML = `<a href='${arr[3]}' target='_blank'>${arr[1]}_${arr[4]}</a>`
             messages.appendChild(item)
+            //sound:
+            iframe.innerHTML = `<iframe src="/sound/sound.mp3" allow="autoplay" style="width: 130px;height:55px;">`
+            
         } else if (arr[0] === 'disconnect' && arr[2] !== 'adminchat'){
             //debugger
             if(messages.childNodes){
                 let arrmes = messages.childNodes
                 for (let i = 0; i < arrmes.length; i++) {
-                if (arrmes[i].innerText === arr[1]){
+                if (arrmes[i].innerText === `${arr[1]}_${arr[4]}`){
                         arrmes[i].remove()
                     }
                 }

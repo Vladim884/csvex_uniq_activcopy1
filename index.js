@@ -127,12 +127,13 @@ io_adminNameSpace.on('connect', (socket) => {
         //console.log(`data.room: ${data.room}`)
         socket.join(data.room)
         const userN = data.nicname
+        const userId = data.userId
         const userL = `${config.get("CLIENT_URL")}/chats/rooms?name=${data.room}`
 
-        io_adminNameSpace.in('adminchat').emit('chat message', `joined ${userN} ${data.room} ${userL}`)
+        io_adminNameSpace.in('adminchat').emit('chat message', `joined ${userN} ${data.room} ${userL} ${userId}`)
         
        socket.on('disconnect', () => {
-            io_adminNameSpace.in('adminchat').emit('chat message', `disconnect ${userN} ${data.room} ${userL}`)
+            io_adminNameSpace.in('adminchat').emit('chat message', `disconnect ${userN} ${data.room} ${userL} ${userId}`)
         })
     })
 

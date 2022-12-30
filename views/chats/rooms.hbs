@@ -24,6 +24,7 @@
 
       const room = `{{rooms}}`
       const nicname = `{{nicname}}`
+      const userId = `{{userId}}`
       console.log(`room: ${room}`)
       console.log(`nicname: ${nicname}`)
 
@@ -54,12 +55,13 @@
         item.textContent = msg
         //console.log(msg)
         messages.appendChild(item)
-        iframe.innerHTML = iframe.innerHTML = `<iframe src="/sound/sound.mp3" allow="autoplay" style="width: 130px;height:55px;opacity: 0">`
+        iframe.innerHTML = iframe.innerHTML = `<iframe src="/sound/beep-27.mp3" allow="autoplay" style="width: 130px;height:55px;opacity: 0">`
+        //iframe.innerHTML = iframe.innerHTML = `<iframe src="/sound/melody.mp3" allow="autoplay" style="width: 130px;height:55px;opacity: 0">`
         window.scrollTo(0, document.body.scrollHeight)
       })
 
       socket.on('connect', () => {
-        socket.emit('join', {room, nicname})
+        socket.emit('join', {room, nicname, userId})
       })
       document.addEventListener("onunload", function(){
           const adres = 'http://localhost/chat'

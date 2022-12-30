@@ -77,7 +77,7 @@ router
                   //const chatData = await chatDataModel.create({user: userId, nicname, createData})
             }
             
-            return res.status(200).render(`chats/rooms`, {rooms: name, nicname: userPaymentsData.nicname})
+            return res.status(200).render(`chats/rooms`, {rooms: name, nicname: userPaymentsData.nicname, userId: userPaymentsData.id})
             // return res.status(200).render(`__dirname/usercat.html`, {rooms: name, nicname: userPaymentsData.nicname})
       })
 
