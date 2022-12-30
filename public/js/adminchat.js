@@ -36,9 +36,8 @@
         }
         if(arr[0] === 'joined' && arr[1] !== 'admin' && arr[2] !== 'adminchat'){
             item.innerHTML = `<a href='${arr[3]}' target='_blank'>${arr[1]}</a> 
-            
             `
-            iframe.innerHTML = `<iframe src="/sound/sound.mp3" allow="autoplay">`
+            iframe.innerHTML = `<iframe src="/sound/sound.mp3" allow="autoplay" style="width: 130px;height:55px;">`
             messages.appendChild(item)
         } else if (arr[0] === 'disconnect' && arr[2] !== 'adminchat'){
             //debugger

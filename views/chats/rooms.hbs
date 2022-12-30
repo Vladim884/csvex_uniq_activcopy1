@@ -4,6 +4,9 @@
     <ul id="messages-chat" class="messages-room">
 
     </ul>
+    <div id="iframe">
+
+      </div>
     <form id="form-chat" action="">
       <input id="input-chat" autocomplete="off" /><button>Send</button>
     </form>
@@ -13,6 +16,7 @@
     <script src="/socket.io/socket.io.js"></script>
 <script>
    (function() {
+      const iframe = document.getElementById('iframe')
       const socket = io('/admin')
       const messages = document.getElementById('messages-chat')
       var form = document.getElementById('form-chat');
@@ -50,6 +54,7 @@
         item.textContent = msg
         //console.log(msg)
         messages.appendChild(item)
+        iframe.innerHTML = iframe.innerHTML = `<iframe src="/sound/sound.mp3" allow="autoplay" style="width: 130px;height:55px;opacity: 0">`
         window.scrollTo(0, document.body.scrollHeight)
       })
 
