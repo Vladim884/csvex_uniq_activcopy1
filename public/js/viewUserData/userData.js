@@ -15,11 +15,16 @@ const flag = document.getElementById('flag')
         const fieldBalance = document.querySelector('.field-balance')
         const linkHistory = document.querySelector('.linkhistory')
         const linkPay = document.querySelector('.linkpay')
-        if(flag.value === 'email') {reqstring = "/api/admin/finduser"}
-        if(flag.value === 'id') {reqstring = "/api/admin/finduserbyid"}
+        if(flag.value === 'email') {
+            reqstring = "/api/admin/finduser"
+        }
+        if(flag.value === 'id') {
+            reqstring = "/api/admin/finduserbyid"
+        }
+        
         // const response = await fetch("/api/admin/finduser", { 
         const response = await fetch(reqstring, { 
-                method: "POST",
+                method: 'POST',
                     headers: { "Accept": "application/json", "Content-Type": "application/json" },
                     body: JSON.stringify({
                         usdata: inpval

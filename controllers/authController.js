@@ -293,7 +293,11 @@ class authController {
                 console.log('Data has not changed')
             }
 
-            return await res.render('menu/cabinet', {crsjs: '/js/viewUserData/cabinetUserData.js', inputIdVal: ''})
+            return await res.render('menu/cabinet', {
+                crsjs: '/js/viewUserData/cabinetUserData.js', 
+                inputIdVal: '',
+                lineNextName: 'Вітаємо, '
+            })
             
             // return res.render(
             //     './cabinet1.hbs', 

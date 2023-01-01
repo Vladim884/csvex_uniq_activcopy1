@@ -112,13 +112,23 @@ class adminController {
         const {id} = req.body
         console.log(`finduserPageByIdRender-id: ${id}`)
         // return res.render('service/adminserv/userdatabyid', {inputVal: id, crsjs: '/js/viewUserData/userDataById.js'})
-        return res.render('menu/cabinet', {inputVal: id, crsjs: '/js/viewUserData/userData.js', flagVal: 'id'})
+        return res.render('menu/cabinet', {
+            inputVal: id, 
+            crsjs: '/js/viewUserData/userData.js', 
+            flagVal: 'id',
+            lineNextName: 'Ім`я користувача: '
+        })
     }
 
     async finduserPageRender (req, res, next) {
         const {email} = req.body
         // return res.render('service/adminserv/userdata', {inputVal: email, crsjs: '/js/viewUserData/userData.js'})
-        return res.render('menu/cabinet', {inputVal: email, crsjs: '/js/viewUserData/userData.js', flagVal: 'email'})
+        return res.render('menu/cabinet', {
+            inputVal: email, 
+            crsjs: '/js/viewUserData/userData.js', 
+            flagVal: 'email',
+            lineNextName: 'Ім`я користувача: '
+        })
     }
 
     async finduser (req, res, next) {

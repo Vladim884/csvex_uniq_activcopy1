@@ -44,7 +44,10 @@ class menuController {
 
     async cabinetPageRender(req, res, next){
         try {
-            return await res.render('menu/cabinet', {crsjs: '/js/viewUserData/cabinetUserData.js'})
+            return await res.render('menu/cabinet', {
+                crsjs: '/js/viewUserData/cabinetUserData.js',
+                lineNextName: 'Вітаємо, '
+            })
         } catch (err) {
             console.log(err)
             next(err)
