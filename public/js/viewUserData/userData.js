@@ -1,5 +1,7 @@
 const eml = document.getElementById('inputval')
+const flag = document.getElementById('flag')
     const inputval = eml.value
+    let reqstring
     // console.log(`email = ${inputval}`)
     getUser(inputval);
     async function getUser(inpval) {
@@ -13,11 +15,14 @@ const eml = document.getElementById('inputval')
         const fieldBalance = document.querySelector('.field-balance')
         const linkHistory = document.querySelector('.linkhistory')
         const linkPay = document.querySelector('.linkpay')
-        const response = await fetch("http://localhost:5000/api/admin/finduser", { 
+        if(flag.value === 'email') {reqstring = "/api/admin/finduser"}
+        if(flag.value === 'id') {reqstring = "/api/admin/finduserbyid"}
+        // const response = await fetch("/api/admin/finduser", { 
+        const response = await fetch(reqstring, { 
                 method: "POST",
                     headers: { "Accept": "application/json", "Content-Type": "application/json" },
                     body: JSON.stringify({
-                        email: inpval
+                        usdata: inpval
                     })
                 });
                 if (response.ok === true) {

@@ -112,13 +112,13 @@ class adminController {
         const {id} = req.body
         console.log(`finduserPageByIdRender-id: ${id}`)
         // return res.render('service/adminserv/userdatabyid', {inputVal: id, crsjs: '/js/viewUserData/userDataById.js'})
-        return res.render('menu/cabinet', {inputVal: id, crsjs: '/js/viewUserData/userDataById.js'})
+        return res.render('menu/cabinet', {inputVal: id, crsjs: '/js/viewUserData/userData.js', flagVal: 'id'})
     }
 
     async finduserPageRender (req, res, next) {
         const {email} = req.body
         // return res.render('service/adminserv/userdata', {inputVal: email, crsjs: '/js/viewUserData/userData.js'})
-        return res.render('menu/cabinet', {inputVal: email, crsjs: '/js/viewUserData/userData.js'})
+        return res.render('menu/cabinet', {inputVal: email, crsjs: '/js/viewUserData/userData.js', flagVal: 'email'})
     }
 
     async finduser (req, res, next) {
@@ -128,7 +128,8 @@ class adminController {
                 return res.status(400).json({message: "Uncorrect request", errors})
             }
             console.log('start finduser')
-            const {email} = req.body
+            const {usdata} = req.body
+            const email = usdata
             console.log(email)
             const user = await User.findOne({email})
             if (!user) return res.status(404).render('error', {errorMsg: `юзера з email: "${email}" не знайдено`})
@@ -148,7 +149,8 @@ class adminController {
                 return res.status(400).json({message: "Uncorrect request", errors})
             }
             console.log('start finduser')
-            const {userId} = req.body
+            const {usdata} = req.body
+            const userId = usdata
             console.log(`finduserbyid-id: ${userId}`)
             // const user = await User.findOne({_id: userId})
             const user = await User.findById({_id: userId})
