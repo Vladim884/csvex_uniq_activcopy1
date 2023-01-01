@@ -108,63 +108,21 @@ class adminController {
         })
     }
 
+    async finduserPageByIdRender (req, res, next) {
+        const {id} = req.body
+        console.log(`finduserPageByIdRender-id: ${id}`)
+        // return res.render('service/adminserv/userdatabyid', {inputVal: id, crsjs: '/js/viewUserData/userDataById.js'})
+        return res.render('menu/cabinet', {inputVal: id, crsjs: '/js/viewUserData/userDataById.js'})
+    }
+
     async finduserPageRender (req, res, next) {
         const {email} = req.body
-        return res.render('service/adminserv/userdata', {inputEmVal: email})
+        // return res.render('service/adminserv/userdata', {inputVal: email, crsjs: '/js/viewUserData/userData.js'})
+        return res.render('menu/cabinet', {inputVal: email, crsjs: '/js/viewUserData/userData.js'})
     }
 
     async finduser (req, res, next) {
-        // async function userRoleDefer(req, res) {
-        //     let token = req.cookies.token
-        //     let refreshToken = req.cookies.refreshToken
-        //     let admin
-        
-        //     if(token){
-        //         admin = await getUserfromToken(token)
-        //     } else {
-        //         if(!refreshToken){
-        //             return res.status(403).json({"message": "systemContr/upload Ви не авторизувались(!token)"})
-        //         } else {
-        //             const refData = await userService.refresh(refreshToken)
-        //             res.cookie('refreshToken', refData.refreshToken, {
-        //                 maxAge: 24*30*60*60*1000,
-        //                 httpOnly: true
-        //             })
-        //             token = refData.token
-        //             admin = await getUserfromToken(token)
-        //             return admin
-        //         }
-        //     }
-        // }
-        
         try {
-            // userRoleDefer(req, res)
-            
-            // let token = req.cookies.token
-            // let refreshToken = req.cookies.refreshToken
-            // let admin
-
-            // if(token){
-            //     admin = await getUserfromToken(token)
-            // } else {
-            //     if(!refreshToken){
-            //         return res.status(403).json({"message": "systemContr/upload Ви не авторизувались(!token)"})
-            //     } else {
-            //         const refData = await userService.refresh(refreshToken)
-            //         res.cookie('refreshToken', refData.refreshToken, {
-            //             maxAge: 24*30*60*60*1000,
-            //             httpOnly: true
-            //         })
-            //         token = refData.token
-            //         admin = await getUserfromToken(token)
-            //     }
-            // }
-            
-            // const userRole = admin.status
-            // // const userRole = await userRoleDefer()
-            // console.log(`userRole: ${userRole}`)
-            // if(userRole !== 'admin') return res.render('msg', {msg: 'У Вас не має права доступу!'})
-
             const errors = validationResult(req)
             if (!errors.isEmpty()) {
                 return res.status(400).json({message: "Uncorrect request", errors})
@@ -180,6 +138,27 @@ class adminController {
         } catch (err) {
             console.log(err)
             return res.render('error', {msg: 'err'})
+        }
+    }
+
+    async finduserbyid (req, res, next) {
+        try {
+            const errors = validationResult(req)
+            if (!errors.isEmpty()) {
+                return res.status(400).json({message: "Uncorrect request", errors})
+            }
+            console.log('start finduser')
+            const {userId} = req.body
+            console.log(`finduserbyid-id: ${userId}`)
+            // const user = await User.findOne({_id: userId})
+            const user = await User.findById({_id: userId})
+            if (!user) return res.status(404).render('error', {errorMsg: `юзера з email: "${email}" не знайдено`})
+
+            res.json({user})
+        } catch (error) {
+            console.log(error)
+            next(error)
+            // return res.render('error', {msg: 'err'})
         }
     }
 

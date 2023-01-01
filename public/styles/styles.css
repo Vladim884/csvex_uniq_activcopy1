@@ -1144,6 +1144,10 @@ header .menu-links.vizibly {
   display: block;
 }
 
+.hidden {
+  display: none;
+}
+
 .wrapp {
   display: flex;
   min-height: 100%;

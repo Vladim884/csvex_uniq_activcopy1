@@ -12,9 +12,16 @@
         </div>
 
         <div class="form-block  form-admin-panel">
-            <h2>Знайти юзера</h2>
+            <h2>Знайти юзера по email</h2>
             <form action="/api/admin/finduserpage" method="post">
                 <input type="text" name="email" placeholder="Введить email юзера">
+                <button type="submit">Знайти</button>
+            </form>
+        </div>
+        <div class="form-block  form-admin-panel">
+            <h2>Знайти юзера по id</h2>
+            <form action="/api/admin/finduserpageid" method="post">
+                <input type="text" name="id" placeholder="Введить id юзера">
                 <button type="submit">Знайти</button>
             </form>
         </div>

@@ -1,5 +1,7 @@
 <div class="wrapper-chat">
-    <h1>{{rooms}}</h1>
+    {{!-- <h1>{{rooms}}</h1> --}}
+    <h1>Чат з адміном</h1>
+    <p>Вітаємо Вас, {{nicname}}! Дочекайтесь відгуку адміна та задайте своє питання.</p>
     {{!-- <button onclick="sendMSGToAll()">Send Message To All</button> --}}
     <ul id="messages-chat" class="messages-room">
 
@@ -17,6 +19,11 @@
 <script>
    (function() {
       const iframe = document.getElementById('iframe')
+      //const footerEl = document.getElementById('foote')
+      //const headerEl = document.getElementById('heade')
+      //footerEl.classList.add('hidden')
+      //headerEl.classList.add('hidden')
+
       const socket = io('/admin')
       const messages = document.getElementById('messages-chat')
       var form = document.getElementById('form-chat');

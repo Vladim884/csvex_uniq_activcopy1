@@ -30,7 +30,7 @@
   //const roomList = rooms.split(',')
   function createRoom(){
   //const name = document.getElementById('input-room-name').value
-  const name = gen_password(10)
+  const name = get_password(10)
   //console.log(name)
 
     //const inner = document.getElementById('inner')
@@ -75,7 +75,7 @@
   //  return console.log('server send bad response')
   //}
 
-  gen_password = (len) => {
+  get_password = (len) => {
     var str = "";
     var symbols = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!№;%:?*()_+=";
     for (var i = 0; i < len; i++){
