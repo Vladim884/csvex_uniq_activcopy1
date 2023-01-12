@@ -949,6 +949,7 @@ button.btn-disabled:focus {
   display: flex;
   width: calc(50vw - 10px);
   margin: 0 auto;
+  margin-bottom: 10vh;
   padding: 20px;
   border: 8px solid #99CCCC;
   border-radius: 8px;

@@ -89,7 +89,11 @@ class menuController {
             
             const daysLeft = user.daysLeft
             console.log(`daysLeft: ${daysLeft}`)
-            if(daysLeft === 0) return res.render('menu/cabinet', {msg: 'У Вас не вистачає коштів.'})
+            if(daysLeft === 0) return res.render('menu/cabinet', {
+                msg: 'У Вас не вистачає коштів.', 
+                crsjs: '/js/viewUserData/cabinetUserData.js',
+                lineNextName: 'Вітаємо, '
+            })
             await res.render('menu/start.hbs')
         } catch (err) {
             console.log(err)
