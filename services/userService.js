@@ -7,15 +7,16 @@ const tokenService = require("./tokenService")
 const moment = require("moment")
 
 class UserService {
-    async login(email, password){
+    async login(email, password, req, res, next){
         try {
             let user = await User.findOne({email})
             if (!user) {
-                return res.status(404).json({message: "User not found"})
+                return res.status(404).render('error', {msg: "Користувача не знайдено"})
             }
             const isPassValid = bcrypt.compareSync(password, user.password)
             if (!isPassValid) {
-                return res.status(400).json({message: "Invalid password"})
+                // return res.status(400).json({message: "Invalid password"})
+                return res.status(400).render('error', {msg: "Невірний пароль"})
             }
             const userDto = new UserDto(user)
             const tokens = tokenService.generateTokens({...userDto})
@@ -24,6 +25,7 @@ class UserService {
             return {...tokens, user}
         } catch (error) {
             console.log(error)
+            return res.status(400).render('error', {msg: "Помилка"})
         }
             
 

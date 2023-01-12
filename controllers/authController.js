@@ -252,7 +252,7 @@ class authController {
                     msg: `Користувача з email: ${email} не знайдено, спробуйте ввести інший email,
                      чи зареєструватися на сайті`})
             }
-            const userData = await userService.login(email, password)
+            const userData = await userService.login(email, password, req, res, next)
             let user = userData.user
             const token = userData.token
             const refreshToken = userData.refreshToken
@@ -271,39 +271,33 @@ class authController {
                 maxAge: 300000,
                 httpOnly: true
             })
-            
-            let daysLeft = getNumberOfDays(new Date(), new Date(user.endDay))
-            if(daysLeft < 0) daysLeft = 0
-            let balance = daysLeft * 100 / 30
-            if(balance < 0) balance = 0
-            if (daysLeft !== user.daysLeft || balance !== user.balance) {
-                let obj = {
-                    daysLeft,
-                    balance
-                }
-                user = _.extend(user, obj)
-                await user.save((err, result) => {
-                    if(err){
-                        return res.status(400).json({message: `Ошибка изменения оплати юзера ${email}`})
-                    } else {
-                        console.log('Баланс та залишок днів при логіні змінено???')
-                    }
-                })
-            } else {
-                console.log('Data has not changed')
-            }
+            //======
+            // let daysLeft = getNumberOfDays(new Date(), new Date(user.endDay))
+            // if(daysLeft < 0) daysLeft = 0
+            // let balance = daysLeft * 100 / 30
+            // if(balance < 0) balance = 0
+            // if (daysLeft !== user.daysLeft || balance !== user.balance) {
+            //     let obj = {
+            //         daysLeft,
+            //         balance
+            //     }
+            //     user = _.extend(user, obj)
+            //     await user.save((err, result) => {
+            //         if(err){
+            //             return res.status(400).json({message: `Ошибка изменения оплати юзера ${email}`})
+            //         } else {
+            //             console.log('Баланс та залишок днів при логіні змінено???')
+            //         }
+            //     })
+            // } else {
+            //     console.log('Data has not changed')
+            // }
 
             return await res.render('menu/cabinet', {
                 crsjs: '/js/viewUserData/cabinetUserData.js', 
                 inputIdVal: '',
                 lineNextName: 'Вітаємо, '
-            })
-            
-            // return res.render(
-            //     './cabinet1.hbs', 
-            //     await userService.getCabinetFields(user)
-            // ) 
-            
+            })    
         } catch (e){
             console.log(`/login e: ${e}`)
             next(e)

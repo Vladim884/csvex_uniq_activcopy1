@@ -31,7 +31,7 @@ class adminController {
     async writePaying (req, res, next) {
         
         let {email, sumpay} = req.body
-        console.log(email)
+        // console.log(email)
         let user = await User.findOne({email})
             if (!user) {
                 return res.status(404).json({message: "User not found"})
@@ -49,7 +49,7 @@ class adminController {
         //Кол-во новых оплаченных дней: 
         let daysPayingLast = lastPayment.sum / (100/30)
         if(daysPayingLast < 0) daysPayingLast = 0
-        console.log(daysPayingLast)
+        // console.log(daysPayingLast)
         //=====================
         //Кол-во новіх оплаченных минут: 
         let minutessPaying = daysPayingLast*24*60
@@ -67,8 +67,8 @@ class adminController {
 
         //конечная дата оплаченных дней:
         const endDay = moment(today).add(sumMinutesLast, 'minutes')
-        user.endDay = endDay;
-        console.log(`endDay: ${endDay}`)
+        user.endDay = endDay
+        // console.log(`endDay: ${endDay}`)
 
         
         const balance = (100/30/24/60) * sumMinutesLast
@@ -78,9 +78,9 @@ class adminController {
         user.sumpay = +user.sumpay + +lastPayment.sum
         // console.log(`user.sumpay: ${user.sumpay}`)
         //===========================
-        user.balance = balance
+        // user.balance = balance
         //итоговое количество оставшихся дней
-        user.daysLeft = sumMinutesLast /60/24
+        // user.daysLeft = sumMinutesLast /60/24
             
         // let obj1 = {
         //     payingDate: lastPayment.date,

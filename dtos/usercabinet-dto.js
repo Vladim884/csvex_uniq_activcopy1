@@ -6,7 +6,9 @@ module.exports = class UsercabinetDto{
     balance
     daysLeft
     registrDate
+    endDay
     lastPayment
+    payments
 
 
     constructor(model){
@@ -17,7 +19,9 @@ module.exports = class UsercabinetDto{
         this.registrDate = model.registrDate
         this.balance = model.balance 
         this.daysLeft = model.daysLeft 
+        this.endDay = model.endDay 
         this.lastPayment = model.payments[model.payments.length - 1] 
+        this.payments = model.payments
     }
 }
 
