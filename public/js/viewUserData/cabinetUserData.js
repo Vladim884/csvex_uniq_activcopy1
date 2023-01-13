@@ -27,14 +27,14 @@ async function getUser() {
     fieldUserId.textContent = user.id
     fieldStatusData.textContent = user.status
 
-    //=========================
+    //balance and activation-days
     var dateB = moment(user.endDay)
     var dateC = moment(moment().format())
 
     const hours = dateB.diff(dateC, 'hours')
     const days = dateB.diff(dateC, 'days')
     const endpart = hours % 24
-    console.log(`days = ${days}дн.${endpart}годин`)
+    // console.log(`days = ${days}дн.${endpart}годин`)
 
     const countOneHour = 100 / 30 / 24
     const balance = hours * countOneHour
@@ -44,12 +44,11 @@ async function getUser() {
     // console.log('Разница в ', dateB.diff(dateC, 'hours'), 'часов')
     // console.log('Разница в ', dateB.diff(dateC, 'months'), 'месяцев')
     if (days <= 0){
-        fieldBalance.textContent = 0 + '(грн)'
-        fieldActiveGenerator.textContent = `Активовано 0 днів`
-    } else {
-        fieldBalance.textContent = balance.toFixed(2) + '(грн)'
-        fieldActiveGenerator.textContent = `Активовано ${days} дн.${endpart} год.`
+        days === 0
     }
+    fieldActiveGenerator.textContent = `Активовано ${days} дн.${endpart} год.`
+    fieldBalance.textContent = balance.toFixed(2) + ' грн'
+    
     //==================
     //const registrDate = document.querySelector('.field-registrDate')
     //registrDate.textContent = formatNowDate(user.registrDate)

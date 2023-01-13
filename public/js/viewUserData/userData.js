@@ -45,11 +45,30 @@ const flag = document.getElementById('flag')
         fieldEmail.textContent = user.email
         fieldUserId.textContent = user._id
         fieldStatusData.textContent = user.status
-        //fieldBalance.textContent = (100/30 * user.daysLeft).toFixed(2) + '(грн)'
-        fieldBalance.textContent = user.balance.toFixed(2) + '(грн)'
-        fieldActiveGenerator.textContent = `Активовано на ${user.daysLeft} днів`
-        //const registrDate = document.querySelector('.field-registrDate')
-        //registrDate.textContent = formatNowDate(user.registrDate)
+
+        //balance and activation-days
+        var dateB = moment(user.endDay)
+        var dateC = moment(moment().format())
+
+        const hours = dateB.diff(dateC, 'hours')
+        const days = dateB.diff(dateC, 'days')
+        const endpart = hours % 24
+        console.log(`days = ${days}дн.${endpart}годин`)
+
+        const countOneHour = 100 / 30 / 24
+        const balance = hours * countOneHour
+
+        // console.log('Разница в ', dateB.diff(dateC), 'миллисекунд')
+        // console.log('Разница в ', dateB.diff(dateC, 'days'), 'дней')
+        // console.log('Разница в ', dateB.diff(dateC, 'hours'), 'часов')
+        // console.log('Разница в ', dateB.diff(dateC, 'months'), 'месяцев')
+        if (days <= 0){
+            days === 0
+        }
+        fieldActiveGenerator.textContent = `Активовано ${days} дн.${endpart} год.`
+        fieldBalance.textContent = balance.toFixed(2) + ' грн'
+        //==================
+        
         registrDate.textContent = moment(user.registrDate).format("DD.MM.YYYY")
         //let lastPayments = user.payments[user.payments.length - 1];
         let lastPayment = user.lastPayment
@@ -64,7 +83,5 @@ const flag = document.getElementById('flag')
         linkHistory.href = `http://localhost:5000/api/admin/payhistorypage?id=${user._id}`
         linkPay.href = `http://localhost:5000/api/admin/payhistorypage?id=${user._id}`
         linkPay.textContent = `Сплатити`
-        //return data
         }
-        
     }

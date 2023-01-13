@@ -158,14 +158,13 @@ class adminController {
             if (!errors.isEmpty()) {
                 return res.status(400).json({message: "Uncorrect request", errors})
             }
-            console.log('start finduser')
+            console.log('start finduserbyid')
             const {usdata} = req.body
             const userId = usdata
             console.log(`finduserbyid-id: ${userId}`)
             // const user = await User.findOne({_id: userId})
             const user = await User.findById({_id: userId})
             if (!user) return res.status(404).render('error', {errorMsg: `юзера з email: "${email}" не знайдено`})
-
             res.json({user})
         } catch (error) {
             console.log(error)
