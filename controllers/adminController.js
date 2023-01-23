@@ -63,7 +63,7 @@ class adminController {
 
         // сколько теперь осталось оплаченных минут sumpay???
         let sumMinutesLast = diffMinutes + minutessPaying
-        console.log(`сколько теперь осталось оплаченных минут: ${sumMinutesLast}`)
+        // console.log(`сколько теперь осталось оплаченных минут: ${sumMinutesLast}`)
 
         //конечная дата оплаченных дней:
         const endDay = moment(today).add(sumMinutesLast, 'minutes')
@@ -110,7 +110,7 @@ class adminController {
 
     async finduserPageByIdRender (req, res, next) {
         const {id} = req.body
-        console.log(`finduserPageByIdRender-id: ${id}`)
+        // console.log(`finduserPageByIdRender-id: ${id}`)
         // return res.render('service/adminserv/userdatabyid', {inputVal: id, crsjs: '/js/viewUserData/userDataById.js'})
         return res.render('menu/cabinet', {
             inputVal: id, 
@@ -222,11 +222,11 @@ class adminController {
             console.log(users)
             for (let i = 0; i < users.length; i++) {
                 const restDay = Math.round((users[i].endDay - new Date()) / (60 * 60 * 24 * 1000))
-                clg('restDay', `${restDay}`)
+                console.log('restDay', `${restDay}`)
                 if (restDay < 9 && restDay > 0){
                         let nowday = formatNowDate()
                         let endDay = formatDate(restDay)
-                        clg('endDay', `${endDay}`)
+                        console.log('endDay', `${endDay}`)
                         const message = {
                             to: 'ivladim95@gmail.com',
                             subject: 'Оплата послуги на CSV TO EXCEL',

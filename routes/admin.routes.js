@@ -29,9 +29,7 @@ router.get('/payhistorypage', cookieJwtAuth, adminController.dysplayPayHistoryPa
 router.get('/payhistforadmin', [cookieJwtAdminAuth.cookAuth, cookieJwtAdminAuth.adminAuth], adminController.payHistPageForAdmRender)
 router.get('/payhistory_foradm', [cookieJwtAdminAuth.cookAuth, cookieJwtAdminAuth.adminAuth], adminController.getForAdminPaymentsData)
 router.get('/usersList', [cookieJwtAdminAuth.cookAuth, cookieJwtAdminAuth.adminAuth], adminController.dysplayUsersList)
-
 router.get('/usersListPag', [cookieJwtAdminAuth.cookAuth, cookieJwtAdminAuth.adminAuth], adminController.getStartUsersList)
-
 
 router.post('/usersListPag', [cookieJwtAdminAuth.cookAuth, cookieJwtAdminAuth.adminAuth], adminController.getAnyUsersList)
 

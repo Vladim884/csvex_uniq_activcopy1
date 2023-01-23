@@ -1,3 +1,5 @@
+const { format } = require("path")
+const moment = require("moment")
 const PaymentsDto = require("../dtos/payments-dto")
 const { getUserfromToken } = require("../myFunctions/myFunctions")
 const userService = require("../services/userService")
@@ -86,14 +88,29 @@ class menuController {
                     user = await getUserfromToken(token)
                 }
             }
+            //!!!!!!!!!!!!!!!!!!!!!
             
-            const daysLeft = user.daysLeft
-            console.log(`daysLeft: ${daysLeft}`)
-            if(daysLeft === 0) return res.render('menu/cabinet', {
+
+            var dateB = moment(user.endDay)
+            var dateC = moment(moment().format())
+
+            const mlseconds = dateB.diff(dateC)
+            console.log(mlseconds)
+            
+            // const daysLeft = user.daysLeft
+            // console.log(`daysLeft: ${daysLeft}`)
+
+            if(mlseconds < 60000) return res.render('menu/cabinet', {
                 msg: 'У Вас не вистачає коштів.', 
                 crsjs: '/js/viewUserData/cabinetUserData.js',
                 lineNextName: 'Вітаємо, '
             })
+            
+            // if(daysLeft === 0) return res.render('menu/cabinet', {
+            //     msg: 'У Вас не вистачає коштів.', 
+            //     crsjs: '/js/viewUserData/cabinetUserData.js',
+            //     lineNextName: 'Вітаємо, '
+            // })
             await res.render('menu/start.hbs')
         } catch (err) {
             console.log(err)

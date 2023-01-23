@@ -47,23 +47,30 @@ const flag = document.getElementById('flag')
         fieldStatusData.textContent = user.status
 
         //balance and activation-days
+        
         var dateB = moment(user.endDay)
         var dateC = moment(moment().format())
 
         const hours = dateB.diff(dateC, 'hours')
-        const days = dateB.diff(dateC, 'days')
-        const endpart = hours % 24
-        console.log(`days = ${days}дн.${endpart}годин`)
+        let days = dateB.diff(dateC, 'days')
+        let endpart = hours % 24
+        if(endpart <= 0){
+            endpart = 0
+        }
+        // console.log(`days = ${days}дн.${endpart}годин`)
 
         const countOneHour = 100 / 30 / 24
-        const balance = hours * countOneHour
+        let balance = hours * countOneHour
+        if(balance <= 0){
+            balance = 0
+        }
 
         // console.log('Разница в ', dateB.diff(dateC), 'миллисекунд')
         // console.log('Разница в ', dateB.diff(dateC, 'days'), 'дней')
         // console.log('Разница в ', dateB.diff(dateC, 'hours'), 'часов')
         // console.log('Разница в ', dateB.diff(dateC, 'months'), 'месяцев')
         if (days <= 0){
-            days === 0
+            days = 0
         }
         fieldActiveGenerator.textContent = `Активовано ${days} дн.${endpart} год.`
         fieldBalance.textContent = balance.toFixed(2) + ' грн'

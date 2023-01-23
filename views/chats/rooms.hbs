@@ -1,7 +1,9 @@
 <div class="wrapper-chat">
-    {{!-- <h1>{{rooms}}</h1> --}}
+    <h1>{{rooms}}</h1>
+    <span id="roomName" class="hidden">{{rooms}}</span>
+    <span id="userIdName" class="hidden">{{userId}}</span>
     <h1>Чат з адміном</h1>
-    <p>Вітаємо Вас, {{nicname}}! Дочекайтесь відгуку адміна та задайте своє питання.</p>
+    <p>Вітаємо Вас, <span id="nicn">{{nicname}}</span>! Дочекайтесь відгуку адміна та задайте своє питання.</p>
     {{!-- <button onclick="sendMSGToAll()">Send Message To All</button> --}}
     <ul id="messages-chat" class="messages-room">
 
@@ -16,13 +18,15 @@
 
     <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
+    {{!-- <script src="/js/roomschat.js"></script> --}}
 <script>
+  window.addEventListener('load', function () {
    (function() {
       const iframe = document.getElementById('iframe')
-      //const footerEl = document.getElementById('foote')
-      //const headerEl = document.getElementById('heade')
-      //footerEl.classList.add('hidden')
-      //headerEl.classList.add('hidden')
+      const footerEl = document.getElementById('foote')
+      const headerEl = document.getElementById('heade')
+      footerEl.classList.add('hidden')
+      headerEl.classList.add('hidden')
 
       const socket = io('/admin')
       const messages = document.getElementById('messages-chat')
@@ -84,4 +88,5 @@
       //}
 
     })()
+  })
 </script>
