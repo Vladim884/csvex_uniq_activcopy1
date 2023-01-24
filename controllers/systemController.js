@@ -12,24 +12,17 @@ const {
     moveFile,
     deleteFolder, 
     createDir, 
-    decryptToken,
     getUserfromRefToken} = require("../myFunctions/myFunctions")
-const authController = require("./authController")
 const userService = require("../services/userService")
-const { deleterOldFile } = require("../services/fileService")
 
 
 class systemController {
     
     async getAccessToStart(req, res, next) {
         try {
-            console.log(req)
             const testuser = req.user
-            console.log(testuser)
             const user = await User.findOne({_id: req.user.id})
             if(+user.daysLeft === 0){
-
-                // rimraf.sync(dirpath)
                 res.render('/menu/cabinet', {
                     user : req.user, // get the user out of session and pass to template
                     msg: 'Немає коштів для отримання послуги'
@@ -46,36 +39,29 @@ class systemController {
 
     async upload(req, res, next) {
         try {
-            
             let token = req.cookies.token
             const {refreshToken} = req.cookies
             if(token){
                 let user = await getUserfromToken(token)
-                
             } else {
                 // const {refreshToken} = req.cookies
                     if(!refreshToken){
                         return res.status(403).json({"message": "systemContr/upload Ви не авторизувались(!token)"})
                     } else {
                         const refData = await userService.refresh(refreshToken)
-                        console.log(`systContr-upload-refData: ${refData}`)
                         res.cookie('refreshToken', refData.refreshToken, {
                             maxAge: 24*30*60*60*1000,
                             httpOnly: true
                         })
                         token = refData.token
-                        
                     }
             }
-            // const token = decryptToken(xtext, config.get('secretKeyForToken1'))
             const user = await getUserfromToken(token)
             let dirpath = `${config.get("filePath")}\\${user.id}`
             let filedata = req.file
-            // console.log(filedata)
             deleteFolder(dirpath)
             let originalFile = filedata.originalname
             let randFilePath = `${config.get("filePath")}\\${filedata.filename}` //path for  file .csv in 'dest/req.cookies.cookid/' in project-folder
-    
             let fileExt = path.extname(originalFile)
             // const origName = path.parse(originalFile).name  // file-name without ext-name (not used)
             
@@ -119,18 +105,11 @@ class systemController {
     async upload01(req, res, next) {
         console.log('upl01')
         try {
-            
-            // const xtext = req.cookies.xtext
-            // const token = decryptToken(xtext, config.get('secretKeyForToken1'))
             const {refreshToken} = req.cookies
-            console.log(`upload01-refreshToken: ${refreshToken}`)
             if(!refreshToken){
                 return res.status(403).json({"message": "systemContr/upload01 Ви не авторизувались(!token)"})
             }
-            
             let user = await getUserfromRefToken(refreshToken)
-            console.log(`upo1-user: ${user}`)
-
             let randFilePath = user.temp[0].randFilePath
             let dirpath = `${config.get("filePath")}\\${user.id}`
             let results = []
@@ -165,27 +144,18 @@ class systemController {
                     resgroup
                 })
             }) 
-        } catch (e) {
-            console.log('miss in api/ststem/upload01')
-            console.log(`e: ${e}`)
-            next(e)
+        } catch (err) {
+            console.log(err)
+            next(err)
         }
     }
 
     async upload1(req, res, next) {
         try {
-            // const xtext = req.cookies.xtext
-            // const token = decryptToken(xtext, config.get('secretKeyForToken1'))
-            // if(!token){
-            //     return res.status(403).json({"message": "Ви не авторизувались"})
-            // }
-            // let user = await getUserfromToken(token)
             const {refreshToken} = req.cookies
-            console.log(`upload01-refreshToken: ${refreshToken}`)
             if(!refreshToken){
                 return res.status(403).json({"message": "systemContr/upload01 Ви не авторизувались(!token)"})
             }
-            
             let user = await getUserfromRefToken(refreshToken)
             let randFilePath = user.temp[0].randFilePath
             let dirpath = `${config.get("filePath")}\\${user.id}`
@@ -196,20 +166,12 @@ class systemController {
                 results.push(data)
             })
             .on('end', () => {
-                // console.log(ress[0])
                 if(fs.existsSync(`${dirpath}\\newcsv.csv`)) {
                     fs.unlinkSync(`${dirpath}\\newcsv.csv`)
-                    console.log('csv deleted')
                 } 
                 if (fs.existsSync(`${dirpath}\\newxl.xlsx`)) {
                     fs.unlinkSync(`${dirpath}\\newxl.xlsx`)
-                    console.log('xl deleted')
                 } 
-                // if(ress) {next('err')}
-                // console.log('upload1-func')
-                /// console.log(results)
-                // if(!req.body) return response.sendStatus(400);
-                //change data file
                 for (let i = 0; i < results.length; i++) {
                     results[i]['Поисковые_запросы'] = req.body.req_find[i];
                     results[i]['Название_позиции'] = req.body.req_name[i];
@@ -221,7 +183,6 @@ class systemController {
                         // res.status(502);
                         // res.render('error', {errorMsg: `Server Error`});
                     }
-                    console.log(`results[0]: ${Object.keys(results[0])}`)
                     return json2csv.parseAsync(data, {fields: Object.keys(results[0])}) // right variant
                 }).then(csv => {
                     let myFirstPromise = new Promise((resolve, reject) => {
@@ -239,22 +200,14 @@ class systemController {
                         let source = path.join(`${dirpath}`, 'newcsv.csv')
                         let destination = path.join(`${dirpath}`, 'newxl.xlsx')
                         
-                        // try {
                         convertCsvToXlsx(source, destination)
-                        // } catch (e) {
-                        // console.error(e.toString())
-                        // }
-                        /// rimraf(`${dirpath}/newxl.xlsx/`+'*', function () { 
-                        ///     console.log('Directory ./files is empty!'); 
-                        ///  !! if you remove the asterisk -> *, this folder will be deleted!
-                        // / });
                         console.log(message)
                     })
                 })
             })
             
         } catch (err) {
-            console.log(`upload1-err: ${err}`)
+            console.log(err)
             next(err)
         }
     }
@@ -262,9 +215,8 @@ class systemController {
     async upload2(req, res, next) {
         try {            
             const {refreshToken} = req.cookies
-            console.log(`upload01-refreshToken: ${refreshToken}`)
             if(!refreshToken){
-                return res.status(403).json({"message": "systemContr/upload01 Ви не авторизувались(!token)"})
+                return res.status(403).json({"message": "systemContr/upload01 Ви не авторизувались"})
             }
             
             let user = await getUserfromRefToken(refreshToken)
@@ -275,15 +227,12 @@ class systemController {
             let exelpath = user.temp[0].exelpath
     
             res.download(exelpath, 
-                
                 function () {
-                    
                     deleteFolder(dirpath)
-                    
-                    //unable to render page after res.:
-                    // await res.render('service/done.hbs') 
-                })
-            } catch (err) {
+                }
+            )
+        } catch (err) {
+            console.log(err)
             next(err)     
         }
     }
