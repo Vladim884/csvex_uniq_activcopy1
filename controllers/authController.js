@@ -272,7 +272,7 @@ class authController {
             })
             res.json(userData)
         } catch (err) {
-            console.log(`refresh err: ${err}`)
+            console.log(err)
             next(err)
         }
             

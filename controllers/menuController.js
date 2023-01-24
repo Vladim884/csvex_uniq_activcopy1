@@ -134,7 +134,6 @@ class menuController {
                     return res.status(403).render('msg', {msg: "authContr-getTokenUserData Ви не авторизувались(!token)"})
                 } else {
                         const refData = await userService.refresh(refreshToken)
-                        // console.log(`paymentContr-getTokenUserData-refData ${Object.values(refData)}`)
                         res.cookie('refreshToken', refData.refreshToken, {
                         maxAge: 24*30*60*60*1000,
                         httpOnly: true
@@ -151,10 +150,8 @@ class menuController {
             const userPaymentsData = new PaymentsDto(user)
             const userId = userPaymentsData.id
             const nicname = userPaymentsData.nicname
-            console.log(`roomList: ${JSON.stringify(roomList)}`)
             return res.render('menu/chat', {userId, nicname})
-            // return res.render('menu/chat', {rooms: roomList, userId, nicname})
-            // return await res.render('menu/chat')
+            
         } catch (error) {
             console.log(error)
             next(error)
@@ -172,15 +169,9 @@ class menuController {
     async logout (req, res, next) {
         try {
             const {refreshToken} = req.cookies
-            // console.log(`authContr-logout-req.coocies.refreshToken: ${refreshToken}`)
             const userData = await userService.logout(refreshToken)
-            // console.log(`auuthContr-logout-token: ${userData}`)
-            // deleterOldFile(user)
-            // await userService.logout(refreshToken)
-            // await Token.deleteOne({refreshToken})
-            // await Token.deleteOne({user: '630e574ccba3eb09782eee65'})
+            
             res 
-                // .clearCookie("xtext")
                 .clearCookie("token")
                 .clearCookie("refreshToken")
             return res
