@@ -1,7 +1,4 @@
 const Router = require("express")
-// const _ = require("lodash")
-// const User = require("../models/User")
-// const jwt = require("jsonwebtoken")
 const {check, validationResult} = require("express-validator")
 const router = new Router()
 const {cookieJwtAuth} = require('../middleware/cookieJwtAuth')
