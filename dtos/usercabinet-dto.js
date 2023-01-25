@@ -10,7 +10,6 @@ module.exports = class UsercabinetDto{
     lastPayment
     payments
 
-
     constructor(model){
         this.id = model._id
         this.nicname = model.nicname

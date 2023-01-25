@@ -6,8 +6,6 @@ module.exports = class UserListDto{
     balance
     endDay
 
-    
-
     constructor(model){
         this.nicname = model.nicname
         this.registrDate = model.registrDate

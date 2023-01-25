@@ -1,10 +1,6 @@
 
 footer {
   background-color: $darky;
-  // position: fixed; 
-  // bottom: 0; 
-  // left: 0; 
-  // right: 0; 
   margin-top: auto;
   .item .vizibly#navcontact,
   .item .vizibly#navmenu {
@@ -107,6 +103,9 @@ footer {
   footer {
     padding-top: 10px;
     padding-bottom: 10px;
+    .footer-wrap {
+      flex-direction: column;
+    }
     .footer-copy {
       p {
         font-size: 14px;
@@ -131,6 +130,7 @@ footer {
         cursor: pointer;
         margin-bottom: 10px;
       }
+
       
       .footer-menu {
         display: none;
@@ -138,3 +138,13 @@ footer {
   }
   
 }
+
+@media screen and (max-width: 260px){
+  footer .item .footer-title,
+  footer .item .footer-menu li,
+  footer .item p, 
+  footer .item a {
+    font-size: 10px;
+  }
+}
+  

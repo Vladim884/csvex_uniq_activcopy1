@@ -10,7 +10,6 @@ module.exports = (req, res, next) => {
         const data = req.headers
         
         const token = req.headers.authorization.split(' ')[1]
-        console.log(`token in auth.middleware: ${token}`)
         if (!token) {
             return res.status(401).json({message: 'token error'})
         }

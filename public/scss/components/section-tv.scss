@@ -1,43 +1,39 @@
 .title-tv {
-    margin-bottom: 40px;
+    margin-bottom: 5vh;
     text-align: center;
     color: $darky;
     font-weight: 500;
 }
 .tv {
-    margin-top: 10px;
-    height: 100vh;
+    // margin-top: 50px;
+    // height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 0 5px;
-    margin-bottom: 5%;
-    img {
-        max-width: 100%;
-        height: auto;
-    }
+    margin-bottom: 5vh;
     .player {
         width: 100%;
         max-width: 930px;
         position: relative;
         img {
             width: 100%;
-            max-height: 72%;
+            // max-height: 72%;
         }
         
         video {
-            width: 79%;
-            height: 74.5%;
+            width: 95.9%;
+            height: 87.2%;
             position: absolute;
-            top: 7%;
-            left: 10.6%;
+            top: -2.3%;
+            left: 2.2%;
             // background-color: #000;
         }
 
         .light-switch {
             position: absolute;
-            top: 2%;
-            left: 8.6%;
+            top: -27px;
+            left: 0;
             .slider {
                 background-color: $darky;
             }
@@ -46,58 +42,61 @@
 }
 
 @media (max-width: 992px) {
-    .title-tv {
-        margin-bottom: 30px;
-    }
-    .tv {
-        // margin-top: 10px;
-        height: 80vh;
-        .player {
-            
-            .light-switch {
-                // position: absolute;
-                top: -1%;
-            }
-        }
-        
-    }
-    
+    // .title-tv {
+    //     margin-bottom: 0px;
+    // }
+    // .tv {
+    //     margin-top: 10px;
+    //     height: 80vh;
+    //     .player {
+    //         .light-switch {
+    //             position: absolute;
+    //             top: -1%;
+    //         }
+    //     }
+    // }
 }
+@media (max-width: 910px) {
+    .user-links a{
+        font-size: 10px;
+    }
+}
+
 @media (max-width: 649px) {
-    .title-tv {
-        margin-bottom: 30px;
-    }
-    .tv {
-        height: 60vh;
-        .player {
+    // .title-tv {
+    //     margin-bottom: 0px;
+    // }
+    // .tv {
+        // height: 60vh;
+        // .player {
             
-            .light-switch {
+        //     .light-switch {
                 // position: absolute;
-                top: -1%;
-            }
-        }
+        //         top: 0%;
+        //     }
+        // }
         
-    }
+    // }
 }
 @media (max-width: 570px) {
-    .title-tv {
-        margin-bottom: 37px;
-    }
+    // .title-tv {
+    //     margin-bottom: 0px;
+    // }
     .tv {
-        height: 50vh;
+        // height: 50vh;
         .player {
             .light-switch {
                 // position: absolute;
-                top: -3%;
+                // top: 0%;
                 width: 30px;
-                height: 15px;
+                height: 20px;
                 .slider:before {
                     position: absolute;
                     content: "";
                     height: 12px;
                     width: 12px;
                     left: 2px;
-                    bottom: 1.3px
+                    bottom: 3.3px
                 }
             }
             input:checked + .slider:before {
@@ -110,22 +109,29 @@
     }
     
 }
+@media (max-width: 475px) {
+   body .user-links{
+        flex-direction: column;
+        a {
+            margin-bottom: 5vh;
+            width: 55%;
+        }
+    }
+}
 
 @media (max-width: 449px) {
-    .title-tv {
-        margin-bottom: 20px;
-    }
+    // .title-tv {
+    //     margin-bottom: 0px;
+    // }
     .tv {
-        height: 40vh;
+        // height: 40vh;
         .player {
             
             .light-switch {
                 // position: absolute;
-                top: -4%;
+                // top: 0%;
                 left: 0
             }
         }
-        
     }
-    
 }

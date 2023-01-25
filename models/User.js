@@ -21,24 +21,20 @@ const User = new Schema({
     registrDate: {
         type: Date, 
         default: moment().format()
-        // default: new Date(new Date())
-        
     },
     paymentNumber: {type: Number, default: 0},
     payingDate: {type: Date, default: new Date()},
     endDay: {type: Date, default: new Date()},
     sumpay: {type: Number, default: 0},
-    daysLeft: {type: Number, default: 0},
     resetLink: {data: String, default: ''},
     status: {type: String, default: 'user'},
-    
     diskSpace: {type: Number, default: 1024**3*10},
     usedSpace: {type: Number, default: 0},
     avatar: {type: String},
     files: [{type: ObjectId, ref:'File'}],
     temp: [{type: Object, ref: 'TempData'}],
-    payments: [{type: Object, ref:'Payment'}],
-    balance: {type: Number, default: 0}
+    payments: [{type: Object, ref:'Payment'}]
+    
 })
 
 module.exports = model('User', User)

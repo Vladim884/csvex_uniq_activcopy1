@@ -61,7 +61,7 @@ header {
   position: relative;
   background-color: #99CCCC;
   padding: 5px;
-  margin-bottom: 10px;
+  margin-bottom: 5vh;
   /* Spread out the elements inside the header. */
   justify-content: space-between;
   border-bottom: 1px solid #006666;
@@ -242,6 +242,9 @@ footer .footer-copy .footer-logo:hover {
     padding-top: 10px;
     padding-bottom: 10px;
   }
+  footer .footer-wrap {
+    flex-direction: column;
+  }
   footer .footer-copy p {
     font-size: 14px;
     margin-bottom: 25px;
@@ -266,8 +269,15 @@ footer .item .footer-menu li {
     display: none;
   }
 }
+@media screen and (max-width: 260px) {
+  footer .item .footer-title,
+footer .item .footer-menu li,
+footer .item p,
+footer .item a {
+    font-size: 10px;
+  }
+}
 .switch {
-  position: relative;
   display: inline-block;
   width: 50px;
   height: 25px;
@@ -664,24 +674,18 @@ button.btn-disabled:focus {
   }
 }
 .title-tv {
-  margin-bottom: 40px;
+  margin-bottom: 5vh;
   text-align: center;
   color: #006666;
   font-weight: 500;
 }
 
 .tv {
-  margin-top: 10px;
-  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0 5px;
-  margin-bottom: 5%;
-}
-.tv img {
-  max-width: 100%;
-  height: auto;
+  margin-bottom: 5vh;
 }
 .tv .player {
   width: 100%;
@@ -690,57 +694,32 @@ button.btn-disabled:focus {
 }
 .tv .player img {
   width: 100%;
-  max-height: 72%;
 }
 .tv .player video {
-  width: 79%;
-  height: 74.5%;
+  width: 95.9%;
+  height: 87.2%;
   position: absolute;
-  top: 7%;
-  left: 10.6%;
+  top: -2.3%;
+  left: 2.2%;
 }
 .tv .player .light-switch {
   position: absolute;
-  top: 2%;
-  left: 8.6%;
+  top: -27px;
+  left: 0;
 }
 .tv .player .light-switch .slider {
   background-color: #006666;
 }
 
-@media (max-width: 992px) {
-  .title-tv {
-    margin-bottom: 30px;
-  }
-  .tv {
-    height: 80vh;
-  }
-  .tv .player .light-switch {
-    top: -1%;
-  }
-}
-@media (max-width: 649px) {
-  .title-tv {
-    margin-bottom: 30px;
-  }
-  .tv {
-    height: 60vh;
-  }
-  .tv .player .light-switch {
-    top: -1%;
+@media (max-width: 910px) {
+  .user-links a {
+    font-size: 10px;
   }
 }
 @media (max-width: 570px) {
-  .title-tv {
-    margin-bottom: 37px;
-  }
-  .tv {
-    height: 50vh;
-  }
   .tv .player .light-switch {
-    top: -3%;
     width: 30px;
-    height: 15px;
+    height: 20px;
   }
   .tv .player .light-switch .slider:before {
     position: absolute;
@@ -748,7 +727,7 @@ button.btn-disabled:focus {
     height: 12px;
     width: 12px;
     left: 2px;
-    bottom: 1.3px;
+    bottom: 3.3px;
   }
   .tv .player input:checked + .slider:before {
     -webkit-transform: translateX(14px);
@@ -756,15 +735,17 @@ button.btn-disabled:focus {
     transform: translateX(14px);
   }
 }
+@media (max-width: 475px) {
+  body .user-links {
+    flex-direction: column;
+  }
+  body .user-links a {
+    margin-bottom: 5vh;
+    width: 55%;
+  }
+}
 @media (max-width: 449px) {
-  .title-tv {
-    margin-bottom: 20px;
-  }
-  .tv {
-    height: 40vh;
-  }
   .tv .player .light-switch {
-    top: -4%;
     left: 0;
   }
 }
@@ -889,7 +870,7 @@ button.btn-disabled:focus {
   }
 }
 .user-links {
-  margin-bottom: 10px;
+  margin-bottom: 5vh;
   display: flex;
   align-items: center;
   justify-content: center;

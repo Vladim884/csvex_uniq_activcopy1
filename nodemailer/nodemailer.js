@@ -36,7 +36,7 @@ transporter.verify((error, success) => {
 
 const mailer = message => {
   transporter.sendMail(message, (err, info) => {
-    if (err) return console.log(`transporter.sendMail err: {err}`)
+    if (err) return console.log(err)
     // console.log('Email sent: ', info)
   })
 }
