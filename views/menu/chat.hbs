@@ -5,7 +5,6 @@
       Дочекайтесь відгуку, отримайте відповідь на ваше запитання
       і лише тоді закрийвайте вікно чату.
     </p>
-    <p></p>
     <button onclick="createRoom()" style="font-size: 12px; width: 105px; padding: 5px">Створити чат</button>
 </div>
 
@@ -26,7 +25,7 @@
   const userId = '{{userId}}'
   const nicname = '{{nicname}}'
   //console.log(`rooms: ${rooms} userId: ${userId} nicname: ${nicname}`)
-  console.log(`userId: ${userId} nicname: ${nicname}`)
+  //console.log(`userId: ${userId} nicname: ${nicname}`)
   //const roomList = rooms.split(',')
   function createRoom(){
   //const name = document.getElementById('input-room-name').value
@@ -35,7 +34,8 @@
 
     //const inner = document.getElementById('inner')
     //inner.innerHTML += `<a href="/chats/rooms?name=${name}">перейти ${name}</a><br /><br />`
-    const adres = `/chats/rooms?name=${name}`
+    //const adres = `/chats/rooms?name=${name};nicname=${nicname}`
+    const adres = `/chats/rooms?name=${nicname}`
     //saveStartChatData(name)
     //httpGet(name)
     hrefto(adres)
@@ -49,9 +49,17 @@
   //  xmlHttp.send(null)
   //  return xmlHttp.responseText
   //}
+  //=============
+  // open in this window:
+  //const hrefto = (adres) => {
+  //    window.location.href = adres;
+  //}
+  // open in new window:
   const hrefto = (adres) => {
-      window.location.href = adres;
+      window.open(adres, '_blank')
   }
+  //============
+  
     
 
   //for(const name of roomList){

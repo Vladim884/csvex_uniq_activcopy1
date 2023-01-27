@@ -55,7 +55,9 @@
         socket.emit('join', {room, nicname})
       })
       document.addEventListener("onunload", function(){
-          const adres = 'http://localhost/chat'
+          // const adres = 'http://localhost/chat'
+          // const adres = 'http://localhost:5000/chat'
+          const adres = '/chat'
           const hrefto = (adres) => {
               window.location.href = adres;
           }
@@ -79,7 +81,7 @@
                 this.classList.add('active')
                 
                 // console.log(currentPage)
-                const response = await fetch("http://localhost:5000/api/admin/payhistory", {
+                const response = await fetch("/api/admin/payhistory", {
                     method: "POST",
                     headers: { "Accept": "application/json", "Content-Type": "application/json" },
                     body: JSON.stringify({

@@ -119,7 +119,6 @@ const io = new Server(server)
 // })
 
 const io_adminNameSpace = io.of('/admin')
-const io_adminNameSpace1 = io.of('/admin1')
 
 io_adminNameSpace.on('connect', (socket) => {
     // console.log('new client is conectiom')
@@ -136,6 +135,8 @@ io_adminNameSpace.on('connect', (socket) => {
             io_adminNameSpace.in('adminchat').emit('chat message', `disconnect ${userN} ${data.room} ${userL} ${userId}`)
         })
     })
+
+    
 
     // socket.on('disconnect', (data) => {
     //     io_adminNameSpace.in('adminchat').emit('chat message', `${data.nicname} is disconnect`)
@@ -162,6 +163,8 @@ io_adminNameSpace.on('connect', (socket) => {
     //   io_adminNameSpace.in('executive').in('engineer').emit('chat message', `data.msg: ${data.msg}`)
     // })
   })
+
+
 
 
 

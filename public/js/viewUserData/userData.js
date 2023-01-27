@@ -22,7 +22,6 @@ const flag = document.getElementById('flag')
             reqstring = "/api/admin/finduserbyid"
         }
         
-        // const response = await fetch("/api/admin/finduser", { 
         const response = await fetch(reqstring, { 
                 method: 'POST',
                     headers: { "Accept": "application/json", "Content-Type": "application/json" },
@@ -46,10 +45,8 @@ const flag = document.getElementById('flag')
         fieldUserId.textContent = user._id
         fieldStatusData.textContent = user.status
 
-        //balance and activation-days
-        
-        var dateB = moment(user.endDay)
-        var dateC = moment(moment().format())
+        const dateB = moment(user.endDay)
+        const dateC = moment(moment().format())
 
         const hours = dateB.diff(dateC, 'hours')
         let days = dateB.diff(dateC, 'days')
@@ -57,7 +54,6 @@ const flag = document.getElementById('flag')
         if(endpart <= 0){
             endpart = 0
         }
-        // console.log(`days = ${days}дн.${endpart}годин`)
 
         const countOneHour = 100 / 30 / 24
         let balance = hours * countOneHour
@@ -77,8 +73,7 @@ const flag = document.getElementById('flag')
         //==================
         
         registrDate.textContent = moment(user.registrDate).format("DD.MM.YYYY")
-        //let lastPayments = user.payments[user.payments.length - 1];
-        let lastPayment = user.lastPayment
+        let lastPayment = user.payments[user.payments.length - 1] // in api/auth/usercabinet user.lastPayment takyng from usercabinet-dto.js
         if(!lastPayment) {lastPayingDate.textContent = 'Оплат ще не було'}
         else {
             lastPayingDate.textContent = ` 
@@ -87,8 +82,8 @@ const flag = document.getElementById('flag')
                 ${lastPayment.sum}.00(грн)`
             }
         linkHistory.textContent = `Переглянути`
-        linkHistory.href = `http://localhost:5000/api/admin/payhistorypage?id=${user._id}`
-        linkPay.href = `http://localhost:5000/api/admin/payhistorypage?id=${user._id}`
+        linkHistory.href = `/api/admin/payhistorypage?id=${user._id}`
+        linkPay.href = `/api/admin/payhistorypage?id=${user._id}`
         linkPay.textContent = `Сплатити`
         }
     }

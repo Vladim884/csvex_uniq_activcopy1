@@ -11,6 +11,7 @@ let titleTv = document.getElementById('titletv')
                 headerEl.classList.add('black')
                 titleTv.classList.add('lighty-color')
                 for(let i = 0; i<=uslinks.length; i++ ){
+                    uslinks[i].style.borderColor = 'white'
                     uslinks[i].style.backgroundColor = "black"
                 }
             }
@@ -20,6 +21,7 @@ let titleTv = document.getElementById('titletv')
                 headerEl.classList.remove('black')
                 for(let i = 0; i<=uslinks.length; i++ ){
                     uslinks[i].style.backgroundColor = '#99CCCC'
+                    
                 }
             }
         }   

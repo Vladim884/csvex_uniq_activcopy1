@@ -34,7 +34,6 @@ const User = new Schema({
     files: [{type: ObjectId, ref:'File'}],
     temp: [{type: Object, ref: 'TempData'}],
     payments: [{type: Object, ref:'Payment'}]
-    
 })
 
 module.exports = model('User', User)

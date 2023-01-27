@@ -11,7 +11,6 @@ module.exports = class UserListDto{
         this.registrDate = model.registrDate
         this.email = model.email
         this.role = model.status
-        this.balance = model.balance
         this.endDay = model.endDay
     }
 }
