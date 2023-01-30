@@ -24,10 +24,13 @@
         item.textContent = msg
         // console.log(msg)
         let arr = msg.split(' ')
+        console.log(Object.values(arr))
         
         if(messages.childNodes){
             let arrmes = messages.childNodes
             for (let i = 0; i < arrmes.length; i++) {
+                // ${arr[1]} - nicname
+                // ${arr[4]} - userId
                 if (arr[0] === 'joined' && arrmes[i].innerText === `${arr[1]}_${arr[4]}`){
                     return
                 }
