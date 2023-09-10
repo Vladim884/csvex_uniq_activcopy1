@@ -95,7 +95,7 @@ class menuController {
             var dateC = moment(moment().format())
 
             const mlseconds = dateB.diff(dateC)
-            console.log(mlseconds)
+            // console.log(mlseconds)
             
             // const daysLeft = user.daysLeft
             // console.log(`daysLeft: ${daysLeft}`)
@@ -143,7 +143,7 @@ class menuController {
                         user = await getUserfromToken(token)
                     
                         if (!user) {
-                              return res.status(404).json({message: "User not found"})
+                              return res.status(404).json({message: "Користувача не знайдено!"})
                         }
                   }
             }

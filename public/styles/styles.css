@@ -70,7 +70,6 @@ header {
 }
 header .header-left a {
   color: #ffffff;
-  background-color: #006666;
   text-decoration: none;
   padding: 5px 0;
   display: inline-block;
@@ -278,6 +277,7 @@ footer .item a {
   }
 }
 .switch {
+  position: relative;
   display: inline-block;
   width: 50px;
   height: 25px;

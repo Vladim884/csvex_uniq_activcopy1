@@ -11,7 +11,7 @@ window.addEventListener('load', function(){
     async function getUser() {
         let currentPage = 0
         let currentPortion = 1
-        const response = await fetch(`http://localhost:5000/api/admin/payhistory`, { 
+        const response = await fetch(`/api/admin/payhistory`, { 
             method: "POST", 
             headers: { "Accept": "application/json", "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -33,7 +33,7 @@ window.addEventListener('load', function(){
         //const payments = data.userPaymentsData.payments
         const currPaymentsData = data.paginationData.currPaymentsData
         if (currPaymentsData.length === 0) return
-        console.log(currPaymentsData)
+        
         
         if(!currPaymentsData) {
             pageTitle.textContent = `Ви не авторизовані! Виповніть вхід`
@@ -87,7 +87,7 @@ window.addEventListener('load', function(){
                 this.classList.add('active')
                 
                 // console.log(currentPage)
-                const response = await fetch("http://localhost:5000/api/admin/payhistory", {
+                const response = await fetch("/api/admin/payhistory", {
                     method: "POST",
                     headers: { "Accept": "application/json", "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -128,7 +128,7 @@ window.addEventListener('load', function(){
                     //добавляем элемент в блок ul
                     paginator.appendChild(el)
                     elems.push(el)
-                    console.log(`for pag-elems: ${elems.length}`)
+                    
                     console.log(`for pages: ${pages}`)
                     if(btnValueNum === pages) break
                    
@@ -136,7 +136,7 @@ window.addEventListener('load', function(){
 
                 arrPaginBtn = paginator.querySelectorAll('li')
                 arrPaginBtn[0].classList.add('active')
-                console.log(`arrPaginBtn: ${Object.values(arrPaginBtn)}`)
+                
                 
                 for(i=0; i< elems.length; i++){
                     elems[i].addEventListener('click', getPaymentsListForBtnNum)
@@ -159,7 +159,7 @@ window.addEventListener('load', function(){
                 }
 
                 async function getNewPortion () {
-                    const response = await fetch("http://localhost:5000/api/admin/payhistory", {
+                    const response = await fetch("/api/admin/payhistory", {
                         method: "POST",
                         headers: { "Accept": "application/json", "Content-Type": "application/json" },
                         body: JSON.stringify({
@@ -186,7 +186,7 @@ window.addEventListener('load', function(){
                 }
                 
                 elNext.addEventListener('click', async function () {
-                    // debugger
+                    
                     currentPortion = currentPortion + 1
                     currentPage = (currentPortion - 1) * portionSize
                     arrPaginBtn = []
@@ -196,7 +196,7 @@ window.addEventListener('load', function(){
                 elPrev.addEventListener('click', async function () {
                     currentPortion = currentPortion - 1
                     currentPage = (currentPortion - 1) * portionSize 
-                    //???
+                    
                     elems.splice(elems[-portionSize*2])
                     btnValueNum = currentPortion * portionSize - portionSize
 

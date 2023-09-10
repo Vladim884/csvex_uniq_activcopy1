@@ -61,7 +61,7 @@ window.addEventListener('load', function () {
       socket.emit('join', {room, nicname, userId})
     })
     document.addEventListener("onunload", function(){
-        const adres = 'http://localhost/chat'
+        const adres = '/chat'
         const hrefto = (adres) => {
             window.location.href = adres;
         }

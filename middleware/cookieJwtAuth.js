@@ -10,13 +10,12 @@ exports.cookieJwtAuth = async (req, res, next) => {
    if(!token){
     const refreshToken = req.cookies.refreshToken
     if (!refreshToken) {
-   res 
-      .clearCookie("token")
-      .clearCookie("refreshToken")
-      .clearCookie("xtext")
-      // next(err)
-        return res.status(403).render('msg', {msg: "Ви не авторизовані"})
-      
+      res 
+         .clearCookie("token")
+         .clearCookie("refreshToken")
+         .clearCookie("xtext")
+         // next(err)
+         return res.status(403).render('msg', {msg: "Ви не авторизовані"})
     } else {
       const user = jwt.verify(refreshToken, config.get('JWT_REF_ACTIVATE'))
       req.user = user

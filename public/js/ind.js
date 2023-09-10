@@ -10,7 +10,7 @@
     // enter_button.classList.add("d-none")
     // reg_button.classList.add("d-none")
 
-    const a = 'http://localhost:5000/login'
+    const a = '/login'
     const but_download = document.getElementById('down_load')
     const but_data_save = document.getElementById('data_save')
 

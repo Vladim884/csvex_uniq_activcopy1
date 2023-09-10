@@ -20,7 +20,7 @@ class UserService {
             }
             const userDto = new UserDto(user)
             const tokens = tokenService.generateTokens({...userDto})
-            console.log(`UserService-login-refreshToken ${tokens.refreshToken}`)
+            // console.log(`UserService-login-refreshToken ${tokens.refreshToken}`)
             await tokenService.saveToken(user.id, tokens.refreshToken)
             return {...tokens, user}
         } catch (error) {
@@ -39,6 +39,7 @@ class UserService {
     async refresh(refreshToken){
         if(!refreshToken) {
             console.log('UserService/refresh(refreshToken): !refreshToken')
+            // return 
         }
         const userData = tokenService.validateRefreshToken(refreshToken)
         // const userData = jwt.verify(refreshToken, config.get('JWT_REF_ACTIVATE'))

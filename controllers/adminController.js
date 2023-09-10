@@ -260,20 +260,50 @@ class adminController {
             
             const end = start + rows
             const usersData = allUsersData.slice(start, end)
-    
+            console.log(usersData)
             const users = []
+            let balance
+            
             for (let i = 0; i < usersData.length; i++) {
-                let user = {
-                    nicname: usersData[i].nicname,
-                    registrDate: usersData[i].registrDate,
-                    email: usersData[i].email,
-                    role: usersData[i].status,
-                    balance: usersData[i].balance,
-                    endDay: usersData[i].endDay,
-                    id: usersData[i]._id
+                
+                
+                if(usersData[i].payments.length){
+                    
+                    const dateB = moment(usersData[i].endDay)
+                    const dateC = moment(moment().format())
+
+                    const hours = dateB.diff(dateC, 'hours')
+                    console.log(`hours: ${hours}`)
+                    let endpart = hours % 24
+                    if(endpart <= 0){
+                        endpart = 0
+                    }
+
+                    const countOneHour = 100 / 30 / 24
+                    balance = hours * countOneHour
+                    console.log(`countOneHour: ${countOneHour}`)
+                    console.log(`balance1: ${balance}`)
+                    if(balance <= 0){
+                        console.log(`balance1.2: ${balance}`)
+                        balance = 0
+                    } 
+                    console.log(`balance1.1: ${balance}`)
+                    let user = {
+                        nicname: usersData[i].nicname,
+                        registrDate: usersData[i].registrDate,
+                        email: usersData[i].email,
+                        role: usersData[i].status,
+                        balance: balance,
+                        endDay: usersData[i].endDay,
+                        id: usersData[i]._id
+                    }
+                    users.push(user)
+                } else {
+                    console.log(`balance1.3: ${balance}`)
+                    balance = 0
                 }
-                users.push(user)
             }
+            console.log(`users2: ${users}`)
             const paginationData = {users, currentPage, rows, pages, currentPortion, portionSize, start, portions}
             
             return res.json({paginationData})
@@ -302,20 +332,49 @@ class adminController {
                     const usersData = allUsersData.slice(start, end)
             
                     const users = []
+                    let balance
+                    
                     for (let i = 0; i < usersData.length; i++) {
-                        let user = {
-                            nicname: usersData[i].nicname,
-                            registrDate: usersData[i].registrDate,
-                            email: usersData[i].email,
-                            role: usersData[i].status,
-                            balance: usersData[i].balance,
-                            endDay: usersData[i].endDay,
-                            id: usersData[i]._id
+                        
+                        
+                        if(usersData[i].payments.length){
+                            
+                            const dateB = moment(usersData[i].endDay)
+                            const dateC = moment(moment().format())
+
+                            const hours = dateB.diff(dateC, 'hours')
+                            console.log(`hours: ${hours}`)
+                            let endpart = hours % 24
+                            if(endpart <= 0){
+                                endpart = 0
+                            }
+
+                            const countOneHour = 100 / 30 / 24
+                            balance = hours * countOneHour
+                            console.log(`countOneHour: ${countOneHour}`)
+                            console.log(`balance1: ${balance}`)
+                            if(balance <= 0){
+                                console.log(`balance1.2: ${balance}`)
+                                balance = 0
+                            } 
+                            console.log(`balance1.1: ${balance}`)
+                            let user = {
+                                nicname: usersData[i].nicname,
+                                registrDate: usersData[i].registrDate,
+                                email: usersData[i].email,
+                                role: usersData[i].status,
+                                balance: balance,
+                                endDay: usersData[i].endDay,
+                                id: usersData[i]._id
+                            }
+                            users.push(user)
+                        } else {
+                            console.log(`balance1.3: ${balance}`)
+                            balance = 0
                         }
-                        users.push(user)
                     }
                     
-                    const paginationData = {users}
+                    const paginationData = users
                     return res.json({paginationData})
             } else {
     

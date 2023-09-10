@@ -10,14 +10,14 @@ window.addEventListener('load', function(){
     let elems = []
     getUsers()
     async function getUsers() {
-        const response = await fetch("http://localhost:5000/api/admin/usersListPag", { 
+        const response = await fetch("/api/admin/usersListPag", { 
             method: "GET", 
             headers: { "Content-Type": "application/json" }
         })
         const data = await response.json()
 
         const usersList = data.paginationData.users
-        console.log(Object.values(usersList[0]))
+        console.log(`GET usersList: ${Object.values(usersList)}`)
 
         if(!usersList) {
             pageTitle.textContent = `Ви не авторизовані! Виповніть вхід`
@@ -47,14 +47,14 @@ window.addEventListener('load', function(){
                     ${usersList[i].role}: ${usersList[i].nicname} 
                     з ${moment(usersList[i].registrDate).format('DD.MM.YY')}
                     email: ${usersList[i].email} 
-                    на рахунку: ${usersList[i].balance.toFixed(2)} грн. 
+                    на рахунку: ${usersList[i].balance} грн. 
                     послугу активовано до: ${moment(usersList[i].endDay).format('DD.MM.YY')}
                     `)
                     //добавляем текст в элемент в качестве дочернего элемента
                     elem.appendChild(elemText);
 
                     const paymentsLink = document.createElement("a")
-                    paymentsLink.href = `http://localhost:5000/api/admin/payhistforadmin?id=${usersList[i].id}`
+                    paymentsLink.href = `/api/admin/payhistforadmin?id=${usersList[i].id}`
                     const paymentsLinkText = document.createTextNode(`оплати`)
                     paymentsLink.appendChild(paymentsLinkText)
                     elem.appendChild(paymentsLink)
@@ -75,7 +75,7 @@ window.addEventListener('load', function(){
                 this.classList.add('active')
                 
                 // console.log(currentPage)
-                const response = await fetch("http://localhost:5000/api/admin/usersListPag", {
+                const response = await fetch("/api/admin/usersListPag", {
                     method: "POST",
                     headers: { "Accept": "application/json", "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -146,7 +146,7 @@ window.addEventListener('load', function(){
                 }
 
                 async function getNewPortion () {
-                    const response = await fetch("http://localhost:5000/api/admin/usersListPag", {
+                    const response = await fetch("/api/admin/usersListPag", {
                         method: "POST",
                         headers: { "Accept": "application/json", "Content-Type": "application/json" },
                         body: JSON.stringify({

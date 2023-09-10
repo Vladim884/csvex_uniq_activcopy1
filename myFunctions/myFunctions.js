@@ -126,7 +126,7 @@ exports.getUserfromRefToken = (refreshToken) => {
     let id = dataToken.id
     let user = User.findOne({_id: id})
     if (!user) {
-        return res.status(404).json({message: "User not found"})
+        return res.status(404).json({message: "Юзера не знайдено!"})
     }
     return user
 }

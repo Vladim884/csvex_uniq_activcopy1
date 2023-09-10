@@ -1,8 +1,6 @@
-// window.addEventListener('load', function(){
+window.addEventListener('load', function(){
 
-// const { recommender } = require("googleapis/build/src/apis/recommender")
 
-//form logout from account
 const linkEnter = document.getElementById('enter')
 //form logout from account
 const linkLogout = document.getElementById('logout')
@@ -37,44 +35,33 @@ for (let i = 0; i < li.length; i++) {
         li[i].children[0].classList.add('active');
     }
 }
-//================================================
+
 const delEnterForAdmOrUserLink = async () => {
     // const searchStr = window.location.href
     // console.log(searchStr)
-    const response = await fetch("http://localhost:5000/api/auth/userstatus", { 
+    const response = await fetch("/api/auth/userstatus", { 
     method: "GET", 
     headers: { "Content-Type": "application/json" }
 })
 
 const data = await response.json()
 const user = data.userRole
-console.log(`user.status: ${user.role}`)
-// console.log(`user.status: ${user.status}`)
-// if(!user) console.log('error!!!')
+// console.log(`user.status: ${user.role}`)
+
 
     if (user.role === 'user' || user.role === 'admin'){
         linkEnter.classList.add('hidden')
         linkLogout.classList.remove('hidden')
         linkCabinet.classList.remove('hidden')
-        //linkChat.classList.remove('hidden')
-
-        // linkChat.addEventListener('click', () => {
-        //     linkCloseChat.classList.remove('hidden')
-        //     linkChat.classList.add('hidden')
-        // })
-        // linkCloseChat.addEventListener('click', () => {
-        //     linkChat.classList.remove('hidden')
-        //     linkCloseChat.classList.add('hidden')
-        // })
     }
     if (user.role === 'admin'){
-        console.log('admin')
+        // console.log('admin')
         linkWritePaying.classList.remove('hidden')
     }
 }
 delEnterForAdmOrUserLink()
 
-    //================================
+ 
 const enter_button = document.getElementById('enter')
 // const logout_button = document.getElementById('logout')
 const reg_button = document.getElementById('reg')
@@ -96,6 +83,6 @@ if(linkLogout1){
      }
 }
 
-// })
+})
 
  

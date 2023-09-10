@@ -216,7 +216,7 @@ class systemController {
         try {            
             const {refreshToken} = req.cookies
             if(!refreshToken){
-                return res.status(403).json({"message": "systemContr/upload01 Ви не авторизувались"})
+                return res.status(403).json({"message": "Ви не авторизувались"})
             }
             
             let user = await getUserfromRefToken(refreshToken)
