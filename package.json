@@ -52,6 +52,6 @@
     "nodemon": "^2.0.4"
   },
   "engines": {
-    "node": "v16.9.0"
+    "node": "v18.x"
   }
 }
