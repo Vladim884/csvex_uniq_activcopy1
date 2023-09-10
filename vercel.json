@@ -11,5 +11,65 @@
             "src": "/(.*)",
             "dest": "/"
         }
+    ],
+    "controllers": [
+        {
+            "src": "/(.*)",
+            "dest": "/"
+        }
+    ],
+    "dest": [
+        {
+            "src": "/(.*)",
+            "dest": "/"
+        }
+    ],
+    "dtos": [
+        {
+            "src": "/(.*)",
+            "dest": "/"
+        }
+    ],
+    "middleware": [
+        {
+            "src": "/(.*)",
+            "dest": "/"
+        }
+    ],
+    "models": [
+        {
+            "src": "/(.*)",
+            "dest": "/"
+        }
+    ],
+    "myFunctions": [
+        {
+            "src": "/(.*)",
+            "dest": "/"
+        }
+    ],
+    "nodemailer": [
+        {
+            "src": "/(.*)",
+            "dest": "/"
+        }
+    ],
+    "public": [
+        {
+            "src": "/(.*)",
+            "dest": "/"
+        }
+    ],
+    "services": [
+        {
+            "src": "/(.*)",
+            "dest": "/"
+        }
+    ],
+    "views": [
+        {
+            "src": "/(.*)",
+            "dest": "/"
+        }
     ]
 }
