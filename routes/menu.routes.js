@@ -13,6 +13,9 @@ const uuid = require("uuid");
 
 // const roomList = []
 router
+      .get("/", (req, res) => {
+            res.send("Express on Vercel");
+          })
       .get("/main", menuController.mainPageRender)
       .get("/about", menuController.aboutPageRender)
       .get("/contacts", menuController.contactsPageRender)
